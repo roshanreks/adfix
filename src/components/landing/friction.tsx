@@ -49,49 +49,49 @@ const RISKS = [
 
 export function Friction() {
   return (
-    <section className="relative bg-[#F8FAFC] py-[120px] overflow-hidden">
+    <section className="relative bg-[#F8FAFC] py-16 sm:py-[120px] overflow-hidden">
       <Aurora size="sm" className="opacity-30" />
 
-      <div className="relative mx-auto max-w-[1200px] px-6 lg:px-12">
-        <FadeIn className="mb-16 text-center">
-          <h2 className="text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-[#0F172A]">
+      <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12">
+        <FadeIn className="mb-12 sm:mb-16 text-center">
+          <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-[#0F172A]">
             The data exists. The decision framework doesn&apos;t.
           </h2>
-          <p className="mx-auto mt-6 max-w-[600px] text-[18px] leading-[1.6] text-[#475569]">
-            Every day you wait, inefficient ads drain your budget. Without a structured audit, you&apos;re guessing.
+          <p className="mx-auto mt-4 sm:mt-6 max-w-[600px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-[#475569]">
+            Every day you wait, inefficient ads drain your budget. Without a structured audit, you're guessing.
           </p>
         </FadeIn>
 
         <FadeIn delay={0.1}>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {SIGNALS.map((s) => (
               <SpotlightCard key={s.title}>
-                <div className="p-8">
+                <div className="p-4 sm:p-8">
                   <div
-                    className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-[#E2E8F0]"
+                    className="mb-4 sm:mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-[#E2E8F0]"
                     style={{ backgroundColor: s.bg }}
                   >
                     <s.icon className="h-5 w-5" style={{ color: s.color }} />
                   </div>
-                  <h3 className="text-[20px] font-medium leading-[1.4] text-[#0F172A]">{s.title}</h3>
-                  <p className="mt-2 text-[16px] leading-[1.6] text-[#475569]">{s.desc}</p>
+                  <h3 className="text-[18px] sm:text-[20px] font-medium leading-[1.4] text-[#0F172A]">{s.title}</h3>
+                  <p className="mt-2 text-[14px] sm:text-[16px] leading-[1.6] text-[#475569]">{s.desc}</p>
                 </div>
               </SpotlightCard>
             ))}
           </div>
         </FadeIn>
 
-        <FadeIn delay={0.2} className="mt-8">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <FadeIn delay={0.2} className="mt-8 sm:mt-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {RISKS.map((r) => (
               <SpotlightCard key={r.title} spotlightColor="rgba(220, 38, 38, 0.08)">
-                <div className="flex items-center gap-6 p-8">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
-                    <AlertTriangle className="h-6 w-6 text-[#DC2626]" />
+                <div className="flex items-start gap-4 sm:gap-6 p-4 sm:p-8">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
+                    <AlertTriangle className="h-5 w-5 text-[#DC2626]" />
                   </div>
                   <div>
-                    <p className="text-[16px] font-medium text-[#0F172A]">{r.title}</p>
-                    <p className="mt-1 text-[14px] leading-[1.5] text-[#475569]">{r.desc}</p>
+                    <p className="text-[15px] sm:text-[16px] font-medium text-[#0F172A]">{r.title}</p>
+                    <p className="mt-1 sm:mt-1.5 text-[13px] sm:text-[14px] leading-[1.5] text-[#475569]">{r.desc}</p>
                   </div>
                 </div>
               </SpotlightCard>

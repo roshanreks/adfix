@@ -34,7 +34,7 @@ export default function DashboardLayout({
             >
               <Menu className="h-5 w-5" aria-hidden="true" />
             </SheetTrigger>
-            <SheetContent side="left" className="w-[260px] p-0">
+            <SheetContent side="right" className="w-[260px] p-0">
               <div className="flex flex-col h-full">
                 <div className="p-4">
                   <Button

@@ -33,12 +33,17 @@ function validatePassword(password: string): { valid: boolean; error?: string } 
   return { valid: true };
 }
 
-// Demo credentials loaded from env or fallback (fail-secure: no default password in code)
+// Demo credentials - works without env vars
+const DEMO_EMAIL = "demo@adfix.app";
+const DEMO_PASSWORD = "demo123";
+
 function getDemoCredentials(): { email: string; passwordHash: string } | null {
-  const email = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@adfix.app";
+  // Try env first, fall back to hardcoded demo
+  const email = process.env.NEXT_PUBLIC_DEMO_EMAIL || DEMO_EMAIL;
+  // If env hash is set, use it; otherwise we'll check password directly in login()
   const hash = process.env.NEXT_PUBLIC_DEMO_PASSWORD_HASH;
-  if (!hash) return null;
-  return { email, passwordHash: hash };
+  if (hash) return { email, passwordHash: hash };
+  return { email, passwordHash: "" }; // empty hash means "check via compare"
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -74,12 +79,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const demo = getDemoCredentials();
-    if (demo && email === demo.email && passwordHash === demo.passwordHash) {
-      const demoUser: User = { id: "demo-1", name: "Demo User", email: demo.email, plan: "detailed" };
-      localStorage.setItem("adfix_plan", "detailed");
-      setUser(demoUser);
-      localStorage.setItem("adfix_user", JSON.stringify(demoUser));
-      return true;
+    if (demo && email === demo.email) {
+      if (demo.passwordHash) {
+        // Env hash is set, compare hashes
+        if (passwordHash === demo.passwordHash) {
+          const demoUser: User = { id: "demo-1", name: "Demo User", email: demo.email, plan: "detailed" };
+          localStorage.setItem("adfix_plan", "detailed");
+          setUser(demoUser);
+          localStorage.setItem("adfix_user", JSON.stringify(demoUser));
+          return true;
+        }
+      } else {
+        // No env hash - compare password directly
+        const demoHash = await hashPassword(DEMO_PASSWORD);
+        if (passwordHash === demoHash) {
+          const demoUser: User = { id: "demo-1", name: "Demo User", email: demo.email, plan: "detailed" };
+          localStorage.setItem("adfix_plan", "detailed");
+          setUser(demoUser);
+          localStorage.setItem("adfix_user", JSON.stringify(demoUser));
+          return true;
+        }
+      }
     }
     return false;
   }, []);
