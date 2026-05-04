@@ -281,10 +281,10 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 <CardContent className="p-4 flex items-start gap-4">
                   <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">1</div>
                   <div>
-                    <h4 className="font-medium">Access Ads Manager</h4>
-                    <p className="text-sm text-muted-foreground">Open Meta Ads Manager and navigate to the <strong>Ads</strong> level view.</p>
-                    <Button variant="outline" size="sm" className="mt-2 gap-2" onClick={() => window.open("https://business.facebook.com/adsmanager", "_blank")}>
-                      <ExternalLink className="h-3 w-3" /> Open Ads Manager
+                    <h4 className="font-medium">Access Ads Manager Reports</h4>
+                    <p className="text-sm text-muted-foreground">Open Meta Ads Manager Reports to export your data.</p>
+                    <Button variant="outline" size="sm" className="mt-2 gap-2" onClick={() => window.open("https://business.facebook.com/adsmanager/manage/reports", "_blank")}>
+                      <ExternalLink className="h-3 w-3" /> Open Reports
                     </Button>
                   </div>
                 </CardContent>
