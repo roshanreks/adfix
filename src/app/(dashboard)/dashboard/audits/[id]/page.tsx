@@ -135,7 +135,7 @@ export default function AuditDetailPage() {
 
       {/* KPI Cards */}
       <FadeIn delay={0.21}>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           {[
             { label: "Total Spend", value: `₹${audit.account_summary.total_spend.toLocaleString("en-IN")}` },
             { label: "Revenue", value: audit.account_summary.total_revenue > 0 ? `₹${audit.account_summary.total_revenue.toLocaleString("en-IN")}` : "—" },
@@ -379,7 +379,8 @@ export default function AuditDetailPage() {
       {/* Ad-Level Table */}
       <FadeIn delay={0.48}>
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="w-full justify-start flex-wrap">
+          <div className="overflow-x-auto -mx-4 sm:-mx-0 px-4 sm:px-0">
+          <TabsList className="w-max sm:w-full min-w-full justify-start flex-nowrap sm:flex-wrap gap-1 sm:gap-0">
             <TabsTrigger value="all">All ({allAds.length})</TabsTrigger>
             <TabsTrigger value="scale">Scale ({scaleAds.length})</TabsTrigger>
             <TabsTrigger value="fix">Fix ({fixAds.length})</TabsTrigger>
@@ -388,13 +389,14 @@ export default function AuditDetailPage() {
             <TabsTrigger value="noaction">No Action ({noActionAds.length})</TabsTrigger>
             <TabsTrigger value="insufficient">Insufficient ({insufficientAds.length})</TabsTrigger>
           </TabsList>
-          <TabsContent value="all"><Card><ScrollArea className="h-[400px]"><ClassificationTable data={allAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-          <TabsContent value="scale"><Card><ScrollArea className="h-[400px]"><ClassificationTable data={scaleAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-          <TabsContent value="fix"><Card><ScrollArea className="h-[400px]"><ClassificationTable data={fixAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-          <TabsContent value="kill"><Card><ScrollArea className="h-[400px]"><ClassificationTable data={killAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-          <TabsContent value="watch"><Card><ScrollArea className="h-[400px]"><ClassificationTable data={watchAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-          <TabsContent value="noaction"><Card><ScrollArea className="h-[400px]"><ClassificationTable data={noActionAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-          <TabsContent value="insufficient"><Card><ScrollArea className="h-[400px]"><ClassificationTable data={insufficientAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          </div>
+          <TabsContent value="all"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={allAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="scale"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={scaleAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="fix"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={fixAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="kill"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={killAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="watch"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={watchAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="noaction"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={noActionAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="insufficient"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={insufficientAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
         </Tabs>
       </FadeIn>
 

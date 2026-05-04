@@ -46,8 +46,8 @@ export const ClassificationTable = memo(function ClassificationTable({
   const displayData = limit && !isDetailed ? data.slice(0, limit) : data;
 
   return (
-    <>
-      <Table>
+    <div className="overflow-x-auto -mx-1 px-1">
+      <Table className="min-w-[700px]">
         <TableHeader>
           <TableRow>
             <TableHead>Ad Name</TableHead>
@@ -88,6 +88,6 @@ export const ClassificationTable = memo(function ClassificationTable({
           </Button>
         </div>
       )}
-    </>
+    </div>
   );
 });

@@ -248,19 +248,20 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-xl max-h-[95dvh] overflow-y-auto p-0 sm:p-4">
+        <div className="p-4 sm:p-0">
         <DialogHeader>
           <DialogTitle>Run New Audit</DialogTitle>
         </DialogHeader>
 
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-1 sm:gap-2 mb-4">
           {[1, 2, 3, 4].map((s) => (
-            <div key={s} className="flex items-center gap-2 flex-1">
-              <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+            <div key={s} className="flex items-center gap-1 sm:gap-2 flex-1">
+              <div className={`h-6 w-6 sm:h-8 sm:w-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                 s === step ? "bg-primary text-primary-foreground" :
                 s < step ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
               }`}>
-                {s < step ? <Check className="h-4 w-4" /> : s}
+                {s < step ? <Check className="h-3 w-3 sm:h-4 sm:w-4" /> : s}
               </div>
               {s < 4 && (
                 <div className={`flex-1 h-1 rounded-full transition-colors ${s < step ? "bg-primary" : "bg-muted"}`} />
@@ -311,9 +312,9 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                   </div>
                 </CardContent>
               </Card>
-              <div className="flex justify-end gap-3">
-                <Button variant="outline" onClick={() => setStep(2)}>Skip, I already have CSV</Button>
-                <Button onClick={() => setStep(2)} className="bg-primary text-primary-foreground gap-2">
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+                <Button variant="outline" onClick={() => setStep(2)} className="w-full sm:w-auto">Skip, I already have CSV</Button>
+                <Button onClick={() => setStep(2)} className="bg-primary text-primary-foreground gap-2 w-full sm:w-auto">
                   I've configured my report <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -328,13 +329,13 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
               </div>
               <div
                 onDragEnter={handleDrag} onDragOver={handleDrag} onDragLeave={handleDrag} onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${
+                className={`border-2 border-dashed rounded-xl p-6 sm:p-8 text-center transition-all duration-300 ${
                   dragActive ? "border-primary bg-primary/5 scale-[1.02]" : "border-border bg-muted/30"
                 }`}
               >
-                <CloudUpload className={`h-10 w-10 mx-auto mb-4 transition-colors ${dragActive ? "text-primary" : "text-muted-foreground"}`} />
-                <p className="font-medium mb-1">{file ? file.name : "Drop your CSV here or click to browse"}</p>
-                <p className="text-sm text-muted-foreground mb-4">Supports standard Meta Ads Manager exports</p>
+                <CloudUpload className={`h-8 w-8 sm:h-10 sm:w-10 mx-auto mb-4 transition-colors ${dragActive ? "text-primary" : "text-muted-foreground"}`} />
+                <p className="font-medium mb-1 text-sm sm:text-base">{file ? file.name : "Drop your CSV here or click to browse"}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4">Supports standard Meta Ads Manager exports</p>
                 <input type="file" accept=".csv" onChange={handleFileInput} className="hidden" id="csv-upload" />
                 <label htmlFor="csv-upload" className="inline-flex items-center justify-center cursor-pointer rounded-md text-sm font-medium h-10 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors">Browse File</label>
               </div>
@@ -352,7 +353,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                   </div>
                   <div className="rounded-lg border bg-muted/20 p-3">
                     <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Detected Columns</p>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
                       {Object.entries(FIELD_LABELS).map(([field, label]) => {
                         const found = field in mappedColumns;
                         const isRequired = REQUIRED_FIELDS.has(field);
@@ -415,9 +416,9 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
               <Button variant="ghost" size="sm" className="w-fit gap-2 text-muted-foreground" onClick={handleDownloadSample}>
                 <Download className="h-4 w-4" /> Download Sample CSV
               </Button>
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setStep(1)} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
-                <Button onClick={handleContinue} disabled={parsedData.length === 0} className="bg-primary text-primary-foreground gap-2">Continue <ArrowRight className="h-4 w-4" /></Button>
+              <div className="flex flex-col sm:flex-row justify-between gap-2">
+                <Button variant="outline" onClick={() => setStep(1)} className="gap-2 w-full sm:w-auto"><ArrowLeft className="h-4 w-4" /> Back</Button>
+                <Button onClick={handleContinue} disabled={parsedData.length === 0} className="bg-primary text-primary-foreground gap-2 w-full sm:w-auto">Continue <ArrowRight className="h-4 w-4" /></Button>
               </div>
             </motion.div>
           )}
@@ -489,9 +490,9 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                   ⚠ Target CPA was not provided, so this audit will use account average CPA as the benchmark.
                 </div>
               )}
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setStep(2)} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
-                <Button onClick={handleContinue} className="bg-primary text-primary-foreground gap-2">Continue <ArrowRight className="h-4 w-4" /></Button>
+              <div className="flex flex-col sm:flex-row justify-between gap-2">
+                <Button variant="outline" onClick={() => setStep(2)} className="gap-2 w-full sm:w-auto"><ArrowLeft className="h-4 w-4" /> Back</Button>
+                <Button onClick={handleContinue} className="bg-primary text-primary-foreground gap-2 w-full sm:w-auto">Continue <ArrowRight className="h-4 w-4" /></Button>
               </div>
             </motion.div>
           )}
@@ -546,15 +547,16 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                   <Progress value={((processingStep + 1) / 7) * 100} className="w-full" />
                 </motion.div>
               )}
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setStep(3)} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
-                <Button onClick={handleContinue} disabled={isProcessing} className="bg-primary text-primary-foreground gap-2">
+              <div className="flex flex-col sm:flex-row justify-between gap-2">
+                <Button variant="outline" onClick={() => setStep(3)} className="gap-2 w-full sm:w-auto"><ArrowLeft className="h-4 w-4" /> Back</Button>
+                <Button onClick={handleContinue} disabled={isProcessing} className="bg-primary text-primary-foreground gap-2 w-full sm:w-auto">
                   {isProcessing ? (<><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>) : (<><FileText className="h-4 w-4" /> Run Audit</>)}
                 </Button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </DialogContent>
     </Dialog>
   );

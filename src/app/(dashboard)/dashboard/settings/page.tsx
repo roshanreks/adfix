@@ -152,7 +152,8 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="profile">
-        <TabsList className="grid w-full grid-cols-4">
+        <div className="overflow-x-auto -mx-4 sm:-mx-0 px-4 sm:px-0">
+        <TabsList className="w-max sm:w-full min-w-full grid grid-cols-4">
           <TabsTrigger value="profile" className="gap-1.5 text-xs sm:text-sm">
             <User className="h-3.5 w-3.5 shrink-0" /> Profile
           </TabsTrigger>
@@ -166,6 +167,7 @@ export default function SettingsPage() {
             <Shield className="h-3.5 w-3.5 shrink-0" /> Account
           </TabsTrigger>
         </TabsList>
+        </div>
 
         {/* ── Profile ── */}
         <TabsContent value="profile">
