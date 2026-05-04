@@ -11,19 +11,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AdFix — Deterministic Meta Ads Audit Tool",
+  title: "UM AdFix — Urban Media Ads Auditor",
   description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad. Rule-based analysis, no guesswork.",
-  keywords: ["Meta Ads", "Facebook Ads", "Ad Audit", "CPA Optimization", "ROAS Analysis", "Ad Performance"],
+  keywords: ["Meta Ads", "Facebook Ads", "Ad Audit", "CPA Optimization", "ROAS Analysis", "Ad Performance", "Urban Media"],
   authors: [{ name: "Reachify Innovations" }],
   openGraph: {
-    title: "AdFix — Deterministic Meta Ads Audit Tool",
+    title: "UM AdFix — Urban Media Ads Auditor",
     description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad.",
     type: "website",
-    siteName: "AdFix",
+    siteName: "UM AdFix",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AdFix — Deterministic Meta Ads Audit Tool",
+    title: "UM AdFix — Urban Media Ads Auditor",
     description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad.",
   },
 };

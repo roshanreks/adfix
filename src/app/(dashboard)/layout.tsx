@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { AuditWizard } from "@/components/audit-wizard";
 import { Button } from "@/components/ui/button";
@@ -22,10 +23,12 @@ export default function DashboardLayout({
       <div className="flex-1 flex flex-col min-h-screen">
         <header className="md:hidden flex items-center justify-between h-16 px-4 border-b border-border bg-white shadow-sm z-10">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-sm">
-              A
-            </div>
-            <span className="text-[18px] font-semibold text-[#0F172A] tracking-[-0.01em]">AdFix</span>
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-sm">
+                UM
+              </div>
+              <span className="text-[16px] font-bold text-[#0F172A] tracking-[-0.01em]">UM AdFix</span>
+            </Link>
           </div>
           <Sheet>
             <SheetTrigger

@@ -76,7 +76,7 @@ export default function LoginPage() {
           <CardDescription>
             {isRegistering
               ? "Sign up to start auditing your Meta Ads"
-              : "Sign in to your AdFix dashboard"}
+              : "Sign in to your UM AdFix dashboard"}
           </CardDescription>
         </CardHeader>
         <CardContent>

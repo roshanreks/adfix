@@ -25,11 +25,14 @@ export function Sidebar({ onRunAudit }: SidebarProps) {
   return (
     <aside className="hidden md:flex flex-col w-64 h-screen sticky top-0 border-r border-border bg-sidebar shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-10">
       <div className="p-6">
-        <Link href="/" className="flex items-center gap-3" aria-label="AdFix Home">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-sm">
-            A
+        <Link href="/dashboard" className="flex items-center gap-3" aria-label="UM AdFix Home">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-sm">
+            UM
           </div>
-          <span className="text-[18px] font-semibold text-[#0F172A] tracking-[-0.01em]">AdFix</span>
+          <div className="flex flex-col">
+            <span className="text-[16px] font-bold text-[#0F172A] tracking-[-0.01em] leading-none">UM AdFix</span>
+            <span className="text-[9px] text-[#94A3B8] -mt-0.5">Urban Media</span>
+          </div>
         </Link>
       </div>
 

@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
 
   const navLinks = [
     { label: "How It Works", href: "#how-it-works" },
@@ -14,11 +18,32 @@ export function Navbar() {
     { label: "FAQ", href: "#faq" },
   ];
 
+  const handleHomeClick = (e: React.MouseEvent) => {
+    if (!isLoading) {
+      e.preventDefault();
+      if (user) {
+        router.push("/dashboard");
+      } else {
+        router.push("/");
+      }
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-[#E2E8F0] bg-white/80 backdrop-blur-[12px]">
-      <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-6 lg:px-12">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-[18px] font-semibold text-[#0F172A] tracking-[-0.01em]">AdFix</span>
+      <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 sm:px-6 lg:px-12">
+        <Link 
+          href={user ? "/dashboard" : "/"} 
+          onClick={handleHomeClick}
+          className="flex items-center gap-2 sm:gap-3"
+        >
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-sm">
+            UM
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[16px] sm:text-[18px] font-bold text-[#0F172A] tracking-[-0.01em] leading-none">UM AdFix</span>
+            <span className="text-[9px] text-[#94A3B8] -mt-0.5 hidden sm:block">Urban Media Ads Auditor</span>
+          </div>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">

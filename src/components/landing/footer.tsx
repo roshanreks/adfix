@@ -9,9 +9,9 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {/* Col 1 — Brand */}
           <div>
-            <p className="text-[18px] font-semibold text-[#0F172A] tracking-[-0.01em]">AdFix</p>
+            <p className="text-[18px] font-bold text-[#0F172A] tracking-[-0.01em]">UM AdFix</p>
             <p className="mt-3 max-w-[240px] text-[14px] leading-[1.5] text-[#94A3B8]">
-              Deterministic Meta Ads audits. Kill, Fix, or Scale with clarity.
+              Urban Media Ads Auditor. Kill, Fix, or Scale with clarity.
             </p>
             <p className="mt-4 text-[14px] text-[#94A3B8]">Powered by Reachify</p>
           </div>
@@ -70,7 +70,7 @@ export function Footer() {
             A product of Reachify Innovations Private Limited
           </p>
           <p className="text-[12px] text-[#94A3B8]">
-            &copy; 2026 AdFix. All rights reserved.
+            &copy; 2026 UM AdFix. All rights reserved.
           </p>
         </div>
       </div>

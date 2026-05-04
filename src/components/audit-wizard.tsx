@@ -248,7 +248,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-xl max-h-[95dvh] overflow-y-auto p-0 sm:p-4">
+      <DialogContent className="sm:max-w-2xl max-h-[95dvh] sm:max-h-[85vh] overflow-y-auto p-0 sm:p-4">
         <div className="p-4 sm:p-0">
         <DialogHeader>
           <DialogTitle>Run New Audit</DialogTitle>
