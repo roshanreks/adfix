@@ -5,8 +5,9 @@ import path from "path";
 export async function GET() {
   try {
     const schemaPath = path.join(process.cwd(), "prisma", "schema.prisma");
+    const prismaCli = path.join(process.cwd(), "node_modules", "prisma", "build", "index.js");
     const result = execSync(
-      `npx prisma db push --schema="${schemaPath}" --accept-data-loss`,
+      `node "${prismaCli}" db push --schema="${schemaPath}" --accept-data-loss`,
       { encoding: "utf-8", timeout: 30000, env: process.env }
     );
     return NextResponse.json({ ok: true, result });
