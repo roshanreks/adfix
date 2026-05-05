@@ -55,10 +55,11 @@ export async function POST(req: NextRequest) {
       currency: order.currency,
       bookingId: booking.id,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Create order error:", error);
+    const message = error?.message || "Failed to create payment order";
     return NextResponse.json(
-      { error: "Failed to create payment order" },
+      { error: message },
       { status: 500 }
     );
   }
