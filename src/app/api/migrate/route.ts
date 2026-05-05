@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-const CREATE_TABLES_SQL = `
--- Create User table
-CREATE TABLE IF NOT EXISTS "User" (
+const STATEMENTS = [
+  // User table
+  `CREATE TABLE IF NOT EXISTS "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "emailVerified" TIMESTAMP(3),
@@ -24,12 +24,11 @@ CREATE TABLE IF NOT EXISTS "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
-CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email");
-
--- Create Account table
-CREATE TABLE IF NOT EXISTS "Account" (
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email")`,
+  
+  // Account table
+  `CREATE TABLE IF NOT EXISTS "Account" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "type" TEXT NOT NULL,
@@ -43,33 +42,30 @@ CREATE TABLE IF NOT EXISTS "Account" (
     "id_token" TEXT,
     "session_state" TEXT,
     CONSTRAINT "Account_pkey" PRIMARY KEY ("id")
-);
-
-CREATE UNIQUE INDEX IF NOT EXISTS "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
-
--- Create Session table
-CREATE TABLE IF NOT EXISTS "Session" (
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId")`,
+  
+  // Session table
+  `CREATE TABLE IF NOT EXISTS "Session" (
     "id" TEXT NOT NULL,
     "sessionToken" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
-);
-
-CREATE UNIQUE INDEX IF NOT EXISTS "Session_sessionToken_key" ON "Session"("sessionToken");
-
--- Create VerificationToken table
-CREATE TABLE IF NOT EXISTS "VerificationToken" (
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "Session_sessionToken_key" ON "Session"("sessionToken")`,
+  
+  // VerificationToken table
+  `CREATE TABLE IF NOT EXISTS "VerificationToken" (
     "identifier" TEXT NOT NULL,
     "token" TEXT NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL
-);
-
-CREATE UNIQUE INDEX IF NOT EXISTS "VerificationToken_token_key" ON "VerificationToken"("token");
-CREATE UNIQUE INDEX IF NOT EXISTS "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
-
--- Create Audit table
-CREATE TABLE IF NOT EXISTS "Audit" (
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "VerificationToken_token_key" ON "VerificationToken"("token")`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token")`,
+  
+  // Audit table
+  `CREATE TABLE IF NOT EXISTS "Audit" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -79,13 +75,12 @@ CREATE TABLE IF NOT EXISTS "Audit" (
     "wastePercentage" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "Audit_pkey" PRIMARY KEY ("id")
-);
-
-CREATE INDEX IF NOT EXISTS "Audit_userId_idx" ON "Audit"("userId");
-CREATE INDEX IF NOT EXISTS "Audit_createdAt_idx" ON "Audit"("createdAt");
-
--- Create ConsultationBooking table
-CREATE TABLE IF NOT EXISTS "ConsultationBooking" (
+  )`,
+  `CREATE INDEX IF NOT EXISTS "Audit_userId_idx" ON "Audit"("userId")`,
+  `CREATE INDEX IF NOT EXISTS "Audit_createdAt_idx" ON "Audit"("createdAt")`,
+  
+  // ConsultationBooking table
+  `CREATE TABLE IF NOT EXISTS "ConsultationBooking" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "auditId" TEXT,
@@ -98,12 +93,11 @@ CREATE TABLE IF NOT EXISTS "ConsultationBooking" (
     "status" TEXT NOT NULL DEFAULT 'booked',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "ConsultationBooking_pkey" PRIMARY KEY ("id")
-);
-
-CREATE INDEX IF NOT EXISTS "ConsultationBooking_userId_idx" ON "ConsultationBooking"("userId");
-
--- Create WhatsAppLog table
-CREATE TABLE IF NOT EXISTS "WhatsAppLog" (
+  )`,
+  `CREATE INDEX IF NOT EXISTS "ConsultationBooking_userId_idx" ON "ConsultationBooking"("userId")`,
+  
+  // WhatsAppLog table
+  `CREATE TABLE IF NOT EXISTS "WhatsAppLog" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
@@ -111,26 +105,16 @@ CREATE TABLE IF NOT EXISTS "WhatsAppLog" (
     "sentAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "status" TEXT NOT NULL DEFAULT 'sent',
     CONSTRAINT "WhatsAppLog_pkey" PRIMARY KEY ("id")
-);
-
-CREATE INDEX IF NOT EXISTS "WhatsAppLog_userId_idx" ON "WhatsAppLog"("userId");
-
--- Add foreign keys
-ALTER TABLE "Account" DROP CONSTRAINT IF EXISTS "Account_userId_fkey";
-ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "Session" DROP CONSTRAINT IF EXISTS "Session_userId_fkey";
-ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "Audit" DROP CONSTRAINT IF EXISTS "Audit_userId_fkey";
-ALTER TABLE "Audit" ADD CONSTRAINT "Audit_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "ConsultationBooking" DROP CONSTRAINT IF EXISTS "ConsultationBooking_userId_fkey";
-ALTER TABLE "ConsultationBooking" ADD CONSTRAINT "ConsultationBooking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "WhatsAppLog" DROP CONSTRAINT IF EXISTS "WhatsAppLog_userId_fkey";
-ALTER TABLE "WhatsAppLog" ADD CONSTRAINT "WhatsAppLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-`;
+  )`,
+  `CREATE INDEX IF NOT EXISTS "WhatsAppLog_userId_idx" ON "WhatsAppLog"("userId")`,
+  
+  // Foreign keys
+  `ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+  `ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+  `ALTER TABLE "Audit" ADD CONSTRAINT "Audit_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+  `ALTER TABLE "ConsultationBooking" ADD CONSTRAINT "ConsultationBooking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+  `ALTER TABLE "WhatsAppLog" ADD CONSTRAINT "WhatsAppLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+];
 
 export async function GET() {
   try {
@@ -157,9 +141,17 @@ export async function GET() {
     }
     
     // Create all tables from scratch
-    await prisma.$executeRawUnsafe(CREATE_TABLES_SQL);
+    const results = [];
+    for (const sql of STATEMENTS) {
+      try {
+        await prisma.$executeRawUnsafe(sql);
+        results.push({ ok: true, sql: sql.substring(0, 40) + "..." });
+      } catch (e: any) {
+        results.push({ ok: false, sql: sql.substring(0, 40) + "...", error: e.message });
+      }
+    }
     
-    return NextResponse.json({ ok: true, message: "All tables created successfully" });
+    return NextResponse.json({ ok: true, message: "Migration complete", results });
   } catch (error: any) {
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
