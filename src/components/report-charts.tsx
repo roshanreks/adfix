@@ -6,6 +6,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import type { AuditReport } from "@/lib/types";
+import { getCurrencySymbol } from "@/lib/utils";
 
 const COLORS = {
   kill: "#ef4444",
@@ -15,17 +16,6 @@ const COLORS = {
   noAction: "#6b7280",
   insufficient: "#9ca3af",
 };
-
-function getCurrencySymbol(currency: string): string {
-  switch (currency) {
-    case "INR": return "₹";
-    case "USD": return "$";
-    case "AED": return "AED ";
-    case "EUR": return "€";
-    case "GBP": return "£";
-    default: return "";
-  }
-}
 
 export const WasteDistributionChart = memo(function WasteDistributionChart({
   report,
@@ -133,13 +123,12 @@ export function CircularScore({ score, size = 120 }: { score: number; size?: num
   const color =
     score >= 85 ? "#10b981" : score >= 75 ? "#22c55e" : score >= 60 ? "#f59e0b" : score >= 40 ? "#f97316" : "#ef4444";
 
-  let label = "";
-  if (score >= 95) label = "Elite";
-  else if (score >= 85) label = "Excellent";
-  else if (score >= 75) label = "Good";
-  else if (score >= 60) label = "Average";
-  else if (score >= 40) label = "Poor";
-  else label = "Critical";
+  const label =
+    score >= 95 ? "Elite" :
+    score >= 85 ? "Excellent" :
+    score >= 75 ? "Good" :
+    score >= 60 ? "Average" :
+    score >= 40 ? "Poor" : "Critical";
 
   return (
     <div className="relative inline-flex flex-col items-center justify-center" style={{ width: size, height: size + 24 }}>

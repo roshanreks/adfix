@@ -22,7 +22,7 @@ import { getPreferences, savePreferences, PRICING_PLANS } from "@/lib/data";
 import { toast } from "sonner";
 import {
   LogOut, Save, User, Shield, CreditCard, Sliders,
-  Eye, EyeOff, AlertTriangle, Check,
+  Eye, EyeOff, AlertTriangle, Check, Rocket, Mail,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -51,6 +51,10 @@ export default function SettingsPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Upgrade dialog
+  const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<typeof upgradePlans[number] | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -259,7 +263,7 @@ export default function SettingsPage() {
                   onChange={(e) => setDefaultMinSpend(Number(e.target.value))}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Ads below this spend are flagged as "Insufficient Data" instead of being classified.
+                  Ads below this spend are flagged as &ldquo;Insufficient Data&rdquo; instead of being classified.
                 </p>
               </div>
 
@@ -274,7 +278,7 @@ export default function SettingsPage() {
                   onChange={(e) => setDefaultTargetCPA(e.target.value)}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Your goal cost per purchase. When blank, the engine derives it from your account's historical average CPA.
+                  Your goal cost per purchase. When blank, the engine derives it from your account&apos;s historical average CPA.
                 </p>
               </div>
 
@@ -342,7 +346,7 @@ export default function SettingsPage() {
                         ))}
                       </ul>
                       <Button
-                        onClick={() => toast.info("Payment integration coming soon. Contact support@adfixapp.in to upgrade manually.")}
+                        onClick={() => { setSelectedPlan(plan); setUpgradeDialogOpen(true); }}
                         variant={plan.popular ? "default" : "outline"}
                         size="sm"
                         className="gap-2"
@@ -356,7 +360,7 @@ export default function SettingsPage() {
 
               {user.plan === "detailed" && (
                 <div className="flex items-center gap-2 text-sm text-emerald-600 font-medium">
-                  <Check className="h-4 w-4" /> You're on the top-tier plan. All features unlocked.
+                  <Check className="h-4 w-4" /> You&apos;re on the top-tier plan. All features unlocked.
                 </div>
               )}
 
@@ -516,6 +520,53 @@ export default function SettingsPage() {
           </Dialog>
         </TabsContent>
       </Tabs>
+
+      {/* Upgrade Coming Soon Dialog */}
+      <Dialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
+              <Rocket className="h-6 w-6 text-primary" />
+            </div>
+            <DialogTitle>Upgrade to {selectedPlan?.name}</DialogTitle>
+            <DialogDescription>
+              Online payments are not yet available. You can still upgrade by contacting us directly.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedPlan && (
+            <div className="space-y-4">
+              <div className="p-4 rounded-lg border bg-muted/30">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold">{selectedPlan.name}</span>
+                  <span className="font-bold text-lg">₹{selectedPlan.price}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">{selectedPlan.description}</p>
+                <ul className="flex flex-col gap-1.5">
+                  {selectedPlan.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" /> {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex flex-col gap-3">
+                <a
+                  href="mailto:support@adfixapp.in?subject=Upgrade%20Request"
+                  className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium h-10 px-4 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  <Mail className="h-4 w-4" /> Email us to upgrade
+                </a>
+                <Button variant="outline" onClick={() => setUpgradeDialogOpen(false)}>
+                  Maybe later
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground text-center">
+                One-time payment. No subscriptions. We&apos;ll send you a secure payment link.
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

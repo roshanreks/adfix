@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 
 interface SpotlightCardProps {
   children: React.ReactNode;
@@ -28,22 +28,12 @@ export function SpotlightCard({
   const handleMouseEnter = useCallback(() => setOpacity(1), []);
   const handleMouseLeave = useCallback(() => setOpacity(0), []);
 
-  useEffect(() => {
-    if (!divRef.current) return;
-    const el = divRef.current;
-    el.addEventListener("mousemove", handleMouseMove as any);
-    el.addEventListener("mouseenter", handleMouseEnter);
-    el.addEventListener("mouseleave", handleMouseLeave);
-    return () => {
-      el.removeEventListener("mousemove", handleMouseMove as any);
-      el.removeEventListener("mouseenter", handleMouseEnter);
-      el.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, [handleMouseMove, handleMouseEnter, handleMouseLeave]);
-
   return (
     <div
       ref={divRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={`relative rounded-xl border border-[#E2E8F0] bg-white overflow-hidden transition-all duration-300 hover:border-[#C4B5FD] hover:shadow-ambient-hover hover:-translate-y-0.5 ${className}`}
     >
       <div

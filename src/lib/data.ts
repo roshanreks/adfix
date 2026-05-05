@@ -1,4 +1,4 @@
-import type { AuditReport, PricingPlan, User, UserPreferences } from "@/lib/types";
+import type { AuditReport, PricingPlan, UserPreferences } from "@/lib/types";
 
 export const PRICING_PLANS: PricingPlan[] = [
   {

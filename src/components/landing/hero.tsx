@@ -6,9 +6,7 @@ import { Aurora } from "@/components/ui/aurora";
 import { GridPattern } from "@/components/ui/grid-pattern";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { NumberTicker } from "@/components/ui/number-ticker";
-import { MagneticButton } from "@/components/ui/magnetic-button";
 import { FadeIn } from "@/components/animations";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 const STATS = [
   { label: "Avg Waste Found", value: 32, suffix: "%" },

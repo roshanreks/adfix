@@ -24,7 +24,7 @@ const TESTIMONIALS = [
     company: "E-commerce Platform",
   },
   {
-    quote: "AdFix identified campaign structure issues we didn't know existed. Saved ₹4.2L in the first month.",
+    quote: "AdFix identified campaign structure issues we didn&apos;t know existed. Saved ₹4.2L in the first month.",
     name: "Ananya Gupta",
     role: "Head of Growth",
     company: "SaaS Company",
@@ -46,7 +46,7 @@ export function Testimonials() {
               Trusted by Growth Teams
             </h2>
             <p className="mx-auto mt-4 sm:mt-6 max-w-[600px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-muted-foreground">
-              Real results from real marketers who've optimized their Meta ad spend.
+              Real results from real marketers who&apos;ve optimized their Meta ad spend.
             </p>
           </div>
         </ScrollReveal>
@@ -65,7 +65,7 @@ export function Testimonials() {
                         <Quote className="absolute top-6 left-6 h-10 w-10 text-[#6D28D9]/20" />
                         <blockquote className="relative">
                           <p className="text-[18px] sm:text-[22px] lg:text-[24px] leading-[1.5] text-foreground font-medium">
-                            "{t.quote}"
+                            &ldquo;{t.quote}&rdquo;
                           </p>
                           <footer className="mt-8 flex items-center gap-4">
                             <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#6D28D9] to-[#9333EA] flex items-center justify-center text-white font-semibold text-lg">

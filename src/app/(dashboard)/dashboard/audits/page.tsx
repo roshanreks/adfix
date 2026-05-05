@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-context";
 import { getStoredAudits, deleteAudit } from "@/lib/data";
 import type { AuditReport } from "@/lib/types";
-import { ArrowRight, Trash2, BarChart3, FileText, Search, TrendingUp, TrendingDown, AlertTriangle } from "lucide-react";
+import { ArrowRight, Trash2, BarChart3, FileText, Search, TrendingUp, TrendingDown, AlertTriangle, X } from "lucide-react";
 import { toast } from "sonner";
 import { SkeletonCard } from "@/components/animations";
 
@@ -88,21 +88,23 @@ export default function AuditsPage() {
       </div>
 
       {audits.length === 0 ? (
-        <Card className="border-dashed border-2">
+        <Card className="border-dashed border-2 border-border/60 bg-muted/20">
           <CardContent className="p-8 sm:p-12 flex flex-col items-center text-center gap-4">
-            <BarChart3 className="h-12 w-12 text-muted-foreground" aria-hidden="true" />
+            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
+              <BarChart3 className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
+            </div>
             <h3 className="text-lg sm:text-xl font-bold">No Audits Yet</h3>
             <p className="text-sm sm:text-base text-muted-foreground max-w-md">
-              Run your first audit to see reports here.
+              Run your first audit to see reports here. Upload a Meta Ads Manager CSV and get instant insights.
             </p>
             <Button
               onClick={() => {
                 const event = new CustomEvent("open-audit-wizard");
                 window.dispatchEvent(event);
               }}
-              className="bg-primary text-primary-foreground gap-2 h-12 px-6 font-semibold text-base touch-manipulation w-full sm:w-auto"
+              className="bg-primary text-primary-foreground gap-2 h-12 px-6 font-semibold text-base touch-manipulation w-full sm:w-auto press-scale"
             >
-              <FileText className="h-5 w-5" aria-hidden="true" /> Run Audit
+              <FileText className="h-5 w-5" aria-hidden="true" /> Run First Audit
             </Button>
           </CardContent>
         </Card>
@@ -115,9 +117,19 @@ export default function AuditsPage() {
               placeholder="Search audits..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 pr-9"
               aria-label="Search audits"
             />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded"
+                aria-label="Clear search"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
 
           {/* List */}

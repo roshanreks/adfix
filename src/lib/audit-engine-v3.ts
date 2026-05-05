@@ -1,12 +1,11 @@
 import type {
   AdData, AdAuditResult, AuditReport, AuditConfig, ConfidenceLevel,
-  IssueType, ScaleLevel, BenchmarkSource, BusinessType, WasteBreakdown,
+  IssueType, ScaleLevel, BenchmarkSource, WasteBreakdown,
 } from "@/lib/types";
 
 const CURR: Record<string, string> = { INR: "₹", USD: "$", AED: "AED ", EUR: "€", GBP: "£", other: "" };
 const fmt = (amount: number, currency: string) => `${CURR[currency] || ""}${amount.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
-const pct = (v: number | null) => v !== null ? `${v.toFixed(2)}%` : "N/A";
-const safe = (fn: () => number | null) => { try { const r = fn(); return (r === null || !isFinite(r) || isNaN(r)) ? null : r; } catch { return null; } };
+
 
 function median(arr: number[]): number {
   if (arr.length === 0) return 0;
@@ -101,11 +100,11 @@ function calcHealthScore(
   }
 
   // 2. Waste Control Score (20 points)
-  let wasteScore = Math.max(0, 20 - wastePct * 0.8);
+  const wasteScore = Math.max(0, 20 - wastePct * 0.8);
 
   // 3. Scaling Score (15 points)
   const scaleCount = results.filter(r => r.verdict === "SCALE").length;
-  let scalingScore = Math.min(15, scaleCount * 3);
+  const scalingScore = Math.min(15, scaleCount * 3);
 
   // 4. Creative Score (15 points)
   let creativeScore = 7;
@@ -159,6 +158,7 @@ function calcHealthScore(
 
 // ─── Verdict Engine ───
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function assignVerdict(
   ad: AdData,
   config: AuditConfig,
@@ -168,9 +168,9 @@ function assignVerdict(
   accountAvgCpm: number,
   accountAvgCpc: number,
   medianAdSpend: number,
-  totalPurchases: number,
-  totalLeads: number,
-  totalConversions: number
+  _totalPurchases: number,
+  _totalLeads: number,
+  _totalConversions: number
 ): {
   verdict: AdAuditResult["verdict"];
   verdict_reason: string;
@@ -374,8 +374,10 @@ function assignVerdict(
     issue_type: "none",
   };
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
-function getFixAction(issueType: IssueType, ad: AdData, config: AuditConfig): string {
+/* eslint-disable @typescript-eslint/no-unused-vars */
+function getFixAction(issueType: IssueType, _ad: AdData, _config: AuditConfig): string {
   switch (issueType) {
     case "creative": return "Test new creative angles. Change the first 3 seconds, hook, and visual format.";
     case "funnel": return "Improve landing page speed, trust signals, and checkout flow. Test offer clarity.";
@@ -385,14 +387,16 @@ function getFixAction(issueType: IssueType, ad: AdData, config: AuditConfig): st
     default: return "Review ad performance and test optimizations.";
   }
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function getFixRecommendations(
   issueType: IssueType,
-  ad: AdData,
-  config: AuditConfig,
-  avgCtr: number,
-  avgCpm: number,
-  avgCpc: number
+  _ad: AdData,
+  _config: AuditConfig,
+  _avgCtr: number,
+  _avgCpm: number,
+  _avgCpc: number
 ): string[] {
   switch (issueType) {
     case "creative":
@@ -444,6 +448,7 @@ function getFixRecommendations(
       return ["Review ad creative and targeting. Test small optimizations."];
   }
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 // ─── Waste Breakdown Engine ───
 
@@ -469,7 +474,7 @@ function calcWasteBreakdown(
 
   let hardWaste = 0;
   let cpaWaste = 0;
-  let roasWaste = 0;
+  const roasWaste = 0;
   let creativeWaste = 0;
   const wasteContributors: WasteBreakdown["top_waste_contributors"] = [];
 
@@ -817,6 +822,7 @@ function calcTrackingAudit(data: AdData[], missingFields: string[]): AuditReport
 
 // ─── AI Insight Generator ───
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function generateAIInsight(
   data: AdData[],
   results: AdAuditResult[],
@@ -824,9 +830,9 @@ function generateAIInsight(
   health: { health_score: number; health_label: string },
   config: AuditConfig,
   confidence: { confidence_score: number; confidence_level: ConfidenceLevel },
-  accountAvgCpa: number,
-  accountAvgRoas: number,
-  daysAnalyzed: number | null
+  _accountAvgCpa: number,
+  _accountAvgRoas: number,
+  _daysAnalyzed: number | null
 ): AuditReport["ai_insight"] {
   const totalSpend = data.reduce((s, d) => s + d.spend, 0);
   const totalRevenue = data.reduce((s, d) => s + (d.revenue ?? 0), 0);
@@ -877,6 +883,7 @@ function generateAIInsight(
 
   return { headline, paragraph_1: p1, paragraph_2: p2, biggest_opportunity: biggestOpp, biggest_risk: biggestRisk, next_best_action: nextAction };
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 // ─── Main Orchestrator ───
 
@@ -1020,7 +1027,7 @@ export function runAuditV3(
   const breakevenRoas = config.grossMargin ? 1 / (config.grossMargin / 100) : null;
 
   // Confidence reason for benchmark
-  const cpUsed = config.targetCPA ? "target CPA" : (accountAvgCpa > 0 ? "account average CPA" : "median CPA");
+
 
   // AI Insight
   const aiInsight = generateAIInsight(data, results, waste, health, config, confidence, accountAvgCpa, accountAvgRoas, dateRange.daysAnalyzed);

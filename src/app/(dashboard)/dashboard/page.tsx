@@ -48,7 +48,7 @@ export default function DashboardHome() {
   // Aggregate stats across all audits
   const totalSpendAnalyzed = audits.reduce((sum, a) => sum + (a.account_summary?.total_spend || 0), 0);
   const totalWasteIdentified = audits.reduce((sum, a) => sum + (a.account_summary?.wasted_budget || 0), 0);
-  const totalActionsRequired = audits.reduce((sum, a) => sum + (a.account_summary?.actions_required || 0), 0);
+
   const avgHealthScore = totalAudits > 0
     ? Math.round(audits.reduce((sum, a) => sum + (a.account_summary?.health_score || 0), 0) / totalAudits)
     : 0;

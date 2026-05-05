@@ -1,7 +1,5 @@
 import Papa from "papaparse";
-import type { AdData, AdRaw } from "@/lib/types";
-
-type FieldKey = keyof Omit<AdData, "spend" | "impressions" | "reach" | "frequency" | "clicks" | "link_clicks" | "landing_page_views" | "purchases" | "leads" | "revenue" | "ctr" | "link_ctr" | "cpc" | "cpm" | "cpa" | "roas" | "aov" | "add_to_cart" | "initiate_checkout" | "quality_ranking" | "engagement_rate_ranking" | "conversion_rate_ranking" | "delivery_status" | "attribution_setting" | "reporting_start" | "reporting_end">;
+import type { AdData } from "@/lib/types";
 
 const RAW_FIELDS: (keyof Pick<AdData, "spend" | "impressions" | "reach" | "frequency" | "clicks" | "link_clicks" | "landing_page_views" | "purchases" | "leads" | "revenue" | "ctr" | "link_ctr" | "cpc" | "cpm" | "cpa" | "roas" | "aov" | "add_to_cart" | "initiate_checkout" | "quality_ranking" | "engagement_rate_ranking" | "conversion_rate_ranking" | "delivery_status" | "attribution_setting" | "reporting_start" | "reporting_end">)[] = [
   "spend", "impressions", "reach", "frequency", "clicks", "link_clicks",
@@ -12,54 +10,240 @@ const RAW_FIELDS: (keyof Pick<AdData, "spend" | "impressions" | "reach" | "frequ
 ];
 
 const COLUMN_ALIASES: Record<string, string[]> = {
-  campaign_name: ["campaign name", "campaignname", "campaign_name", "campaignname", "campaign", "camp_name", "campaignid", "campaign id"],
-  ad_name: ["ad name", "adname", "ad_name", "adname", "ad", "adtitle", "ad title", "adcreative", "ad creative"],
-  ad_set_id: ["ad set id", "adset id", "ad_set_id", "adsetid", "adsetid", "ad_setid", "ad setid", "adset_id"],
-  ad_set_name: ["ad set name", "adset name", "ad_set_name", "adsetname", "adset name", "ad_setname", "ad setname", "adset_name"],
-  campaign_id: ["campaign id", "campaign_id", "campaignid", "camp_id", "camp id", "campaignid"],
-  ad_id: ["ad id", "ad_id", "adid", "adid"],
-  impressions: ["impressions", "impr", "imprs", "impression", "tot_impressions", "total impressions"],
-  spend: ["amount spent", "amountspent", "amount_spent", "spend", "cost", "total spend", "total_spend", "ad spend", "ad_spend", "amount spent (inr)", "amount spent (usd)", "amount spent (aed)", "amount spent (eur)", "amount spent (gbp)"],
-  reach: ["reach", "unique impressions", "uniqueimpressions", "unique_impressions", "unique users reached"],
-  frequency: ["frequency", "avg frequency", "avgfrequency", "avg_frequency", "frequency (average)", "frequency (view-through)"],
-  clicks: ["clicks", "clicks (all)", "clicks(all)", "clicks_all", "total clicks", "total_clicks", "all clicks", "click"],
-  link_clicks: ["link clicks", "linkclicks", "link_clicks", "clicks (link)", "clicks(link)", "link_click", "link click through"],
-  landing_page_views: ["landing page views", "landingpageviews", "landing_page_views", "lp views", "lpviews", "lp_views", "landing page view", "landingpageview"],
-  purchases: ["purchases", "purchase", "purchases (1d click)", "purchases(1d click)", "purchase_1d_click", "conversions", "conversion", "results", "result", "website purchases", "websitepurchases", "website_purchases", "total purchases", "total_purchases"],
-  leads: ["leads", "lead", "onsite leads", "onsite_leads", "lead form opens", "leadformopens", "lead form submissions", "leadformsubmissions"],
-  revenue: ["purchases conversion value", "purchasesconversionvalue", "purchases_conversion_value", "purchase conversion value", "purchaseconversionvalue", "purchase_conversion_value", "conversion value", "conversionvalue", "conversion_value", "purchase value", "purchasevalue", "purchase_value", "revenue", "total revenue", "total_revenue", "website purchase conversion value", "websitepurchaseconversionvalue", "website_purchase_conversion_value", "purchase roas", "purchase_roas", "website purchase roas", "website_purchase_roas"],
-  ctr: ["ctr", "ctr (all)", "ctr(all)", "ctr_all", "click through rate", "clickthroughrate", "click_through_rate", "ctr %", "ctr (click-through rate)"],
-  link_ctr: ["link ctr", "linkctr", "link_ctr", "ctr (link click-through rate)", "ctr(link click-through rate)", "link_ctr", "link click through rate", "link click through ctr"],
-  cpc: ["cpc", "cpc (all)", "cpc(all)", "cpc_all", "cost per click", "costperclick", "cost_per_click", "cpc (link)", "cpc(link)", "cpc_link", "cost per link click", "costperlinkclick"],
-  cpm: ["cpm", "cpm (cost per 1,000 impressions)", "cpm(cost per 1,000 impressions)", "cost per 1000 impressions", "costper1000impressions", "cost_per_mille", "cpm (cost per 1000 impressions)"],
-  cpa: ["cost per purchase", "costperpurchase", "cost_per_purchase", "cost per conversion", "costperconversion", "cost_per_conversion", "cost per result", "costperresult", "cost_per_result"],
-  roas: ["purchase roas", "purchaseroas", "purchase_roas", "roas", "website purchase roas", "websitepurchaseroas", "website_purchase_roas", "return on ad spend", "returnonadspend"],
-  aov: ["aov", "average order value", "averageordervalue", "average_order_value"],
-  add_to_cart: ["adds to cart", "addstocart", "add_to_cart", "add to cart", "addtocart", "add_to_carts", "added to cart", "addedtocart"],
-  initiate_checkout: ["initiate checkout", "initiatecheckout", "initiate_checkout", "checkouts initiated", "checkoutsinitiated", "checkouts_initiated", "initiated checkouts", "initiatedcheckouts", "checkout starts", "checkoutstarts"],
-  quality_ranking: ["quality ranking", "qualityranking", "quality_ranking", "above_average", "quality ranking (higher is better)"],
-  engagement_rate_ranking: ["engagement rate ranking", "engagementrateranking", "engagement_rate_ranking", "engagement ranking", "engagementranking"],
-  conversion_rate_ranking: ["conversion rate ranking", "conversionrateranking", "conversion_rate_ranking", "conversion ranking", "conversionranking"],
-  delivery_status: ["delivery", "delivery status", "deliverystatus", "delivery_status", "ad status", "adstatus", "ad_status", "status"],
-  attribution_setting: ["attribution setting", "attributionsetting", "attribution_setting", "attribution window", "attributionwindow"],
-  reporting_start: ["reporting starts", "reportingstarts", "reporting_starts", "starts", "start date", "startdate", "start_date", "date start", "datestart"],
-  reporting_end: ["reporting ends", "reportingends", "reporting_ends", "ends", "end date", "enddate", "end_date", "date end", "dateend"],
+  campaign_name: [
+    "campaign name", "campaignname", "campaign_name", "campaign", "camp_name",
+    "campaign id", "campaignid", "camp_id", "campaign name", "campaignname",
+  ],
+  ad_name: [
+    "ad name", "adname", "ad_name", "ad", "adtitle", "ad title",
+    "adcreative", "ad creative", "creative name", "creativename", "ad name",
+  ],
+  ad_set_id: [
+    "ad set id", "adset id", "ad_set_id", "adsetid", "adset_id",
+    "ad_setid", "ad setid", "adsetid", "adset id",
+  ],
+  ad_set_name: [
+    "ad set name", "adset name", "ad_set_name", "adsetname", "adset_name",
+    "ad_setname", "ad setname", "adset name", "set name", "adsetname",
+  ],
+  campaign_id: [
+    "campaign id", "campaign_id", "campaignid", "camp_id", "camp id", "campaignid",
+  ],
+  ad_id: [
+    "ad id", "ad_id", "adid", "adid", "ad id",
+  ],
+  impressions: [
+    "impressions", "impr", "imprs", "impression", "tot_impressions", "total impressions",
+    "total impressions", "impressions delivered", "impr.", "impressions.",
+  ],
+  spend: [
+    "amount spent", "amountspent", "amount_spent", "spend", "cost", "total spend",
+    "total_spend", "ad spend", "ad_spend", "spent", "adspent", "ad_spent",
+    "total amount spent", "totalamountspent", "amountspent", "spending",
+    "budget spent", "budget_spent", "money spent", "money_spent",
+    "amount spent inr", "amount spent usd", "amount spent aed", "amount spent eur", "amount spent gbp",
+    "amount spent (inr)", "amount spent (usd)", "amount spent (aed)", "amount spent (eur)", "amount spent (gbp)",
+    "spend inr", "spend usd", "spend aed", "spend eur", "spend gbp",
+    "spend (inr)", "spend (usd)", "spend (aed)", "spend (eur)", "spend (gbp)",
+  ],
+  reach: [
+    "reach", "unique impressions", "uniqueimpressions", "unique_impressions",
+    "unique users reached", "users reached", "people reached",
+  ],
+  frequency: [
+    "frequency", "avg frequency", "avgfrequency", "avg_frequency",
+    "frequency average", "frequency view-through", "avg freq", "avgfreq",
+  ],
+  clicks: [
+    "clicks", "clicks all", "clicksall", "clicks_all", "total clicks", "total_clicks",
+    "all clicks", "click", "clicks (all)", "clicks(all)", "clicks_all",
+  ],
+  link_clicks: [
+    "link clicks", "linkclicks", "link_clicks", "clicks link", "clickslink",
+    "link_click", "link click through", "clicks (link)", "clicks(link)",
+    "outbound clicks", "outbound_clicks", "outbound click",
+  ],
+  landing_page_views: [
+    "landing page views", "landingpageviews", "landing_page_views", "lp views",
+    "lpviews", "lp_views", "landing page view", "landingpageview",
+    "landing_page_view", "lpv", "lp view", "page views", "pageviews",
+  ],
+  purchases: [
+    "purchases", "purchase", "purchases 1d click", "purchases(1d click)",
+    "purchase_1d_click", "conversions", "conversion", "results", "result",
+    "website purchases", "websitepurchases", "website_purchases",
+    "total purchases", "total_purchases", "purchase event", "purchase_event",
+    "onsite conversions", "offsite conversions", "custom conversions",
+  ],
+  leads: [
+    "leads", "lead", "onsite leads", "onsite_leads", "lead form opens",
+    "leadformopens", "lead form submissions", "leadformsubmissions",
+    "lead forms", "lead_forms", "form leads", "formleads",
+  ],
+  revenue: [
+    "purchases conversion value", "purchasesconversionvalue", "purchases_conversion_value",
+    "purchase conversion value", "purchaseconversionvalue", "purchase_conversion_value",
+    "conversion value", "conversionvalue", "conversion_value",
+    "purchase value", "purchasevalue", "purchase_value", "revenue", "total revenue",
+    "total_revenue", "website purchase conversion value", "websitepurchaseconversionvalue",
+    "website_purchase_conversion_value", "purchase roas", "purchase_roas",
+    "website purchase roas", "website_purchase_roas", "value", "conv value",
+    "sales value", "sales_value", "order value", "order_value",
+  ],
+  ctr: [
+    "ctr", "ctr all", "ctrall", "ctr_all", "click through rate", "clickthroughrate",
+    "click_through_rate", "ctr %", "ctr click-through rate", "ctr(click-through rate)",
+    "click thru rate", "clickthru rate", "click_thru_rate",
+  ],
+  link_ctr: [
+    "link ctr", "linkctr", "link_ctr", "ctr link click-through rate",
+    "ctr(link click-through rate)", "link click through rate", "link click through ctr",
+    "link click-thru rate", "outbound ctr", "outboundctr",
+  ],
+  cpc: [
+    "cpc", "cpc all", "cpcall", "cpc_all", "cost per click", "costperclick",
+    "cost_per_click", "cpc link", "cpc(link)", "cpc_link", "cost per link click",
+    "costperlinkclick", "avg cpc", "avg_cpc", "average cpc", "average_cpc",
+  ],
+  cpm: [
+    "cpm", "cpm cost per 1000 impressions", "cpm(cost per 1000 impressions)",
+    "cost per 1000 impressions", "costper1000impressions", "cost_per_mille",
+    "cpm cost per 1000 impressions", "avg cpm", "avg_cpm", "average cpm", "average_cpm",
+  ],
+  cpa: [
+    "cost per purchase", "costperpurchase", "cost_per_purchase", "cost per conversion",
+    "costperconversion", "cost_per_conversion", "cost per result", "costperresult",
+    "cost_per_result", "cpa", "avg cpa", "avg_cpa", "average cpa", "average_cpa",
+    "cost per acquisition", "costperacquisition", "cost_per_acquisition",
+  ],
+  roas: [
+    "purchase roas", "purchaseroas", "purchase_roas", "roas", "website purchase roas",
+    "websitepurchaseroas", "website_purchase_roas", "return on ad spend",
+    "returnonadspend", "return_on_ad_spend", "purch roas", "purch_roas",
+    "website purchase roas", "website_purchase_roas",
+  ],
+  aov: [
+    "aov", "average order value", "averageordervalue", "average_order_value",
+    "avg order value", "avg_order_value", "order value avg",
+  ],
+  add_to_cart: [
+    "adds to cart", "addstocart", "add_to_cart", "add to cart", "addtocart",
+    "add_to_carts", "added to cart", "addedtocart", "add to carts", "addtocarts",
+    "cart adds", "cart_adds", "atc", "adds to basket", "adds_to_basket",
+  ],
+  initiate_checkout: [
+    "initiate checkout", "initiatecheckout", "initiate_checkout", "checkouts initiated",
+    "checkoutsinitiated", "checkouts_initiated", "initiated checkouts", "initiatedcheckouts",
+    "checkout starts", "checkoutstarts", "checkout initiated", "checkout_initiated",
+    "begin checkout", "begin_checkout", "checkout start", "checkout_start", "ic",
+  ],
+  quality_ranking: [
+    "quality ranking", "qualityranking", "quality_ranking", "above_average",
+    "quality ranking higher is better", "quality rank", "qualityrank",
+    "ad quality", "ad_quality", "quality score", "quality_score",
+  ],
+  engagement_rate_ranking: [
+    "engagement rate ranking", "engagementrateranking", "engagement_rate_ranking",
+    "engagement ranking", "engagementranking", "engagement rank", "engagementrank",
+    "engagement score", "engagement_score",
+  ],
+  conversion_rate_ranking: [
+    "conversion rate ranking", "conversionrateranking", "conversion_rate_ranking",
+    "conversion ranking", "conversionranking", "conversion rank", "conversionrank",
+    "conv rate ranking", "conv_rate_ranking",
+  ],
+  delivery_status: [
+    "delivery", "delivery status", "deliverystatus", "delivery_status",
+    "ad status", "adstatus", "ad_status", "status", "ad delivery",
+    "ad_delivery", "delivery state", "delivery_state",
+  ],
+  attribution_setting: [
+    "attribution setting", "attributionsetting", "attribution_setting",
+    "attribution window", "attributionwindow", "attribution", "attr setting",
+    "attr_setting", "attribution model", "attribution_model",
+  ],
+  reporting_start: [
+    "reporting starts", "reportingstarts", "reporting_starts", "starts",
+    "start date", "startdate", "start_date", "date start", "datestart",
+    "reporting start", "reporting_start", "from date", "from_date", "period start",
+    "period_start", "date from", "date_from",
+  ],
+  reporting_end: [
+    "reporting ends", "reportingends", "reporting_ends", "ends",
+    "end date", "enddate", "end_date", "date end", "dateend",
+    "reporting end", "reporting_end", "to date", "to_date", "period end",
+    "period_end", "date to", "date_to",
+  ],
 };
-
-const IDENTITY_KEYS = new Set(["campaign_name", "ad_name", "ad_set_id", "ad_set_name", "campaign_id", "ad_id"]);
-const NUMERIC_FIELDS = new Set(RAW_FIELDS.filter((f) =>
-  !["quality_ranking", "engagement_rate_ranking", "conversion_rate_ranking", "delivery_status", "attribution_setting", "reporting_start", "reporting_end"].includes(f)
-));
 
 function normalizeHeader(header: string): string {
   return header
     .toLowerCase()
     .trim()
     .replace(/[\u20B9$€£₹¥]/g, "")
-    .replace(/[^\w\s]/g, "")
-    .replace(/[\s_]+/g, " ")
+    .replace(/[%]/g, "")
+    .replace(/[–—]/g, "-")
+    .replace(/,/g, "")
     .replace(/\s*\(.*?\)\s*/g, " ")
+    .replace(/[^\w\s-]/g, " ")
+    .replace(/[\s_]+/g, " ")
     .trim();
+}
+
+function tokenize(str: string): string[] {
+  return str.split(/\s+/).filter(Boolean);
+}
+
+function wordOverlapScore(a: string, b: string): number {
+  const tokensA = new Set(tokenize(a));
+  const tokensB = new Set(tokenize(b));
+  if (tokensA.size === 0 || tokensB.size === 0) return 0;
+  let overlap = 0;
+  for (const t of tokensA) {
+    if (tokensB.has(t)) overlap++;
+    else {
+      // Check if any token in B starts with or contains t (fuzzy)
+      for (const bt of tokensB) {
+        if (bt.startsWith(t) || t.startsWith(bt)) {
+          overlap += 0.5;
+          break;
+        }
+      }
+    }
+  }
+  return overlap / Math.max(tokensA.size, tokensB.size);
+}
+
+function scoreMatch(normalizedHeader: string, alias: string): number {
+  // Exact match
+  if (normalizedHeader === alias) return 100;
+
+  // Header starts with alias or alias starts with header
+  if (normalizedHeader.startsWith(alias + " ") || alias.startsWith(normalizedHeader + " ")) return 85;
+
+  // Header contains alias as a substring with word boundary
+  const aliasWords = tokenize(alias);
+  if (aliasWords.length > 0) {
+    const allWordsInHeader = aliasWords.every(w => normalizedHeader.includes(w));
+    if (allWordsInHeader) return 75;
+  }
+
+  // Alias contains all header words
+  const headerWords = tokenize(normalizedHeader);
+  if (headerWords.length > 0) {
+    const allWordsInAlias = headerWords.every(w => alias.includes(w));
+    if (allWordsInAlias) return 65;
+  }
+
+  // Simple substring
+  if (normalizedHeader.includes(alias) || alias.includes(normalizedHeader)) return 50;
+
+  // Word overlap
+  const overlap = wordOverlapScore(normalizedHeader, alias);
+  if (overlap >= 0.7) return 45;
+  if (overlap >= 0.5) return 35;
+
+  return 0;
 }
 
 function findColumn(headers: string[]): Map<string, string> {
@@ -67,19 +251,27 @@ function findColumn(headers: string[]): Map<string, string> {
   const usedHeaders = new Set<string>();
 
   for (const [fieldKey, aliases] of Object.entries(COLUMN_ALIASES)) {
+    let bestScore = 0;
+    let bestHeader: string | null = null;
+
     for (const header of headers) {
       if (usedHeaders.has(header)) continue;
       const normalized = normalizeHeader(header);
+      if (!normalized) continue;
+
       for (const alias of aliases) {
-        if (normalized === alias || normalized.includes(alias) || alias.includes(normalized)) {
-          if (normalized === alias || Math.abs(normalized.length - alias.length) <= 3) {
-            mapping.set(fieldKey, header);
-            usedHeaders.add(header);
-            break;
-          }
+        const score = scoreMatch(normalized, alias);
+        if (score > bestScore) {
+          bestScore = score;
+          bestHeader = header;
         }
       }
-      if (mapping.has(fieldKey)) break;
+    }
+
+    // Threshold: only accept matches with score >= 35
+    if (bestHeader && bestScore >= 35) {
+      mapping.set(fieldKey, bestHeader);
+      usedHeaders.add(bestHeader);
     }
   }
 
@@ -138,12 +330,33 @@ export function parseCSV(file: File): Promise<ParseResult> {
         const errors: string[] = [];
         const warnings: string[] = [];
 
-        if (!columnMap.has("spend")) {
-          errors.push("We could not detect a Spend column. Please export 'Amount Spent' from Meta Ads Manager.");
+        // More forgiving spend detection
+        const hasSpend = columnMap.has("spend");
+        if (!hasSpend) {
+          // Try to find ANY column that looks like spend
+          const spendLike = headers.find(h => {
+            const n = normalizeHeader(h);
+            return n.includes("spend") || n.includes("spent") || n.includes("amount") || n.includes("cost") || n.includes("budget");
+          });
+          if (spendLike) {
+            errors.push(`We detected a column "${spendLike}" that looks like spend, but we couldn't map it confidently. Please rename it to "Amount Spent" or "Spend".`);
+          } else {
+            errors.push("We could not detect a Spend column. Please export 'Amount Spent' from Meta Ads Manager.");
+          }
         }
-        const hasPerformance = columnMap.has("purchases") || columnMap.has("leads") || columnMap.has("revenue") || columnMap.has("ctr") || columnMap.has("clicks");
-        if (!hasPerformance) {
-          errors.push("We could not detect Purchases, Leads, Results, or Conversions. Please include at least one result column.");
+
+        // More forgiving results/conversions detection
+        const hasResults = columnMap.has("purchases") || columnMap.has("leads") || columnMap.has("revenue");
+        if (!hasResults) {
+          const resultLike = headers.find(h => {
+            const n = normalizeHeader(h);
+            return n.includes("purchase") || n.includes("conversion") || n.includes("result") || n.includes("lead") || n.includes("sale");
+          });
+          if (resultLike) {
+            errors.push(`We detected a column "${resultLike}" that looks like results, but we couldn't map it confidently. Please rename it to "Purchases" or "Results".`);
+          } else {
+            errors.push("We could not detect Purchases, Leads, Results, or Conversions. Please include at least one result column.");
+          }
         }
 
         let reportStart: string | null = null;
@@ -203,6 +416,7 @@ export function parseCSV(file: File): Promise<ParseResult> {
 
             const frequency = calcSafely(impressions, reach, (a, b) => a / b);
 
+            // Auto-calculate derived metrics when raw columns are missing but base data exists
             const cpa = calcSafely(spend, purchases, (a, b) => a / b);
             const roas = calcSafely(revenue, spend, (a, b) => a / b);
             const aov = calcSafely(revenue, purchases, (a, b) => a / b);
@@ -265,8 +479,8 @@ export function parseCSV(file: File): Promise<ParseResult> {
         if (missingFields.includes("reach") || missingFields.includes("frequency")) {
           warnings.push("Reach/Frequency data is missing. Creative fatigue detection will be limited.");
         }
-        if (missingFields.includes("revenue")) {
-          warnings.push("Purchase Conversion Value is missing. ROAS analysis will be unavailable.");
+        if (missingFields.includes("revenue") && !missingFields.includes("purchases")) {
+          warnings.push("Purchase Conversion Value is missing. ROAS analysis will be calculated only where revenue data is available.");
         }
         if (missingFields.includes("landing_page_views")) {
           warnings.push("Landing Page Views is missing. Funnel analysis will be limited.");

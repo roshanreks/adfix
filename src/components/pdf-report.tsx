@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import type { AuditReport } from "@/lib/types";
 import { Download } from "lucide-react";
+import { getCurrencySymbol, verdictPdfColor, verdictPdfLabel } from "@/lib/utils";
 
 const styles = StyleSheet.create({
   page: { padding: 30, fontSize: 10, fontFamily: "Helvetica" },
@@ -29,50 +30,9 @@ const styles = StyleSheet.create({
   tableRow: { flexDirection: "row", padding: 6, borderBottom: "1px solid #F1F5F9" },
   cell: { flex: 1, fontSize: 9 },
   cellSmall: { flex: 0.6, fontSize: 9 },
-  verdictKill: { color: "#EF4444", fontWeight: "bold" },
-  verdictFix: { color: "#F59E0B", fontWeight: "bold" },
-  verdictScale: { color: "#10B981", fontWeight: "bold" },
-  verdictWatch: { color: "#EAB308", fontWeight: "bold" },
-  verdictNone: { color: "#64748B" },
-  verdictInsufficient: { color: "#9CA3AF" },
   footer: { marginTop: 20, borderTop: "1px solid #E2E8F0", paddingTop: 10, textAlign: "center", color: "#94A3B8", fontSize: 8 },
   text: { color: "#475569", lineHeight: 1.5, marginBottom: 4 },
 });
-
-function getVerdictColor(verdict: string): string {
-  switch (verdict) {
-    case "KILL": return "#EF4444";
-    case "FIX": return "#F59E0B";
-    case "SCALE": return "#10B981";
-    case "WATCH": return "#EAB308";
-    case "NO_ACTION": return "#64748B";
-    case "INSUFFICIENT_DATA": return "#9CA3AF";
-    default: return "#64748B";
-  }
-}
-
-function verdictLabel(verdict: string): string {
-  switch (verdict) {
-    case "KILL": return "Kill";
-    case "FIX": return "Fix";
-    case "SCALE": return "Scale";
-    case "WATCH": return "Watch";
-    case "NO_ACTION": return "No Action";
-    case "INSUFFICIENT_DATA": return "Insufficient";
-    default: return verdict;
-  }
-}
-
-function getCurrencySymbol(currency: string): string {
-  switch (currency) {
-    case "INR": return "₹";
-    case "USD": return "$";
-    case "AED": return "AED ";
-    case "EUR": return "€";
-    case "GBP": return "£";
-    default: return "";
-  }
-}
 
 const AuditPDF = ({ report }: { report: AuditReport }) => {
   const curr = getCurrencySymbol(report.currency);
@@ -85,13 +45,11 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>AdFix Audit Report</Text>
           <Text style={styles.subtitle}>{report.name} · {new Date(report.createdAt).toLocaleDateString("en-IN")} · Tier: {report.tier}</Text>
         </View>
 
-        {/* Health & Confidence */}
         <View style={styles.section}>
           <View style={styles.grid}>
             <View style={styles.card}>
@@ -105,7 +63,6 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
           </View>
         </View>
 
-        {/* Account Summary */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account Summary</Text>
           <View style={styles.grid}>
@@ -127,7 +84,6 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
           <View style={styles.row}><Text style={styles.label}>Avg CTR</Text><Text style={styles.value}>{as.avg_ctr > 0 ? `${as.avg_ctr.toFixed(2)}%` : "N/A"}</Text></View>
         </View>
 
-        {/* Waste Analysis */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Waste Analysis</Text>
           <View style={styles.grid}>
@@ -150,7 +106,6 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
           <View style={styles.row}><Text style={styles.label}>Creative Waste</Text><Text style={styles.value}>{curr}{wb.creative_waste.toLocaleString("en-IN")}</Text></View>
         </View>
 
-        {/* AI Insight */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Key Insight</Text>
           <Text style={styles.text}>{ai.headline}</Text>
@@ -158,7 +113,6 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
           <Text style={styles.text}>{ai.paragraph_2}</Text>
         </View>
 
-        {/* Classification Breakdown */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Classification Breakdown</Text>
           <View style={styles.row}><Text style={styles.label}>Scale</Text><Text style={[styles.value, { color: "#10B981" }]}>{cb.scale.count} ads · {curr}{cb.scale.spend.toLocaleString("en-IN")}</Text></View>
@@ -169,7 +123,6 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
           <View style={styles.row}><Text style={styles.label}>Insufficient Data</Text><Text style={styles.value}>{cb.insufficient_data.count} ads</Text></View>
         </View>
 
-        {/* Ad-Level Classifications Table */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Ad-Level Classifications</Text>
           <View style={styles.tableHeader}>
@@ -187,12 +140,11 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
               <Text style={styles.cellSmall}>{ad.purchases}</Text>
               <Text style={styles.cellSmall}>{ad.cpa !== null ? `${curr}${ad.cpa.toFixed(0)}` : "—"}</Text>
               <Text style={styles.cellSmall}>{ad.roas !== null ? `${ad.roas.toFixed(2)}×` : "—"}</Text>
-              <Text style={[styles.cellSmall, { color: getVerdictColor(ad.verdict) }]}>{verdictLabel(ad.verdict)}</Text>
+              <Text style={[styles.cellSmall, { color: verdictPdfColor(ad.verdict) }]}>{verdictPdfLabel(ad.verdict)}</Text>
             </View>
           ))}
         </View>
 
-        {/* Campaign Structure */}
         {report.campaign_structure_audit && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Campaign Structure</Text>
@@ -214,7 +166,6 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
           </View>
         )}
 
-        {/* Priority Actions */}
         {report.priority_actions.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Priority Actions</Text>
@@ -228,7 +179,6 @@ const AuditPDF = ({ report }: { report: AuditReport }) => {
           </View>
         )}
 
-        {/* Footer */}
         <View style={styles.footer}>
           <Text>Generated by AdFix · Deterministic Meta Ads Audit · adfixapp.in</Text>
         </View>
@@ -246,7 +196,7 @@ export function PDFExportButton({ report }: { report: AuditReport }) {
       {({ loading }) => (
         <Button variant="outline" className="gap-2" disabled={loading}>
           <Download className="h-4 w-4" />
-          {loading ? "Generating PDF..." : "Export PDF"}
+          {loading ? "Generating PDF…" : "Export PDF"}
         </Button>
       )}
     </PDFDownloadLink>

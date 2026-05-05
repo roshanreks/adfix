@@ -13,7 +13,7 @@ export default function OfflinePage() {
           </div>
         </div>
         <h1 className="text-2xl font-bold text-[#0F172A] mb-3">
-          You're Offline
+          You&apos;re Offline
         </h1>
         <p className="text-muted-foreground mb-8">
           UM AdFix requires an internet connection to analyze your Meta Ads data. Please check your connection and try again.

@@ -18,8 +18,7 @@ import {
   CircularScore,
 } from "@/components/report-charts";
 import { ClassificationTable } from "@/components/classification-table";
-import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, MinusCircle, HelpCircle, Lock, Eye, Clock } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, Clock, ArrowUp } from "lucide-react";
 import { FadeIn } from "@/components/animations";
 import { PDFExportButton } from "@/components/pdf-report";
 
@@ -28,6 +27,7 @@ export default function AuditDetailPage() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   const [audit, setAudit] = useState<AuditReport | null>(null);
+  const [showSticky, setShowSticky] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !user) router.push("/dashboard/login");
@@ -37,9 +37,17 @@ export default function AuditDetailPage() {
     if (params.id) setAudit(getAuditById(params.id as string));
   }, [params.id]);
 
-  const handleExportPDF = useCallback(() => {
-    if (user?.plan !== "detailed") { toast.error("PDF export requires Detailed tier."); return; }
-  }, [user?.plan]);
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowSticky(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   if (isLoading) return <div className="flex flex-col gap-6 max-w-6xl mx-auto animate-pulse"><div className="h-10 bg-muted rounded-lg w-32" /><div className="grid md:grid-cols-3 gap-6"><div className="md:col-span-2 h-48 bg-muted rounded-xl" /><div className="h-48 bg-muted rounded-xl" /></div></div>;
   if (!user) return null;
@@ -60,12 +68,47 @@ export default function AuditDetailPage() {
   const insufficientAds = allAds.filter(a => a.verdict === "INSUFFICIENT_DATA");
   const isDetailed = user.plan === "detailed";
 
+  const healthBadgeVariant =
+    audit.account_summary.health_label === "Excellent" || audit.account_summary.health_label === "Elite" || audit.account_summary.health_label === "Good"
+      ? "default"
+      : audit.account_summary.health_label === "Average"
+      ? "secondary"
+      : "destructive";
+
   return (
     <div className="flex flex-col gap-4 sm:gap-6 max-w-6xl mx-auto">
+      {/* Sticky summary bar */}
+      <div
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          showSticky ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+        }`}
+      >
+        <div className="bg-background/80 backdrop-blur-md border-b shadow-sm px-4 py-2.5 -mx-4 sm:-mx-6">
+          <div className="flex items-center justify-between gap-3 max-w-6xl mx-auto">
+            <div className="flex items-center gap-3 min-w-0">
+              <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard/audits")} className="gap-1.5 h-8 px-2 shrink-0">
+                <ArrowLeft className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline text-xs">Audits</span>
+              </Button>
+              <div className="h-4 w-px bg-border shrink-0 hidden sm:block" />
+              <h2 className="text-sm font-semibold truncate max-w-[140px] sm:max-w-xs">{audit.name}</h2>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Badge variant={healthBadgeVariant} className="text-xs h-6 px-2">
+                {audit.account_summary.health_label} · {audit.account_summary.health_score}/100
+              </Badge>
+              {isDetailed && <PDFExportButton report={audit} />}
+              <Button variant="ghost" size="sm" onClick={scrollToTop} className="h-8 w-8 p-0" aria-label="Scroll to top">
+                <ArrowUp className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
       <FadeIn>
         <div className="flex items-center justify-between gap-2">
           <Button variant="ghost" onClick={() => router.push("/dashboard/audits")} className="gap-2 min-h-10"><ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Back</span></Button>
-          {isDetailed ? <PDFExportButton report={audit} /> : <Button variant="outline" onClick={handleExportPDF} className="gap-2"><Lock className="h-4 w-4" /> Export PDF</Button>}
+          {isDetailed && <PDFExportButton report={audit} />}
         </div>
       </FadeIn>
 

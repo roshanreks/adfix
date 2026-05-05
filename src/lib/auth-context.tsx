@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import type { User } from "@/lib/types";
 
 interface AuthContextType {
@@ -46,21 +46,21 @@ function getDemoCredentials(): { email: string; passwordHash: string } | null {
   return { email, passwordHash: "" }; // empty hash means "check via compare"
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+function getInitialUser(): User | null {
+  if (typeof window === "undefined") return null;
+  const stored = localStorage.getItem("adfix_user");
+  if (!stored) return null;
+  try {
+    return JSON.parse(stored);
+  } catch {
+    localStorage.removeItem("adfix_user");
+    return null;
+  }
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem("adfix_user");
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem("adfix_user");
-      }
-    }
-    setIsLoading(false);
-  }, []);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(getInitialUser);
+  const [isLoading] = useState(false);
 
   const login = useCallback(async (email: string, password: string): Promise<boolean> => {
     if (!validateEmail(email)) return false;
@@ -72,7 +72,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const users = JSON.parse(localStorage.getItem("adfix_users") || "[]");
     const found = users.find((u: User & { passwordHash: string }) => u.email === email && u.passwordHash === passwordHash);
     if (found) {
-      const { passwordHash: _, ...userWithoutPassword } = found;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { passwordHash: _pw, ...userWithoutPassword } = found;
       setUser(userWithoutPassword);
       localStorage.setItem("adfix_user", JSON.stringify(userWithoutPassword));
       return true;
@@ -122,7 +123,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
     users.push(newUser);
     localStorage.setItem("adfix_users", JSON.stringify(users));
-    const { passwordHash: _, ...userWithoutPassword } = newUser;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash: _pw, ...userWithoutPassword } = newUser;
     setUser(userWithoutPassword);
     localStorage.setItem("adfix_user", JSON.stringify(userWithoutPassword));
     return true;

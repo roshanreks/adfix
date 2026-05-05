@@ -58,7 +58,7 @@ export function Friction() {
             The data exists. The decision framework doesn&apos;t.
           </h2>
           <p className="mx-auto mt-4 sm:mt-6 max-w-[600px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-muted-foreground">
-            Every day you wait, inefficient ads drain your budget. Without a structured audit, you're guessing.
+            Every day you wait, inefficient ads drain your budget. Without a structured audit, you&apos;re guessing.
           </p>
         </FadeIn>
 

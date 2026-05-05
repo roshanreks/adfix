@@ -7,35 +7,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Lock } from "lucide-react";
 import { toast } from "sonner";
 import type { AdAuditResult } from "@/lib/types";
+import { verdictColor, verdictLabel } from "@/lib/utils";
 
 interface ClassificationTableProps {
   data: AdAuditResult[];
   limit?: number;
   isDetailed: boolean;
-}
-
-function verdictColor(verdict: string): string {
-  switch (verdict) {
-    case "KILL": return "bg-red-500 text-white hover:bg-red-600";
-    case "FIX": return "bg-amber-500 text-white hover:bg-amber-600";
-    case "SCALE": return "bg-emerald-500 text-white hover:bg-emerald-600";
-    case "WATCH": return "bg-yellow-500 text-black hover:bg-yellow-600";
-    case "NO_ACTION": return "bg-gray-500 text-white hover:bg-gray-600";
-    case "INSUFFICIENT_DATA": return "bg-gray-300 text-gray-700 hover:bg-gray-400";
-    default: return "bg-gray-500 text-white";
-  }
-}
-
-function verdictLabel(verdict: string): string {
-  switch (verdict) {
-    case "KILL": return "Kill";
-    case "FIX": return "Fix";
-    case "SCALE": return "Scale";
-    case "WATCH": return "Watch";
-    case "NO_ACTION": return "No Action";
-    case "INSUFFICIENT_DATA": return "Insufficient Data";
-    default: return verdict;
-  }
 }
 
 export const ClassificationTable = memo(function ClassificationTable({

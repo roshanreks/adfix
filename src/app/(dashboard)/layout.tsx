@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
+
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { AuditWizard } from "@/components/audit-wizard";
 import { Button } from "@/components/ui/button";

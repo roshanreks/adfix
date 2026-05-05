@@ -16,7 +16,8 @@ import { saveAudit, getPreferences } from "@/lib/data";
 import type { AdData, BusinessType, AccountStage, RiskLevel, Currency } from "@/lib/types";
 import {
   Check, CloudUpload, FileText, ExternalLink, ArrowRight, ArrowLeft,
-  Download, Loader2, X, CheckCircle2, XCircle,
+  Download, Loader2, X, CheckCircle2, XCircle, Copy, ClipboardCheck,
+  Info, PlayCircle, AlertCircle, BarChart3, TrendingUp, Filter,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -104,6 +105,8 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStep, setProcessingStep] = useState(0);
   const [dragActive, setDragActive] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -272,50 +275,110 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
 
         <AnimatePresence mode="wait">
           {step === 1 && (
-            <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="flex flex-col gap-6">
+            <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="flex flex-col gap-5">
               <div>
-                <h3 className="font-semibold text-lg">Prepare Your Ads Report</h3>
-                <p className="text-sm text-muted-foreground">Follow these steps to export the correct CSV from Meta Ads Manager.</p>
+                <h3 className="font-semibold text-lg">Get Your Meta Ads CSV</h3>
+                <p className="text-sm text-muted-foreground">AdFix reads your Ads Manager CSV and auto-calculates everything else.</p>
               </div>
-              <Card>
-                <CardContent className="p-4 flex items-start gap-4">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">1</div>
-                  <div>
-                    <h4 className="font-medium">Access Ads Manager Reports</h4>
-                    <p className="text-sm text-muted-foreground">Open Meta Ads Manager Reports to export your data.</p>
-                    <Button variant="outline" size="sm" className="mt-2 gap-2" onClick={() => window.open("https://business.facebook.com/adsmanager/manage/reports", "_blank")}>
-                      <ExternalLink className="h-3 w-3" /> Open Reports
+
+              {/* Ads Manager Link Card */}
+              <Card className="border-primary/20 bg-primary/5">
+                <CardContent className="p-4 flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <PlayCircle className="h-5 w-5 text-primary" />
+                    <h4 className="font-medium">Step 1: Open Meta Ads Manager Reporting</h4>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                    <span className="text-sm text-muted-foreground truncate flex-1 font-mono">https://adsmanager.facebook.com/adsmanager/reporting</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="shrink-0 h-8 gap-1.5"
+                      onClick={() => {
+                        navigator.clipboard.writeText("https://adsmanager.facebook.com/adsmanager/reporting");
+                        setCopied(true);
+                        toast.success("Link copied to clipboard");
+                        setTimeout(() => setCopied(false), 2000);
+                      }}
+                    >
+                      {copied ? <ClipboardCheck className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      {copied ? "Copied" : "Copy"}
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" size="sm" className="gap-2" onClick={() => window.open("https://adsmanager.facebook.com/adsmanager/reporting", "_blank")}>
+                      <ExternalLink className="h-3.5 w-3.5" /> Open Ads Manager
+                    </Button>
+                    <Button variant="ghost" size="sm" className="gap-2" onClick={() => setGuideOpen(true)}>
+                      <Info className="h-3.5 w-3.5" /> View Full Guide
                     </Button>
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Required Columns */}
               <Card>
-                <CardContent className="p-4 flex items-start gap-4">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">2</div>
-                  <div>
-                    <h4 className="font-medium">Set Date Range & Columns</h4>
-                    <p className="text-sm text-muted-foreground mb-2">Include these columns for a complete audit:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {["Campaign name", "Ad name", "Amount spent", "Impressions", "Clicks", "Purchases", "Purchase Conversion Value", "Landing Page Views", "Add to Cart"].map((col) => (
-                        <Badge key={col} variant="secondary" className="text-xs">{col}</Badge>
-                      ))}
-                    </div>
+                <CardContent className="p-4 flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                    <h4 className="font-medium">Required Columns (we auto-detect these)</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    AdFix is flexible. We accept many column name variants — <strong>Amount Spent</strong>, <strong>Spend</strong>, <strong>Cost</strong>, <strong>Spent</strong>, etc.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {[
+                      { label: "Campaign Name", aliases: "Campaign, Camp Name", required: true },
+                      { label: "Ad Name", aliases: "Ad, Creative Name", required: true },
+                      { label: "Amount Spent", aliases: "Spend, Cost, Spent, Budget Spent", required: true },
+                      { label: "Impressions", aliases: "Impr, Total Impressions", required: true },
+                      { label: "Clicks", aliases: "Clicks (all), Total Clicks", required: true },
+                      { label: "Purchases", aliases: "Conversions, Results, Website Purchases", required: true },
+                    ].map((col) => (
+                      <div key={col.label} className="flex items-start gap-2 rounded-lg border p-2.5 bg-muted/30">
+                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <div>
+                          <div className="text-sm font-medium">{col.label}</div>
+                          <div className="text-[11px] text-muted-foreground">Also accepts: {col.aliases}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Recommended Columns */}
               <Card>
-                <CardContent className="p-4 flex items-start gap-4">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">3</div>
-                  <div>
-                    <h4 className="font-medium">Export as CSV</h4>
-                    <p className="text-sm text-muted-foreground">Click <strong>Export → Export Table Data (CSV)</strong>.</p>
+                <CardContent className="p-4 flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <Info className="h-5 w-5 text-amber-500" />
+                    <h4 className="font-medium">Recommended Columns (for deeper analysis)</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    If these are present, we calculate <strong>ROAS</strong>, <strong>CPA</strong>, <strong>CPM</strong>, <strong>CTR</strong>, <strong>CPC</strong>, <strong>AOV</strong>, and funnel metrics automatically.
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      "Purchase Conversion Value",
+                      "Reach",
+                      "Frequency",
+                      "Link Clicks",
+                      "Landing Page Views",
+                      "Add to Cart",
+                      "Initiate Checkout",
+                      "Quality Ranking",
+                      "Delivery",
+                    ].map((col) => (
+                      <Badge key={col} variant="secondary" className="text-xs font-normal">{col}</Badge>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
+
               <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
-                <Button variant="outline" onClick={() => setStep(2)} className="w-full sm:w-auto">Skip, I already have CSV</Button>
+                <Button variant="outline" onClick={() => setStep(2)} className="w-full sm:w-auto">I already have a CSV</Button>
                 <Button onClick={() => setStep(2)} className="bg-primary text-primary-foreground gap-2 w-full sm:w-auto">
-                  I've configured my report <ArrowRight className="h-4 w-4" />
+                  Next: Upload CSV <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
             </motion.div>
@@ -329,15 +392,54 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
               </div>
               <div
                 onDragEnter={handleDrag} onDragOver={handleDrag} onDragLeave={handleDrag} onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-xl p-6 sm:p-8 text-center transition-all duration-300 ${
-                  dragActive ? "border-primary bg-primary/5 scale-[1.02]" : "border-border bg-muted/30"
+                className={`relative border-2 border-dashed rounded-xl p-6 sm:p-8 text-center transition-all duration-300 overflow-hidden ${
+                  dragActive
+                    ? "border-primary bg-primary/[0.04] scale-[1.01]"
+                    : file
+                    ? "border-emerald-300 bg-emerald-50/40 dark:bg-emerald-950/20"
+                    : "border-border bg-muted/30 hover:border-muted-foreground/40 hover:bg-muted/50"
                 }`}
               >
-                <CloudUpload className={`h-8 w-8 sm:h-10 sm:w-10 mx-auto mb-4 transition-colors ${dragActive ? "text-primary" : "text-muted-foreground"}`} />
-                <p className="font-medium mb-1 text-sm sm:text-base">{file ? file.name : "Drop your CSV here or click to browse"}</p>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-4">Supports standard Meta Ads Manager exports</p>
-                <input type="file" accept=".csv" onChange={handleFileInput} className="hidden" id="csv-upload" />
-                <label htmlFor="csv-upload" className="inline-flex items-center justify-center cursor-pointer rounded-md text-sm font-medium h-10 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors">Browse File</label>
+                {/* Animated border glow on drag */}
+                {dragActive && (
+                  <motion.div
+                    layoutId="dropGlow"
+                    className="absolute inset-0 rounded-xl border-2 border-primary/40"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                )}
+                <div className="relative z-10">
+                  <motion.div
+                    animate={dragActive ? { y: [0, -4, 0] } : {}}
+                    transition={{ duration: 1, repeat: dragActive ? Infinity : 0 }}
+                  >
+                    <CloudUpload className={`h-9 w-9 sm:h-11 sm:w-11 mx-auto mb-3 transition-colors ${
+                      dragActive ? "text-primary" : file ? "text-emerald-500" : "text-muted-foreground"
+                    }`} />
+                  </motion.div>
+                  {file ? (
+                    <div className="flex flex-col items-center gap-1">
+                      <p className="font-medium text-sm sm:text-base text-emerald-700 dark:text-emerald-400">{file.name}</p>
+                      <p className="text-xs text-emerald-600/70 dark:text-emerald-400/60">
+                        {(file.size / 1024).toFixed(1)} KB · Ready to parse
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="font-medium mb-1 text-sm sm:text-base">Drop your CSV here or click to browse</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-4">Supports standard Meta Ads Manager exports</p>
+                    </>
+                  )}
+                  <input type="file" accept=".csv" onChange={handleFileInput} className="hidden" id="csv-upload" />
+                  <label
+                    htmlFor="csv-upload"
+                    className="inline-flex items-center justify-center cursor-pointer rounded-md text-sm font-medium h-10 px-5 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                  >
+                    {file ? "Change File" : "Browse File"}
+                  </label>
+                </div>
               </div>
               {parseErrors.length > 0 && (
                 <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
@@ -345,36 +447,93 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 </div>
               )}
               {parsedData.length > 0 && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3">
-                  <div className="p-3 rounded-lg bg-emerald-500/10 text-emerald-700 text-sm flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 shrink-0" />
-                    <span className="font-medium">{parsedData.length} ads parsed</span>
-                    <span className="text-emerald-600 ml-auto">{detectedCount}/{totalFields} columns matched</span>
-                  </div>
-                  <div className="rounded-lg border bg-muted/20 p-3">
-                    <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Detected Columns</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
-                      {Object.entries(FIELD_LABELS).map(([field, label]) => {
-                        const found = field in mappedColumns;
-                        const isRequired = REQUIRED_FIELDS.has(field);
-                        return (
-                          <div key={field} className="flex items-center gap-1.5 text-xs">
-                            {found ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                            ) : (
-                              <XCircle className={`h-3.5 w-3.5 shrink-0 ${isRequired ? "text-destructive" : "text-muted-foreground/50"}`} />
-                            )}
-                            <span className={found ? "text-foreground" : isRequired ? "text-destructive" : "text-muted-foreground"}>{label}</span>
-                          </div>
-                        );
-                      })}
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
+                  {/* Parse success banner */}
+                  <div className="p-3 rounded-lg bg-emerald-500/[0.08] border border-emerald-200 dark:border-emerald-800/50 text-emerald-800 dark:text-emerald-300 text-sm flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-medium">{parsedData.length} ads parsed</span>
+                      <span className="text-emerald-600/70 dark:text-emerald-400/60 ml-2">{detectedCount}/{totalFields} columns detected</span>
                     </div>
                   </div>
-                  {parseWarnings.length > 0 && (
-                    <div className="p-3 rounded-lg bg-amber-500/10 text-amber-700 text-sm">
-                      {parseWarnings.map((w, i) => <p key={i}>⚠ {w}</p>)}
+
+                  {/* Column detection progress */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-muted-foreground">Column Mapping</span>
+                      <span className="text-muted-foreground">{Math.round((detectedCount / totalFields) * 100)}% matched</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <motion.div
+                        className="h-full rounded-full bg-emerald-500"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(detectedCount / totalFields) * 100}%` }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Matched columns */}
+                  {detectedCount > 0 && (
+                    <div className="rounded-lg border overflow-hidden">
+                      <div className="px-3 py-2 bg-emerald-50/50 dark:bg-emerald-950/20 border-b flex items-center gap-2">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">Matched ({detectedCount})</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border">
+                        {Object.entries(FIELD_LABELS)
+                          .filter(([field]) => field in mappedColumns)
+                          .map(([field, label]) => (
+                            <div key={field} className="flex items-center gap-2 px-3 py-2.5 bg-background text-xs">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                              <div className="flex flex-col min-w-0">
+                                <span className="font-medium text-foreground truncate">{label}</span>
+                                <span className="text-[10px] text-muted-foreground truncate">{mappedColumns[field]}</span>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   )}
+
+                  {/* Missing columns */}
+                  {detectedCount < totalFields && (
+                    <div className="rounded-lg border overflow-hidden">
+                      <div className="px-3 py-2 bg-muted/30 border-b flex items-center gap-2">
+                        <XCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-xs font-medium text-muted-foreground">Missing ({totalFields - detectedCount})</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border">
+                        {Object.entries(FIELD_LABELS)
+                          .filter(([field]) => !(field in mappedColumns))
+                          .map(([field, label]) => {
+                            const isRequired = REQUIRED_FIELDS.has(field);
+                            return (
+                              <div key={field} className="flex items-center gap-2 px-3 py-2.5 bg-background text-xs">
+                                <XCircle className={`h-3.5 w-3.5 shrink-0 ${isRequired ? "text-destructive" : "text-muted-foreground/40"}`} />
+                                <span className={isRequired ? "text-destructive font-medium" : "text-muted-foreground"}>{label}</span>
+                                {isRequired && <Badge variant="destructive" className="text-[9px] h-4 px-1 ml-auto">Required</Badge>}
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
+
+                  {parseWarnings.length > 0 && (
+                    <div className="p-3 rounded-lg bg-amber-500/[0.08] border border-amber-200 dark:border-amber-800/50 text-amber-800 dark:text-amber-300 text-sm space-y-1">
+                      {parseWarnings.map((w, i) => (
+                        <p key={i} className="flex items-start gap-2">
+                          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-amber-500" />
+                          {w}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Data preview */}
                   <div className="rounded-lg border overflow-hidden">
                     <p className="text-xs font-medium text-muted-foreground px-3 py-2 bg-muted/30 uppercase tracking-wide">
                       Data Preview (first {Math.min(3, parsedData.length)} rows)
@@ -391,7 +550,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                         </thead>
                         <tbody>
                           {parsedData.slice(0, 3).map((ad, i) => (
-                            <tr key={i} className="border-b last:border-0">
+                            <tr key={i} className="border-b last:border-0 hover:bg-muted/20 transition-colors">
                               <td className="px-3 py-2 max-w-[140px] truncate">{ad.ad_name || "—"}</td>
                               <td className="px-3 py-2 max-w-[120px] truncate text-muted-foreground">{ad.campaign_name || "—"}</td>
                               <td className="px-3 py-2 text-right font-mono">₹{ad.spend.toLocaleString("en-IN")}</td>
@@ -518,15 +677,59 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 </div>
                 <div className="grid gap-2">
                   <Label>Analysis Depth</Label>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" name="depth" value="basic" checked={analysisDepth === "basic"} onChange={() => setAnalysisDepth("basic")} className="accent-primary" />
-                      <span className="text-sm">Basic (₹499)</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" name="depth" value="detailed" checked={analysisDepth === "detailed"} onChange={() => setAnalysisDepth("detailed")} className="accent-primary" />
-                      <span className="text-sm">Detailed (₹999)</span>
-                    </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      {
+                        id: "basic",
+                        name: "Basic",
+                        price: "₹499",
+                        desc: "Core diagnostic for quick decisions",
+                        features: ["Health Score & Verdict", "Kill / Fix / Scale", "First 3 items per category", "Web report view"],
+                      },
+                      {
+                        id: "detailed",
+                        name: "Detailed",
+                        price: "₹999",
+                        desc: "Complete audit with full breakdown",
+                        features: ["Everything in Basic", "Unlimited items", "Full benchmarking", "PDF export", "Creative & funnel analysis"],
+                        popular: true,
+                      },
+                    ].map((plan) => (
+                      <div
+                        key={plan.id}
+                        onClick={() => setAnalysisDepth(plan.id as "basic" | "detailed")}
+                        className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${
+                          analysisDepth === plan.id
+                            ? "border-primary bg-primary/[0.03] shadow-sm"
+                            : "border-border bg-background hover:border-muted-foreground/30 hover:bg-muted/20"
+                        }`}
+                      >
+                        {plan.popular && (
+                          <div className="absolute -top-2.5 right-3">
+                            <Badge className="text-[10px] h-5 px-1.5">Popular</Badge>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold text-sm">{plan.name}</span>
+                          <span className="font-bold text-sm">{plan.price}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2">{plan.desc}</p>
+                        <ul className="space-y-1">
+                          {plan.features.map((f) => (
+                            <li key={f} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                              <Check className="h-3 w-3 text-primary shrink-0" /> {f}
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-3 flex justify-center">
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                            analysisDepth === plan.id ? "border-primary bg-primary" : "border-muted-foreground/30"
+                          }`}>
+                            {analysisDepth === plan.id && <Check className="h-2.5 w-2.5 text-white" />}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -541,10 +744,62 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 </CardContent>
               </Card>
               {isProcessing && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-3 py-4">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  <p className="text-sm text-muted-foreground">{["Reading CSV...", "Calculating 25+ metrics...", "Running benchmark engine...", "Computing confidence & health scores...", "Classifying each ad...", "Analyzing waste & structure...", "Generating report..."][processingStep]}</p>
-                  <Progress value={((processingStep + 1) / 7) * 100} className="w-full" />
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4 py-2">
+                  <div className="flex flex-col items-center gap-2 mb-2">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                    </div>
+                    <p className="text-sm font-medium text-foreground">
+                      {["Reading CSV", "Calculating 25+ metrics", "Running benchmark engine", "Computing confidence & health scores", "Classifying each ad", "Analyzing waste & structure", "Generating report"][processingStep]}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Step {processingStep + 1} of 7</p>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { label: "Reading CSV", icon: FileText },
+                      { label: "Calculating metrics", icon: BarChart3 },
+                      { label: "Benchmark engine", icon: TrendingUp },
+                      { label: "Confidence scoring", icon: CheckCircle2 },
+                      { label: "Classifying ads", icon: Filter },
+                      { label: "Waste analysis", icon: AlertCircle },
+                      { label: "Generating report", icon: ClipboardCheck },
+                    ].map((step, i) => {
+                      const isComplete = i < processingStep;
+                      const isCurrent = i === processingStep;
+                      const Icon = step.icon;
+                      return (
+                        <div key={i} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-300 ${
+                          isComplete ? "bg-emerald-50/50 dark:bg-emerald-950/20" :
+                          isCurrent ? "bg-primary/5 border border-primary/20" : "bg-muted/20 opacity-50"
+                        }`}>
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
+                            isComplete ? "bg-emerald-500 text-white" :
+                            isCurrent ? "bg-primary text-white" : "bg-muted text-muted-foreground"
+                          }`}>
+                            {isComplete ? (
+                              <Check className="h-3.5 w-3.5" />
+                            ) : (
+                              <Icon className="h-3.5 w-3.5" />
+                            )}
+                          </div>
+                          <span className={`text-xs font-medium ${
+                            isComplete ? "text-emerald-700 dark:text-emerald-400" :
+                            isCurrent ? "text-foreground" : "text-muted-foreground"
+                          }`}>
+                            {step.label}
+                          </span>
+                          {isCurrent && (
+                            <motion.div
+                              className="ml-auto w-1.5 h-1.5 rounded-full bg-primary"
+                              animate={{ opacity: [1, 0.3, 1] }}
+                              transition={{ duration: 1, repeat: Infinity }}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <Progress value={((processingStep + 1) / 7) * 100} className="w-full h-1.5" />
                 </motion.div>
               )}
               <div className="flex flex-col sm:flex-row justify-between gap-2">
@@ -558,6 +813,93 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
         </AnimatePresence>
         </div>
       </DialogContent>
+
+      {/* Full Ads Manager Guide Dialog */}
+      <Dialog open={guideOpen} onOpenChange={setGuideOpen}>
+        <DialogContent className="sm:max-w-lg max-h-[90dvh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ExternalLink className="h-5 w-5 text-primary" />
+              How to Export Your Meta Ads Report
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-5">
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <p className="text-sm font-medium text-muted-foreground mb-1">Direct Link</p>
+              <div className="flex items-center gap-2">
+                <code className="text-xs bg-white border rounded px-2 py-1.5 flex-1 truncate">https://adsmanager.facebook.com/adsmanager/reporting</code>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="shrink-0 gap-1.5 h-8"
+                  onClick={() => {
+                    navigator.clipboard.writeText("https://adsmanager.facebook.com/adsmanager/reporting");
+                    toast.success("Link copied");
+                  }}
+                >
+                  <Copy className="h-3.5 w-3.5" /> Copy
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {[
+                {
+                  step: 1,
+                  title: "Open Ads Manager Reporting",
+                  desc: "Go to the link above. Make sure you are in the Reporting tab (not the main Ads tab).",
+                },
+                {
+                  step: 2,
+                  title: "Break Down by Ad",
+                  desc: "In the top-left, change the breakdown from 'Campaign' or 'Ad Set' to 'Ad'. AdFix needs ad-level data.",
+                },
+                {
+                  step: 3,
+                  title: "Set Your Date Range",
+                  desc: "Pick the date range you want to audit (e.g., Last 30 days, Last 90 days). Make sure it covers enough data for meaningful results.",
+                },
+                {
+                  step: 4,
+                  title: "Add Required Columns",
+                  desc: "Click the Columns button and make sure these are included: Campaign Name, Ad Name, Amount Spent, Impressions, Clicks, Purchases. Add Purchase Conversion Value if you want ROAS analysis.",
+                },
+                {
+                  step: 5,
+                  title: "Export as CSV",
+                  desc: "Click the Export button in the top-right and choose 'Export Table Data (CSV)'. Save the file to your computer.",
+                },
+                {
+                  step: 6,
+                  title: "Upload to AdFix",
+                  desc: "Come back here, go to Step 2, and drop your CSV file. AdFix will auto-detect columns and calculate all metrics.",
+                },
+              ].map((item) => (
+                <div key={item.step} className="flex items-start gap-3">
+                  <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0 mt-0.5">
+                    {item.step}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold">{item.title}</h4>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 flex items-start gap-2">
+              <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-700">
+                <strong>Tip:</strong> AdFix accepts many column name variants. If your export says &ldquo;Spent&rdquo; instead of &ldquo;Amount Spent&rdquo; or &ldquo;Conversions&rdquo; instead of &ldquo;Purchases&rdquo; — it will still work.
+              </p>
+            </div>
+
+            <Button onClick={() => { setGuideOpen(false); setStep(2); }} className="w-full bg-primary text-primary-foreground gap-2">
+              Got it — Upload CSV <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }
