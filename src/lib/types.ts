@@ -283,6 +283,14 @@ export interface User {
   avatar?: string;
   plan: "free" | "basic" | "detailed";
   onboardingComplete?: boolean;
+  phone?: string;
+  whatsapp?: string;
+  companyName?: string;
+  website?: string;
+  niche?: string;
+  monthlySpend?: string;
+  role?: string;
+  challenge?: string;
 }
 
 export interface PricingPlan {

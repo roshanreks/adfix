@@ -21,7 +21,7 @@ import {
   CircularScore,
 } from "@/components/report-charts";
 import { ClassificationTable } from "@/components/classification-table";
-import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Lock, Check, Calendar, MessageSquare, Send } from "lucide-react";
+import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, ExternalLink } from "lucide-react";
 import { FadeIn } from "@/components/animations";
 import { PDFExportButton } from "@/components/pdf-report";
 
@@ -108,7 +108,6 @@ export default function AuditDetailPage() {
   const noActionAds = allAds.filter(a => a.verdict === "NO_ACTION");
   const insufficientAds = allAds.filter(a => a.verdict === "INSUFFICIENT_DATA");
   const isDetailed = user.plan === "detailed";
-  const isReportUnlocked = false; // TODO: check ConsultationBooking in DB when payment system is ready
 
   const healthBadgeVariant =
     audit.account_summary.health_label === "Excellent" || audit.account_summary.health_label === "Elite" || audit.account_summary.health_label === "Good"
@@ -320,222 +319,236 @@ export default function AuditDetailPage() {
         </Card>
       </FadeIn>
 
-      {/* ───────────────────────────────────────────
-          LOCKED ZONE — Full Action Plan
-          Everything below is blurred until user pays ₹999
-      ─────────────────────────────────────────── */}
-      <div className="relative">
-        {/* The actual content (rendered but blurred when locked) */}
-        <div className={`flex flex-col gap-4 sm:gap-6 transition-all duration-500 ${!isReportUnlocked ? "blur-[6px] select-none pointer-events-none opacity-60" : ""}`}>
-
-          {/* Scale Opportunities */}
-          {audit.scale_opportunities.length > 0 && (
-            <FadeIn delay={0.41}>
-              <Card>
-                <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5 text-emerald-500" /> Scale Opportunities ({audit.scale_opportunities.length})</CardTitle></CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  {audit.scale_opportunities.slice(0, 2).map((opp, i) => (
-                    <Card key={i} className="bg-emerald-500/5 border-emerald-500/20">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold">{opp.ad_name}</span>
-                          <Badge className="bg-emerald-500">{opp.purchases} purchases · {opp.scale_level}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{opp.why_scale}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </CardContent>
-              </Card>
-            </FadeIn>
-          )}
-
-          {/* Fix Opportunities */}
-          {audit.fix_opportunities.length > 0 && (
-            <FadeIn delay={0.42}>
-              <Card>
-                <CardHeader><CardTitle className="flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-amber-500" /> Fix Opportunities ({audit.fix_opportunities.length})</CardTitle></CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  {audit.fix_opportunities.slice(0, 2).map((fix, i) => (
-                    <Card key={i} className="bg-amber-500/5 border-amber-500/20">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold">{fix.ad_name}</span>
-                          <Badge className="bg-amber-500 capitalize">{fix.issue_type.replace("_", " ")}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{fix.diagnosis}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </CardContent>
-              </Card>
-            </FadeIn>
-          )}
-
-          {/* Kill Recommendations */}
-          {audit.kill_recommendations.length > 0 && (
-            <FadeIn delay={0.43}>
-              <Card>
-                <CardHeader><CardTitle className="flex items-center gap-2"><TrendingDown className="h-5 w-5 text-red-500" /> Kill Recommendations ({audit.kill_recommendations.length})</CardTitle></CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  {audit.kill_recommendations.slice(0, 2).map((kill, i) => (
-                    <Card key={i} className="bg-red-500/5 border-red-500/20">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold">{kill.ad_name}</span>
-                          <Badge variant="destructive">Spend: ₹{kill.spend.toLocaleString("en-IN")}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{kill.reason}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </CardContent>
-              </Card>
-            </FadeIn>
-          )}
-
-          {/* Campaign Structure */}
-          {audit.campaign_structure_audit && (
-            <FadeIn delay={0.44}>
-              <Card>
-                <CardHeader><CardTitle>Campaign Structure Audit</CardTitle></CardHeader>
-                <CardContent className="flex flex-col gap-4">
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                    <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Campaigns</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_campaigns}</div></div>
-                    <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ad Sets</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_adsets}</div></div>
-                    <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ads</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_ads}</div></div>
-                    <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ads/Ad Set</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.avg_ads_per_adset}</div></div>
-                    <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Fragmentation</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.budget_fragmentation_score}%</div></div>
-                  </div>
-                  <p className="text-sm font-medium">{audit.campaign_structure_audit.diagnosis}</p>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          )}
-
-          {/* Creative Audit */}
-          {audit.creative_audit && (
-            <FadeIn delay={0.45}>
-              <Card>
-                <CardHeader><CardTitle>Creative Audit</CardTitle></CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  <p className="text-sm font-medium">{audit.creative_audit.diagnosis}</p>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          )}
-
-          {/* Funnel Audit */}
-          {audit.funnel_audit && (
-            <FadeIn delay={0.46}>
-              <Card>
-                <CardHeader><CardTitle>Funnel Audit</CardTitle></CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  <p className="text-sm font-medium">{audit.funnel_audit.diagnosis}</p>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          )}
-
-          {/* Tracking Audit */}
-          {audit.tracking_audit && (
-            <FadeIn delay={0.47}>
-              <Card>
-                <CardHeader><CardTitle>Tracking Audit</CardTitle></CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2"><Eye className="h-4 w-4" /><span className="text-sm">Confidence: {audit.tracking_audit.tracking_confidence}</span></div>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          )}
-
-          {/* Ad-Level Table */}
-          <FadeIn delay={0.48}>
-            <Tabs defaultValue="all" className="w-full">
-              <div className="overflow-x-auto -mx-4 sm:-mx-0 px-4 sm:px-0">
-              <TabsList className="w-max sm:w-full min-w-full justify-start flex-nowrap sm:flex-wrap gap-1 sm:gap-0">
-                <TabsTrigger value="all">All ({allAds.length})</TabsTrigger>
-                <TabsTrigger value="scale">Scale ({scaleAds.length})</TabsTrigger>
-                <TabsTrigger value="fix">Fix ({fixAds.length})</TabsTrigger>
-                <TabsTrigger value="kill">Kill ({killAds.length})</TabsTrigger>
-                <TabsTrigger value="watch">Watch ({watchAds.length})</TabsTrigger>
-                <TabsTrigger value="noaction">No Action ({noActionAds.length})</TabsTrigger>
-                <TabsTrigger value="insufficient">Insufficient ({insufficientAds.length})</TabsTrigger>
-              </TabsList>
-              </div>
-              <TabsContent value="all"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={allAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-              <TabsContent value="scale"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={scaleAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-              <TabsContent value="fix"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={fixAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-              <TabsContent value="kill"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={killAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-              <TabsContent value="watch"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={watchAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-              <TabsContent value="noaction"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={noActionAds} limit={3} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-              <TabsContent value="insufficient"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={insufficientAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
-            </Tabs>
-          </FadeIn>
-        </div>
-
-        {/* Lock Overlay */}
-        {!isReportUnlocked && (
-          <div className="absolute inset-0 flex items-start justify-center pt-20 z-10">
-            <Card className="w-full max-w-lg mx-4 shadow-elevated border-border/80">
-              <CardContent className="p-6 sm:p-8 flex flex-col items-center text-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <Lock className="h-7 w-7 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold">Your Full Action Plan is Ready</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Get the complete Kill/Fix/Scale roadmap, campaign structure fixes, and creative recommendations.
-                  </p>
-                </div>
-                <div className="w-full text-left space-y-2">
-                  {[
-                    "Complete Kill / Fix / Scale lists with reasoning",
-                    "Campaign structure & funnel audit details",
-                    "Creative fatigue analysis & test recommendations",
-                    "Per-ad optimization roadmap",
-                    "30-min Strategy Call with Urban Media",
-                    "Custom scaling plan for your niche",
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
-                      {item}
+      {/* Scale Opportunities */}
+      {audit.scale_opportunities.length > 0 && (
+        <FadeIn delay={0.41}>
+          <Card>
+            <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5 text-emerald-500" /> Scale Opportunities ({audit.scale_opportunities.length})</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              {audit.scale_opportunities.map((opp, i) => (
+                <Card key={i} className="bg-emerald-500/5 border-emerald-500/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold">{opp.ad_name}</span>
+                      <Badge className="bg-emerald-500">{opp.purchases} purchases · {opp.scale_level}</Badge>
                     </div>
-                  ))}
-                </div>
-                <Button className="w-full gap-2 bg-primary text-primary-foreground h-12 text-base font-semibold">
-                  <Calendar className="h-5 w-5" />
-                  Unlock Full Plan + Book Strategy Call — ₹999
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  One-time payment • Instant report unlock • Call at your convenience
-                </p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <MessageSquare className="h-3.5 w-3.5" />
-                  By Urban Media — Performance Marketing Agency for D2C Brands
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </div>
+                    <p className="text-sm text-muted-foreground">{opp.why_scale}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </CardContent>
+          </Card>
+        </FadeIn>
+      )}
 
-      {/* Missing Data */}
+      {/* Fix Opportunities */}
+      {audit.fix_opportunities.length > 0 && (
+        <FadeIn delay={0.42}>
+          <Card>
+            <CardHeader><CardTitle className="flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-amber-500" /> Fix Opportunities ({audit.fix_opportunities.length})</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              {audit.fix_opportunities.map((fix, i) => (
+                <Card key={i} className="bg-amber-500/5 border-amber-500/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold">{fix.ad_name}</span>
+                      <Badge className="bg-amber-500 capitalize">{fix.issue_type.replace("_", " ")}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{fix.diagnosis}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </CardContent>
+          </Card>
+        </FadeIn>
+      )}
+
+      {/* Kill Recommendations */}
+      {audit.kill_recommendations.length > 0 && (
+        <FadeIn delay={0.43}>
+          <Card>
+            <CardHeader><CardTitle className="flex items-center gap-2"><TrendingDown className="h-5 w-5 text-red-500" /> Kill Recommendations ({audit.kill_recommendations.length})</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              {audit.kill_recommendations.map((kill, i) => (
+                <Card key={i} className="bg-red-500/5 border-red-500/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold">{kill.ad_name}</span>
+                      <Badge variant="destructive">Spend: ₹{kill.spend.toLocaleString("en-IN")}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{kill.reason}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </CardContent>
+          </Card>
+        </FadeIn>
+      )}
+
+      {/* Campaign Structure */}
+      {audit.campaign_structure_audit && (
+        <FadeIn delay={0.44}>
+          <Card>
+            <CardHeader><CardTitle>Campaign Structure Audit</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Campaigns</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_campaigns}</div></div>
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ad Sets</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_adsets}</div></div>
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ads</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_ads}</div></div>
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ads/Ad Set</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.avg_ads_per_adset}</div></div>
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Fragmentation</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.budget_fragmentation_score}%</div></div>
+              </div>
+              <p className="text-sm font-medium">{audit.campaign_structure_audit.diagnosis}</p>
+            </CardContent>
+          </Card>
+        </FadeIn>
+      )}
+
+      {/* Creative Audit */}
+      {audit.creative_audit && (
+        <FadeIn delay={0.45}>
+          <Card>
+            <CardHeader><CardTitle>Creative Audit</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <p className="text-sm font-medium">{audit.creative_audit.diagnosis}</p>
+            </CardContent>
+          </Card>
+        </FadeIn>
+      )}
+
+      {/* Funnel Audit */}
+      {audit.funnel_audit && (
+        <FadeIn delay={0.46}>
+          <Card>
+            <CardHeader><CardTitle>Funnel Audit</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <p className="text-sm font-medium">{audit.funnel_audit.diagnosis}</p>
+            </CardContent>
+          </Card>
+        </FadeIn>
+      )}
+
+      {/* Tracking Audit */}
+      {audit.tracking_audit && (
+        <FadeIn delay={0.47}>
+          <Card>
+            <CardHeader><CardTitle>Tracking Audit</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <div className="flex items-center gap-2"><Eye className="h-4 w-4" /><span className="text-sm">Confidence: {audit.tracking_audit.tracking_confidence}</span></div>
+            </CardContent>
+          </Card>
+        </FadeIn>
+      )}
+
+      {/* Ad-Level Table */}
+      <FadeIn delay={0.48}>
+        <Tabs defaultValue="all" className="w-full">
+          <div className="overflow-x-auto -mx-4 sm:-mx-0 px-4 sm:px-0">
+          <TabsList className="w-max sm:w-full min-w-full justify-start flex-nowrap sm:flex-wrap gap-1 sm:gap-0">
+            <TabsTrigger value="all">All ({allAds.length})</TabsTrigger>
+            <TabsTrigger value="scale">Scale ({scaleAds.length})</TabsTrigger>
+            <TabsTrigger value="fix">Fix ({fixAds.length})</TabsTrigger>
+            <TabsTrigger value="kill">Kill ({killAds.length})</TabsTrigger>
+            <TabsTrigger value="watch">Watch ({watchAds.length})</TabsTrigger>
+            <TabsTrigger value="noaction">No Action ({noActionAds.length})</TabsTrigger>
+            <TabsTrigger value="insufficient">Insufficient ({insufficientAds.length})</TabsTrigger>
+          </TabsList>
+          </div>
+          <TabsContent value="all"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={allAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="scale"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={scaleAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="fix"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={fixAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="kill"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={killAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="watch"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={watchAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="noaction"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={noActionAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+          <TabsContent value="insufficient"><Card><ScrollArea className="h-[50dvh] sm:h-[400px]"><ClassificationTable data={insufficientAds} isDetailed={isDetailed} /></ScrollArea></Card></TabsContent>
+        </Tabs>
+      </FadeIn>
+
+      {/* ₹999 Full Funnel Audit CTA */}
+      <FadeIn delay={0.52}>
+        <Card className="border-primary/20 bg-primary/5 overflow-hidden">
+          <CardContent className="p-6 sm:p-8 flex flex-col gap-5">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <Star className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">Want a Deeper Audit?</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Our team of AI + Human experts will audit your entire funnel — Shopify store, Facebook Ads, Google Ads, landing pages, creatives, and offer.
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                "Full Meta Ads account deep-dive",
+                "Google Ads performance review",
+                "Shopify store CRO & UX audit",
+                "Landing page & funnel analysis",
+                "Creative strategy & fatigue review",
+                "30-min strategy call with our team",
+                "Custom action plan delivered in 48 hours",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Check className="h-4 w-4 text-primary shrink-0" />
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-white dark:bg-background border">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">₹999</span>
+                  <span className="text-sm text-muted-foreground">One-time</span>
+                </div>
+                <Badge variant="secondary" className="mt-1 gap-1">
+                  <Star className="h-3 w-3" /> 100% Refund Guarantee — Not satisfied? Full refund, no questions asked.
+                </Badge>
+              </div>
+              <Button
+                className="w-full sm:w-auto gap-2 bg-primary text-primary-foreground h-12 px-6 font-semibold"
+                onClick={() => {
+                  const message = encodeURIComponent("Hi Urban Media team, I'm interested in the ₹999 AI + Human Full Funnel Audit. Please share the next steps.");
+                  window.open(`https://wa.me/919876543210?text=${message}`, "_blank");
+                }}
+              >
+                <MessageSquare className="h-5 w-5" /> Chat on WhatsApp to Book
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </FadeIn>
+
+      {/* Data Quality Tips */}
       {audit.missing_data && (audit.missing_data.critical_missing_fields.length > 0 || audit.missing_data.important_missing_fields.length > 0) && (
         <FadeIn delay={0.5}>
-          <Card className="border-amber-500/30 bg-amber-500/5">
-            <CardHeader><CardTitle className="text-amber-700 flex items-center gap-2"><AlertTriangle className="h-5 w-5" /> Missing Data Warnings</CardTitle></CardHeader>
-            <CardContent className="flex flex-col gap-3">
-              {audit.missing_data.critical_missing_fields.length > 0 && (
-                <div><h4 className="text-sm font-semibold text-destructive mb-1">Critical Missing Fields</h4><div className="flex flex-wrap gap-1">{audit.missing_data.critical_missing_fields.map((f, i) => <Badge key={i} variant="destructive" className="text-xs">{f}</Badge>)}</div></div>
-              )}
-              {audit.missing_data.important_missing_fields.length > 0 && (
-                <div><h4 className="text-sm font-semibold text-amber-700 mb-1">Important Missing Fields</h4><div className="flex flex-wrap gap-1">{audit.missing_data.important_missing_fields.map((f, i) => <Badge key={i} variant="secondary" className="text-xs">{f}</Badge>)}</div></div>
+          <Card className="border-blue-200/60 bg-blue-50/40 dark:bg-blue-950/10">
+            <CardHeader><CardTitle className="text-blue-700 dark:text-blue-400 flex items-center gap-2"><AlertTriangle className="h-5 w-5" /> Data Quality Tips</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-4">
+              <p className="text-sm text-muted-foreground">
+                Your audit ran successfully with the data provided. For even deeper insights next time, consider including these columns in your export:
+              </p>
+              {(audit.missing_data.critical_missing_fields.length > 0 || audit.missing_data.important_missing_fields.length > 0) && (
+                <div className="flex flex-wrap gap-2">
+                  {[...audit.missing_data.critical_missing_fields, ...audit.missing_data.important_missing_fields].map((f, i) => (
+                    <span key={i} className="inline-flex items-center text-xs bg-white dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 px-2.5 py-1 rounded-full text-blue-700 dark:text-blue-400">
+                      {f}
+                    </span>
+                  ))}
+                </div>
               )}
               {audit.missing_data.recommended_next_export_columns.length > 0 && (
-                <div><h4 className="text-sm font-semibold mb-1">Recommended Next Export</h4><div className="flex flex-wrap gap-1">{audit.missing_data.recommended_next_export_columns.map((c, i) => <Badge key={i} variant="outline" className="text-xs">{c}</Badge>)}</div></div>
+                <div>
+                  <h4 className="text-sm font-semibold mb-2">Columns that unlock deeper analysis:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {audit.missing_data.recommended_next_export_columns.map((c, i) => (
+                      <span key={i} className="inline-flex items-center text-xs bg-muted/50 border border-border px-2.5 py-1 rounded-full text-muted-foreground">
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
-              <p className="text-sm text-muted-foreground">{audit.missing_data.how_missing_data_affects_audit}</p>
             </CardContent>
           </Card>
         </FadeIn>

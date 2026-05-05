@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import {
   LogOut, Save, User, Shield, CreditCard, Sliders,
   Eye, EyeOff, AlertTriangle, Check, Rocket, Mail,
+  Building2, Phone, Globe, Briefcase, MessageSquare, IndianRupee,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -56,6 +57,18 @@ export default function SettingsPage() {
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<typeof upgradePlans[number] | null>(null);
 
+  // Full profile (includes onboarding fields)
+  const [profile, setProfile] = useState<{
+    phone?: string | null;
+    whatsapp?: string | null;
+    companyName?: string | null;
+    website?: string | null;
+    niche?: string | null;
+    monthlySpend?: string | null;
+    role?: string | null;
+    challenge?: string | null;
+  } | null>(null);
+
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/dashboard/login");
@@ -66,6 +79,13 @@ export default function SettingsPage() {
       setDefaultTimeWindow(prefs.defaultTimeWindow);
       setDefaultMinSpend(prefs.defaultMinSpend);
       setDefaultTargetCPA(prefs.defaultTargetCPA ? String(prefs.defaultTargetCPA) : "");
+      // Fetch full profile
+      fetch("/api/user", { credentials: "include" })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user) setProfile(data.user);
+        })
+        .catch(() => {});
     }
   }, [user, isLoading, router]);
 
@@ -211,6 +231,69 @@ export default function SettingsPage() {
                   <p className="text-xs text-muted-foreground">Email cannot be changed.</p>
                 </div>
               </div>
+
+              {/* Business Details from Onboarding */}
+              {profile && (profile.companyName || profile.phone || profile.niche) && (
+                <>
+                  <Separator />
+                  <div>
+                    <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-muted-foreground" /> Business Details
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {profile.companyName && (
+                        <div className="p-3 rounded-lg bg-muted/30 border">
+                          <div className="text-xs text-muted-foreground flex items-center gap-1"><Building2 className="h-3 w-3" /> Company</div>
+                          <div className="text-sm font-medium mt-0.5">{profile.companyName}</div>
+                        </div>
+                      )}
+                      {profile.website && (
+                        <div className="p-3 rounded-lg bg-muted/30 border">
+                          <div className="text-xs text-muted-foreground flex items-center gap-1"><Globe className="h-3 w-3" /> Website</div>
+                          <a href={profile.website.startsWith("http") ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="text-sm font-medium mt-0.5 text-primary hover:underline truncate block">{profile.website}</a>
+                        </div>
+                      )}
+                      {profile.niche && (
+                        <div className="p-3 rounded-lg bg-muted/30 border">
+                          <div className="text-xs text-muted-foreground flex items-center gap-1"><Briefcase className="h-3 w-3" /> Niche</div>
+                          <div className="text-sm font-medium mt-0.5">{profile.niche}</div>
+                        </div>
+                      )}
+                      {profile.monthlySpend && (
+                        <div className="p-3 rounded-lg bg-muted/30 border">
+                          <div className="text-xs text-muted-foreground flex items-center gap-1"><IndianRupee className="h-3 w-3" /> Monthly Spend</div>
+                          <div className="text-sm font-medium mt-0.5">{profile.monthlySpend}</div>
+                        </div>
+                      )}
+                      {profile.role && (
+                        <div className="p-3 rounded-lg bg-muted/30 border">
+                          <div className="text-xs text-muted-foreground flex items-center gap-1"><User className="h-3 w-3" /> Role</div>
+                          <div className="text-sm font-medium mt-0.5">{profile.role}</div>
+                        </div>
+                      )}
+                      {profile.phone && (
+                        <div className="p-3 rounded-lg bg-muted/30 border">
+                          <div className="text-xs text-muted-foreground flex items-center gap-1"><Phone className="h-3 w-3" /> Phone</div>
+                          <div className="text-sm font-medium mt-0.5">{profile.phone}</div>
+                        </div>
+                      )}
+                      {profile.whatsapp && (
+                        <div className="p-3 rounded-lg bg-muted/30 border">
+                          <div className="text-xs text-muted-foreground flex items-center gap-1"><MessageSquare className="h-3 w-3" /> WhatsApp</div>
+                          <div className="text-sm font-medium mt-0.5">{profile.whatsapp}</div>
+                        </div>
+                      )}
+                      {profile.challenge && (
+                        <div className="p-3 rounded-lg bg-muted/30 border sm:col-span-2">
+                          <div className="text-xs text-muted-foreground flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> Biggest Challenge</div>
+                          <div className="text-sm font-medium mt-0.5">{profile.challenge}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+
               <Button
                 onClick={handleSaveProfile}
                 disabled={isSavingProfile || name.trim() === user.name}

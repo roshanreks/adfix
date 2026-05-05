@@ -347,7 +347,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                     <h4 className="font-medium">Required Columns (we auto-detect these)</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    AdFix is flexible. We accept many column name variants — <strong>Amount Spent</strong>, <strong>Spend</strong>, <strong>Cost</strong>, <strong>Spent</strong>, etc.
+                    <strong>The 6 columns above are all you need for a complete audit.</strong> We handle the rest. AdFix is flexible — we accept many column name variants.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {[
@@ -378,7 +378,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                     <h4 className="font-medium">Recommended Columns (for deeper analysis)</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    If these are present, we calculate <strong>ROAS</strong>, <strong>CPA</strong>, <strong>CPM</strong>, <strong>CTR</strong>, <strong>CPC</strong>, <strong>AOV</strong>, and funnel metrics automatically.
+                    <strong>Add these for bonus insights</strong> — ROAS, CPA, CPM, CTR, CPC, AOV, and funnel metrics are calculated automatically when these columns are present.
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {[
@@ -394,6 +394,19 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                     ].map((col) => (
                       <Badge key={col} variant="secondary" className="text-xs font-normal">{col}</Badge>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Auto-detect note */}
+              <Card className="border-blue-200/60 bg-blue-50/40 dark:bg-blue-950/10">
+                <CardContent className="p-4 flex items-start gap-3">
+                  <Info className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300">Column names don't need to match exactly</h4>
+                    <p className="text-sm text-blue-700/80 dark:text-blue-400/80 mt-0.5">
+                      If your export says "Spent" instead of "Amount Spent" or "Conversions" instead of "Purchases" — AdFix will auto-detect them. No need to rename anything.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
