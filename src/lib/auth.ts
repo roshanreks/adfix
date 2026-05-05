@@ -69,9 +69,25 @@ export const {
     async session({ session, token }) {
       if (token?.userId) {
         session.user.id = token.userId as string;
-      }
-      if (token?.onboardingComplete !== undefined) {
-        session.user.onboardingComplete = token.onboardingComplete as boolean;
+        // Refresh onboarding status from DB so changes are picked up immediately
+        // without requiring the user to sign in again
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.userId as string },
+            select: { onboardingComplete: true, name: true, email: true, image: true },
+          });
+          if (dbUser) {
+            session.user.onboardingComplete = dbUser.onboardingComplete;
+            session.user.name = dbUser.name;
+            session.user.email = dbUser.email;
+            session.user.image = dbUser.image;
+          }
+        } catch {
+          // Fallback to token value if DB is unavailable
+          if (token?.onboardingComplete !== undefined) {
+            session.user.onboardingComplete = token.onboardingComplete as boolean;
+          }
+        }
       }
       return session;
     },

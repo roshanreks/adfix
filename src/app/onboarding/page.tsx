@@ -237,10 +237,16 @@ export default function OnboardingPage() {
                   </Label>
                   <Input
                     id="website"
-                    type="url"
+                    type="text"
                     value={website}
                     onChange={(e) => setWebsite(e.target.value)}
-                    placeholder="https://urbanthreads.com"
+                    onBlur={(e) => {
+                      const val = e.target.value.trim();
+                      if (val && !val.match(/^https?:\/\//i)) {
+                        setWebsite("https://" + val);
+                      }
+                    }}
+                    placeholder="urbanthreads.com"
                   />
                 </div>
               </div>
