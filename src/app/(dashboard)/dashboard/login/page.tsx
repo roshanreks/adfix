@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
-import { Eye, EyeOff, LogIn, UserPlus, Sparkles } from "lucide-react";
+import { Eye, EyeOff, LogIn, UserPlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoginPage() {
@@ -62,12 +62,6 @@ export default function LoginPage() {
       toast.error("Google sign-in failed");
       setIsSubmitting(false);
     }
-  }, []);
-
-  const fillDemo = useCallback(() => {
-    setEmail("demo@adfix.app");
-    setPassword("demo123");
-    toast.info("Demo credentials filled. Click Sign In to continue.");
   }, []);
 
   const toggleMode = useCallback(() => {
@@ -254,24 +248,6 @@ export default function LoginPage() {
                 )}
               </div>
 
-              {/* Demo credentials */}
-              <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-0.5">Try the demo</p>
-                    <p className="text-xs text-muted-foreground font-mono">demo@adfix.app / demo123</p>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={fillDemo}
-                    className="gap-1 text-xs h-8"
-                  >
-                    <Sparkles className="h-3 w-3" /> Try Demo
-                  </Button>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </motion.div>

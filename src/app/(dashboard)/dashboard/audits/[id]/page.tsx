@@ -25,6 +25,21 @@ import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, Ar
 import { FadeIn } from "@/components/animations";
 import { PDFExportButton } from "@/components/pdf-report";
 
+function parseReportJson(reportJson: unknown): AuditReport | null {
+  if (!reportJson) return null;
+  if (typeof reportJson === "string") {
+    try {
+      return JSON.parse(reportJson);
+    } catch {
+      return null;
+    }
+  }
+  if (typeof reportJson === "object") {
+    return reportJson as AuditReport;
+  }
+  return null;
+}
+
 export default function AuditDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -44,9 +59,12 @@ export default function AuditDetailPage() {
         .then((res) => res.json())
         .then((data) => {
           if (data.audit?.reportJson) {
-            try {
-              setAudit(JSON.parse(data.audit.reportJson));
-            } catch {
+            const parsed = parseReportJson(data.audit.reportJson);
+            if (parsed) {
+              parsed.id = data.audit.id;
+              parsed.createdAt = data.audit.createdAt;
+              setAudit(parsed);
+            } else {
               setAudit(null);
             }
           } else {

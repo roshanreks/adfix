@@ -14,12 +14,28 @@ import { ArrowRight, Trash2, BarChart3, FileText, Search, TrendingUp, TrendingDo
 import { toast } from "sonner";
 import { SkeletonCard } from "@/components/animations";
 
+function parseReportJson(reportJson: unknown): AuditReport | null {
+  if (!reportJson) return null;
+  if (typeof reportJson === "string") {
+    try {
+      return JSON.parse(reportJson);
+    } catch {
+      return null;
+    }
+  }
+  if (typeof reportJson === "object") {
+    return reportJson as AuditReport;
+  }
+  return null;
+}
+
 export default function AuditsPage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [audits, setAudits] = useState<AuditReport[]>([]);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -29,24 +45,28 @@ export default function AuditsPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
+      setIsFetching(true);
       fetch("/api/audits", { credentials: "include" })
         .then((res) => res.json())
         .then((data) => {
           if (data.audits) {
-            const parsed = data.audits.map((a: { reportJson: string }) => {
-              try {
-                return JSON.parse(a.reportJson);
-              } catch {
-                return null;
-              }
-            }).filter(Boolean);
+            const parsed = data.audits
+              .map((a: { reportJson: unknown; id: string; createdAt: string }) => {
+                const report = parseReportJson(a.reportJson);
+                if (report) {
+                  report.id = a.id;
+                  report.createdAt = a.createdAt;
+                }
+                return report;
+              })
+              .filter(Boolean) as AuditReport[];
             setAudits(parsed);
           }
         })
         .catch(() => {
-          // Fallback to localStorage if API fails
           console.log("API fetch failed, using localStorage fallback");
-        });
+        })
+        .finally(() => setIsFetching(false));
     }
   }, [isLoading, user]);
 
@@ -78,7 +98,7 @@ export default function AuditsPage() {
   const totalSpend = audits.reduce((s, a) => s + (a.account_summary?.total_spend || 0), 0);
   const totalWaste = audits.reduce((s, a) => s + (a.account_summary?.wasted_budget || 0), 0);
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="flex flex-col gap-6 max-w-6xl mx-auto" aria-busy="true">
         <div className="h-8 bg-muted rounded-md w-40 animate-pulse" />

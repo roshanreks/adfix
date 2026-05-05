@@ -128,6 +128,7 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
         const res = await fetch("/api/user", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify(updates),
         });
         if (!res.ok) throw new Error();
@@ -146,6 +147,7 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
         const res = await fetch("/api/user/password", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify({ currentPassword, newPassword }),
         });
         if (!res.ok) {
@@ -164,7 +166,7 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
 
   const deleteAccount = React.useCallback(async (): Promise<void> => {
     try {
-      const res = await fetch("/api/user", { method: "DELETE" });
+      const res = await fetch("/api/user", { method: "DELETE", credentials: "include" });
       if (!res.ok) throw new Error();
       await signOut({ redirect: false });
       router.push("/");

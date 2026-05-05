@@ -1,25 +1,11 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { getToken } from "@auth/core/jwt";
+import { NextRequest, NextResponse } from "next/server";
+import { getSessionUser } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    // Try auth() first (NextAuth v5 standard)
-    let session = await auth();
-    
-    // Fallback: manually verify JWT from cookie if auth() returns null
-    if (!session?.user?.id) {
-      const token = await getToken({
-        req,
-        secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET!,
-      });
-      if (token?.sub) {
-        session = { user: { id: token.sub, email: token.email, name: token.name } } as any;
-      }
-    }
-
-    if (!session?.user?.id) {
+    const user = await getSessionUser(req);
+    if (!user?.id) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
@@ -48,9 +34,9 @@ export async function POST(req: Request) {
     }
 
     const updated = await prisma.user.update({
-      where: { id: session.user.id },
+      where: { id: user.id },
       data: {
-        name: name?.trim() || session.user.name,
+        name: name?.trim() || user.name,
         phone: phone.trim(),
         whatsapp: whatsapp?.trim() || phone.trim(),
         companyName: companyName.trim(),

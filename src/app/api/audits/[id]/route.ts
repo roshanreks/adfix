@@ -1,21 +1,21 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { getSessionUser } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getSessionUser(req);
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
 
     const audit = await prisma.audit.findFirst({
-      where: { id, userId: session.user.id },
+      where: { id, userId: user.id },
     });
 
     if (!audit) {
@@ -30,19 +30,19 @@ export async function GET(
 }
 
 export async function DELETE(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getSessionUser(req);
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
 
     await prisma.audit.deleteMany({
-      where: { id, userId: session.user.id },
+      where: { id, userId: user.id },
     });
 
     return NextResponse.json({ success: true });

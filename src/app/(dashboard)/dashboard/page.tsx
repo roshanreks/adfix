@@ -17,11 +17,27 @@ import {
 } from "lucide-react";
 import { FadeIn, AnimatedCounter, SkeletonCard, SkeletonStats } from "@/components/animations";
 
+function parseReportJson(reportJson: unknown): AuditReport | null {
+  if (!reportJson) return null;
+  if (typeof reportJson === "string") {
+    try {
+      return JSON.parse(reportJson);
+    } catch {
+      return null;
+    }
+  }
+  if (typeof reportJson === "object") {
+    return reportJson as AuditReport;
+  }
+  return null;
+}
+
 export default function DashboardHome() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [audits, setAudits] = useState<AuditReport[]>([]);
   const [seeded, setSeeded] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -34,8 +50,45 @@ export default function DashboardHome() {
       seedSampleAudit();
       setSeeded(true);
     }
-    setAudits(getStoredAudits());
   }, [seeded]);
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      setIsFetching(true);
+      fetch("/api/audits", { credentials: "include" })
+        .then((res) => res.json())
+        .then((data) => {
+          const dbAudits: AuditReport[] = [];
+          if (data.audits) {
+            for (const a of data.audits) {
+              const parsed = parseReportJson(a.reportJson);
+              if (parsed) {
+                // Preserve DB id and createdAt if report JSON has different ones
+                parsed.id = a.id;
+                parsed.createdAt = a.createdAt;
+                dbAudits.push(parsed);
+              }
+            }
+          }
+          // Merge with localStorage audits, dedupe by id
+          const localAudits = getStoredAudits();
+          const all = [...dbAudits];
+          for (const local of localAudits) {
+            if (!all.find((a) => a.id === local.id)) {
+              all.push(local);
+            }
+          }
+          // Sort by createdAt desc
+          all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          setAudits(all);
+        })
+        .catch(() => {
+          // Fallback to localStorage only
+          setAudits(getStoredAudits());
+        })
+        .finally(() => setIsFetching(false));
+    }
+  }, [isLoading, user]);
 
   const handleRunAudit = useCallback(() => {
     const event = new CustomEvent("open-audit-wizard");
@@ -57,7 +110,7 @@ export default function DashboardHome() {
     user?.plan === "detailed" ? "Detailed Plan" :
     user?.plan === "basic" ? "Basic Plan" : "Free Plan";
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="flex flex-col gap-6 max-w-6xl mx-auto" aria-busy="true">
         <div className="flex items-center justify-between">

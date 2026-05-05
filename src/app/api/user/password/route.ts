@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { getSessionUser } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
 
 async function hashPassword(password: string): Promise<string> {
@@ -10,10 +10,10 @@ async function hashPassword(password: string): Promise<string> {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getSessionUser(req);
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -27,11 +27,11 @@ export async function PUT(req: Request) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
     });
 
-    if (!user || !user.password) {
+    if (!dbUser || !dbUser.password) {
       return NextResponse.json(
         { error: "Cannot change password for OAuth accounts" },
         { status: 400 }
@@ -39,7 +39,7 @@ export async function PUT(req: Request) {
     }
 
     const currentHash = await hashPassword(currentPassword);
-    if (user.password !== currentHash) {
+    if (dbUser.password !== currentHash) {
       return NextResponse.json(
         { error: "Current password is incorrect" },
         { status: 400 }
@@ -48,7 +48,7 @@ export async function PUT(req: Request) {
 
     const newHash = await hashPassword(newPassword);
     await prisma.user.update({
-      where: { id: session.user.id },
+      where: { id: user.id },
       data: { password: newHash },
     });
 

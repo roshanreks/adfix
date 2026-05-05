@@ -225,8 +225,9 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
       // Save to localStorage for backward compat
       saveAudit(report);
       // Save to database
+      let navigateId = report.id;
       try {
-        await fetch("/api/audits", {
+        const res = await fetch("/api/audits", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -237,13 +238,19 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
             wastePercentage: report.account_summary.waste_percentage,
           }),
         });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.audit?.id) {
+            navigateId = data.audit.id;
+          }
+        }
       } catch {
         console.error("Failed to save audit to database");
       }
       setIsProcessing(false);
       toast.success("Audit complete!");
       handleClose(false);
-      router.push(`/dashboard/audits/${report.id}`);
+      router.push(`/dashboard/audits/${navigateId}`);
       router.refresh();
     }
   };
