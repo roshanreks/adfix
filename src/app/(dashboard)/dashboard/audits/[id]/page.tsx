@@ -624,13 +624,16 @@ export default function AuditDetailPage() {
                 <Badge variant="secondary" className="mt-1 gap-1">
                   <Star className="h-3 w-3" /> 100% Refund Guarantee — Not satisfied? Full refund, no questions asked.
                 </Badge>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Our team will contact you within 24 hours on your registered WhatsApp number after payment.
+                </p>
               </div>
               {hasPaid ? (
                 <Button
                   className="w-full sm:w-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-6 font-semibold"
                   onClick={() => setShowSuccessDialog(true)}
                 >
-                  <CheckCircle2 className="h-5 w-5" /> Paid — Book Your Call
+                  <CheckCircle2 className="h-5 w-5" /> Paid — We'll Contact You
                 </Button>
               ) : (
                 <Button
@@ -641,7 +644,7 @@ export default function AuditDetailPage() {
                   {paymentLoading ? (
                     <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
                   ) : (
-                    <><Calendar className="h-5 w-5" /> Pay ₹999 & Book Audit</>
+                    <><Calendar className="h-5 w-5" /> Pay ₹999 & Get Full Audit</>
                   )}
                 </Button>
               )}
@@ -740,7 +743,7 @@ export default function AuditDetailPage() {
             </div>
             <DialogTitle>Payment Successful!</DialogTitle>
             <DialogDescription>
-              Your ₹999 AI + Human Full Funnel Audit is confirmed. Book your strategy call now.
+              Your ₹999 AI + Human Full Funnel Audit is confirmed. Our team will reach out to you shortly.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -758,24 +761,17 @@ export default function AuditDetailPage() {
                 <Badge variant="default" className="text-xs bg-emerald-500">Paid & Confirmed</Badge>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Pick a time that works for you. Our team will review your entire funnel before the call.
-            </p>
+            <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-800">
+              <p className="text-sm text-emerald-800 dark:text-emerald-300 font-medium flex items-start gap-2">
+                <MessageSquare className="h-4 w-4 shrink-0 mt-0.5" />
+                Our team will contact you within 24 hours on your registered WhatsApp number.
+              </p>
+            </div>
             <Button
               className="w-full gap-2 bg-primary text-primary-foreground h-12 font-semibold"
-              onClick={() => {
-                const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/your-link";
-                window.open(calendlyUrl, "_blank");
-              }}
-            >
-              <Calendar className="h-5 w-5" /> Book Strategy Call
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full gap-2"
               onClick={() => setShowSuccessDialog(false)}
             >
-              Book Later
+              <Check className="h-5 w-5" /> Got It
             </Button>
             <p className="text-xs text-muted-foreground text-center">
               100% refund guarantee. Not satisfied? Full refund, no questions asked.

@@ -15,5 +15,4 @@ export function getRazorpay(): Razorpay {
 }
 
 export const RAZORPAY_KEY_ID = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || "";
-export const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/your-link";
 export const FUNNEL_AUDIT_AMOUNT = 99900; // ₹999 in paise
