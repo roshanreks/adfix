@@ -1,10 +1,23 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { getToken } from "@auth/core/jwt";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const session = await auth();
+    // Try auth() first (NextAuth v5 standard)
+    let session = await auth();
+    
+    // Fallback: manually verify JWT from cookie if auth() returns null
+    if (!session?.user?.id) {
+      const token = await getToken({
+        req,
+        secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET!,
+      });
+      if (token?.sub) {
+        session = { user: { id: token.sub, email: token.email, name: token.name } } as any;
+      }
+    }
 
     if (!session?.user?.id) {
       return NextResponse.json(

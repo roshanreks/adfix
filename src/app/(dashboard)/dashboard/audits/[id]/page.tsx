@@ -40,7 +40,7 @@ export default function AuditDetailPage() {
 
   useEffect(() => {
     if (params.id) {
-      fetch(`/api/audits/${params.id}`)
+      fetch(`/api/audits/${params.id}`, { credentials: "include" })
         .then((res) => res.json())
         .then((data) => {
           if (data.audit?.reportJson) {

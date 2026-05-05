@@ -29,7 +29,7 @@ export default function AuditsPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      fetch("/api/audits")
+      fetch("/api/audits", { credentials: "include" })
         .then((res) => res.json())
         .then((data) => {
           if (data.audits) {
@@ -53,7 +53,7 @@ export default function AuditsPage() {
   const handleDelete = useCallback(async (id: string) => {
     setIsDeleting(id);
     try {
-      const res = await fetch(`/api/audits/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/audits/${id}`, { method: "DELETE", credentials: "include" });
       if (res.ok) {
         setAudits((prev) => prev.filter((a) => a.id !== id));
         toast.success("Audit deleted");

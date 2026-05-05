@@ -228,6 +228,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
       try {
         await fetch("/api/audits", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: report.name,
