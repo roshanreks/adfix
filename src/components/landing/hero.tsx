@@ -56,10 +56,10 @@ export function Hero() {
             <FadeIn delay={0.6}>
               <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
                 <Link
-                  href="/dashboard"
+                  href="/dashboard/login"
                   className="inline-flex items-center justify-center gap-2 bg-[#6D28D9] text-white px-5 py-3.5 sm:py-3.5 rounded-lg text-base font-semibold hover:bg-[#5b21b6] transition-all press-scale w-full sm:w-auto min-h-[48px] touch-manipulation"
                 >
-                  Run Free Preview <ArrowRight className="h-5 w-5" />
+                  Get My Free Audit <ArrowRight className="h-5 w-5" />
                 </Link>
                 <Link
                   href="#report"
@@ -73,6 +73,11 @@ export function Hero() {
             <FadeIn delay={0.7}>
               <p className="text-[13px] sm:text-[14px] font-medium leading-[1.5] text-muted-foreground">
                 CSV-based analysis <span className="mx-2">•</span> Rule-based logic <span className="mx-2">•</span> No guesswork
+              </p>
+            </FadeIn>
+            <FadeIn delay={0.75}>
+              <p className="text-[12px] sm:text-[13px] text-muted-foreground/70">
+                Trusted by 500+ D2C Brands <span className="mx-1.5">|</span> Powered by Urban Media
               </p>
             </FadeIn>
           </div>

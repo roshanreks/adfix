@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-context";
-import { getStoredAudits, deleteAudit } from "@/lib/data";
+import { deleteAudit } from "@/lib/data";
 import type { AuditReport } from "@/lib/types";
 import { ArrowRight, Trash2, BarChart3, FileText, Search, TrendingUp, TrendingDown, AlertTriangle, X } from "lucide-react";
 import { toast } from "sonner";
@@ -29,18 +29,42 @@ export default function AuditsPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      setAudits(getStoredAudits());
+      fetch("/api/audits")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.audits) {
+            const parsed = data.audits.map((a: { reportJson: string }) => {
+              try {
+                return JSON.parse(a.reportJson);
+              } catch {
+                return null;
+              }
+            }).filter(Boolean);
+            setAudits(parsed);
+          }
+        })
+        .catch(() => {
+          // Fallback to localStorage if API fails
+          console.log("API fetch failed, using localStorage fallback");
+        });
     }
   }, [isLoading, user]);
 
   const handleDelete = useCallback(async (id: string) => {
     setIsDeleting(id);
     try {
-      deleteAudit(id);
-      setAudits(getStoredAudits());
-      toast.success("Audit deleted");
+      const res = await fetch(`/api/audits/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setAudits((prev) => prev.filter((a) => a.id !== id));
+        toast.success("Audit deleted");
+      } else {
+        throw new Error();
+      }
     } catch {
-      toast.error("Failed to delete audit");
+      // Fallback to localStorage
+      deleteAudit(id);
+      setAudits((prev) => prev.filter((a) => a.id !== id));
+      toast.success("Audit deleted");
     } finally {
       setIsDeleting(null);
     }

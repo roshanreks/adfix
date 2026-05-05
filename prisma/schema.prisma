@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  email              String   @unique
+  name               String?
+  image              String?
+  phone              String?
+  whatsapp           String?
+  companyName        String?
+  website            String?
+  niche              String?
+  monthlySpend       String?
+  role               String?
+  challenge          String?
+  password           String?
+  source             String   @default("adfix_audit")
+  isAdmin            Boolean  @default(false)
+  onboardingComplete Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  audits        Audit[]
+  bookings      ConsultationBooking[]
+  whatsappLogs  WhatsAppLog[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Audit {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String
+  reportJson      String
+  csvUrl          String?
+  healthScore     Int
+  wastePercentage Float
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model ConsultationBooking {
+  id            String   @id @default(cuid())
+  userId        String
+  auditId       String?
+  amount        Int      @default(99900)
+  paymentId     String?
+  paymentStatus String   @default("pending")
+  calendlyLink  String?
+  scheduledAt   DateTime?
+  notes         String?
+  status        String   @default("booked")
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model WhatsAppLog {
+  id      String   @id @default(cuid())
+  userId  String
+  phone   String
+  message String
+  sentAt  DateTime @default(now())
+  status  String   @default("sent")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

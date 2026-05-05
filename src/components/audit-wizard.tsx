@@ -101,7 +101,6 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
   const [accountStage, setAccountStage] = useState<AccountStage>("scaling");
   const [riskLevel, setRiskLevel] = useState<RiskLevel>("balanced");
   const [currency, setCurrency] = useState<Currency>("INR");
-  const [analysisDepth, setAnalysisDepth] = useState("basic");
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStep, setProcessingStep] = useState(0);
   const [dragActive, setDragActive] = useState(false);
@@ -148,7 +147,6 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
     setAccountStage(prefs.defaultAccountStage || "scaling");
     setRiskLevel(prefs.defaultRiskLevel || "balanced");
     setCurrency(prefs.defaultCurrency || "INR");
-    setAnalysisDepth("basic");
     setIsProcessing(false);
     setProcessingStep(0);
   }, []);
@@ -222,13 +220,30 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
         accountStage,
         riskLevel,
         currency,
-        tier: analysisDepth as "basic" | "detailed",
+        tier: "detailed",
       }, dateRange, missingFields);
+      // Save to localStorage for backward compat
       saveAudit(report);
+      // Save to database
+      try {
+        await fetch("/api/audits", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: report.name,
+            reportJson: report,
+            healthScore: report.account_summary.health_score,
+            wastePercentage: report.account_summary.waste_percentage,
+          }),
+        });
+      } catch {
+        console.error("Failed to save audit to database");
+      }
       setIsProcessing(false);
       toast.success("Audit complete!");
       handleClose(false);
       router.push(`/dashboard/audits/${report.id}`);
+      router.refresh();
     }
   };
 
@@ -675,60 +690,20 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                     ))}
                   </div>
                 </div>
-                <div className="grid gap-2">
-                  <Label>Analysis Depth</Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[
-                      {
-                        id: "basic",
-                        name: "Basic",
-                        price: "₹499",
-                        desc: "Core diagnostic for quick decisions",
-                        features: ["Health Score & Verdict", "Kill / Fix / Scale", "First 3 items per category", "Web report view"],
-                      },
-                      {
-                        id: "detailed",
-                        name: "Detailed",
-                        price: "₹999",
-                        desc: "Complete audit with full breakdown",
-                        features: ["Everything in Basic", "Unlimited items", "Full benchmarking", "PDF export", "Creative & funnel analysis"],
-                        popular: true,
-                      },
-                    ].map((plan) => (
-                      <div
-                        key={plan.id}
-                        onClick={() => setAnalysisDepth(plan.id as "basic" | "detailed")}
-                        className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${
-                          analysisDepth === plan.id
-                            ? "border-primary bg-primary/[0.03] shadow-sm"
-                            : "border-border bg-background hover:border-muted-foreground/30 hover:bg-muted/20"
-                        }`}
-                      >
-                        {plan.popular && (
-                          <div className="absolute -top-2.5 right-3">
-                            <Badge className="text-[10px] h-5 px-1.5">Popular</Badge>
-                          </div>
-                        )}
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-semibold text-sm">{plan.name}</span>
-                          <span className="font-bold text-sm">{plan.price}</span>
-                        </div>
-                        <p className="text-xs text-muted-foreground mb-2">{plan.desc}</p>
-                        <ul className="space-y-1">
-                          {plan.features.map((f) => (
-                            <li key={f} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                              <Check className="h-3 w-3 text-primary shrink-0" /> {f}
-                            </li>
-                          ))}
-                        </ul>
-                        <div className="mt-3 flex justify-center">
-                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                            analysisDepth === plan.id ? "border-primary bg-primary" : "border-muted-foreground/30"
-                          }`}>
-                            {analysisDepth === plan.id && <Check className="h-2.5 w-2.5 text-white" />}
-                          </div>
-                        </div>
-                      </div>
+                {/* Free Audit Banner */}
+                <div className="p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50/40 dark:bg-emerald-950/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                    <span className="font-semibold text-sm text-emerald-800 dark:text-emerald-300">Free Comprehensive Audit</span>
+                  </div>
+                  <p className="text-xs text-emerald-700 dark:text-emerald-400 mb-3">
+                    All features included at no cost. You get the full health score, waste analysis, benchmarks, and complete Kill/Fix/Scale classification.
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["Health Score & Verdict", "Kill / Fix / Scale", "Waste Analysis", "Benchmarks", "Campaign Structure", "Creative Audit", "Funnel Audit", "PDF Export"].map((f) => (
+                      <span key={f} className="inline-flex items-center gap-1 text-[10px] bg-white dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full text-emerald-700 dark:text-emerald-400">
+                        <Check className="h-2.5 w-2.5" /> {f}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -805,7 +780,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
               <div className="flex flex-col sm:flex-row justify-between gap-2">
                 <Button variant="outline" onClick={() => setStep(3)} className="gap-2 w-full sm:w-auto"><ArrowLeft className="h-4 w-4" /> Back</Button>
                 <Button onClick={handleContinue} disabled={isProcessing} className="bg-primary text-primary-foreground gap-2 w-full sm:w-auto">
-                  {isProcessing ? (<><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>) : (<><FileText className="h-4 w-4" /> Run Audit</>)}
+                  {isProcessing ? (<><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>) : (<><FileText className="h-4 w-4" /> Run Free Audit →</>)}
                 </Button>
               </div>
             </motion.div>

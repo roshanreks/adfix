@@ -279,8 +279,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  image?: string;
   avatar?: string;
   plan: "free" | "basic" | "detailed";
+  onboardingComplete?: boolean;
 }
 
 export interface PricingPlan {
