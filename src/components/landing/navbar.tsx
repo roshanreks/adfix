@@ -49,7 +49,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-[#E2E8F0] bg-white/95 backdrop-blur-md ios:bg-white/90">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-border bg-background/95 backdrop-blur-md ios:bg-background/90">
       <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 sm:px-6 lg:px-12">
         {/* Logo */}
         <Link 
@@ -61,8 +61,8 @@ export function Navbar() {
             UM
           </div>
           <div className="flex flex-col">
-            <span className="text-lg sm:text-[18px] font-bold text-[#0F172A] tracking-tight">UM AdFix</span>
-            <span className="text-[9px] text-[#94A3B8] -mt-0.5 hidden sm:block">Urban Media Ads Auditor</span>
+            <span className="text-lg sm:text-[18px] font-bold text-foreground tracking-tight">UM AdFix</span>
+            <span className="text-[9px] text-muted-foreground -mt-0.5 hidden sm:block">Urban Media Ads Auditor</span>
           </div>
         </Link>
 
@@ -72,7 +72,7 @@ export function Navbar() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-[#475569] hover:text-[#0F172A] transition-colors touch-manipulation"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
             >
               {link.label}
             </Link>
@@ -100,7 +100,7 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" className="w-full sm:w-[360px] p-0 flex flex-col" aria-label="Navigation menu">
             <div className="flex items-center justify-between p-4 border-b bg-white">
-              <span className="text-lg font-bold text-[#0F172A]">Menu</span>
+              <span className="text-lg font-bold text-foreground">Menu</span>
               <button 
                 onClick={() => setOpen(false)} 
                 className="p-2.5 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-lg hover:bg-muted touch-manipulation"
@@ -113,7 +113,7 @@ export function Navbar() {
             <div className="flex-1 overflow-y-auto py-4">
               <nav className="flex flex-col gap-1 px-3" aria-label="Mobile navigation">
                 <div className="flex items-center justify-between py-3 px-3 rounded-lg">
-                  <span className="text-base font-medium text-[#475569]">Theme</span>
+                  <span className="text-base font-medium text-muted-foreground">Theme</span>
                   <ThemeToggle />
                 </div>
                 
@@ -122,7 +122,7 @@ export function Navbar() {
                     key={link.label}
                     href={link.href}
                     onClick={(e) => handleLinkClick(e, link.href)}
-                    className="text-lg font-medium text-[#475569] hover:text-[#0F172A] py-4 px-3 rounded-lg hover:bg-muted min-h-[52px] flex items-center touch-manipulation"
+                    className="text-lg font-medium text-muted-foreground hover:text-foreground py-4 px-3 rounded-lg hover:bg-muted min-h-[52px] flex items-center touch-manipulation"
                   >
                     {link.label}
                   </Link>

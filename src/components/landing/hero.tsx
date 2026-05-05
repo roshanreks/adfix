@@ -18,12 +18,12 @@ const STATS = [
 
 export function Hero() {
   return (
-    <section className="relative pt-16 sm:pt-20 bg-white overflow-hidden">
+    <section className="relative pt-16 sm:pt-20 bg-card overflow-hidden">
       <Aurora size="lg" />
       <GridPattern
         width={60}
         height={60}
-        className="text-[#E2E8F0] opacity-40"
+        className="text-border opacity-40"
         squares={[[2, 3], [5, 7], [8, 1], [11, 4], [14, 8], [3, 12], [7, 15]]}
       />
 
@@ -41,16 +41,16 @@ export function Hero() {
               text="You Might Be Wasting 20–40% of Your Meta Budget"
               delay={0.2}
               wordDelay={0.04}
-              className="text-[28px] sm:text-[40px] lg:text-[56px] font-medium leading-[1.1] sm:leading-[1.08] tracking-[-0.03em] text-[#0F172A]"
+              className="text-[28px] sm:text-[40px] lg:text-[56px] font-medium leading-[1.1] sm:leading-[1.08] tracking-[-0.03em] text-foreground"
             />
 
             <FadeIn delay={0.5}>
-              <p className="max-w-[520px] text-[15px] sm:text-[17px] leading-[1.6] font-normal text-[#475569]">
+              <p className="max-w-[520px] text-[15px] sm:text-[17px] leading-[1.6] font-normal text-muted-foreground">
                 Upload your Meta Ads CSV. AdFix analyzes your data, calculates a fixed Target CPA, and classifies every ad into{" "}
-                <span className="font-medium text-[#0F172A]">Kill</span>,{" "}
-                <span className="font-medium text-[#0F172A]">Fix</span>,{" "}
-                <span className="font-medium text-[#0F172A]">Scale</span>, or{" "}
-                <span className="font-medium text-[#0F172A]">No Action</span>{" "}
+                <span className="font-medium text-foreground">Kill</span>,{" "}
+                <span className="font-medium text-foreground">Fix</span>,{" "}
+                <span className="font-medium text-foreground">Scale</span>, or{" "}
+                <span className="font-medium text-foreground">No Action</span>{" "}
                 using deterministic rules.
               </p>
             </FadeIn>
@@ -65,7 +65,7 @@ export function Hero() {
                 </Link>
                 <Link
                   href="#report"
-                  className="inline-flex items-center justify-center gap-2 bg-white text-[#0F172A] border border-[#E2E8F0] px-5 py-3.5 sm:py-3.5 rounded-lg text-base font-medium hover:bg-[#F8FAFC] transition-all press-scale w-full sm:w-auto min-h-[48px] touch-manipulation"
+                  className="inline-flex items-center justify-center gap-2 bg-card text-foreground border border-border px-5 py-3.5 sm:py-3.5 rounded-lg text-base font-medium hover:bg-muted transition-all press-scale w-full sm:w-auto min-h-[48px] touch-manipulation"
                 >
                   View Sample Report
                 </Link>
@@ -73,7 +73,7 @@ export function Hero() {
             </FadeIn>
 
             <FadeIn delay={0.7}>
-              <p className="text-[13px] sm:text-[14px] font-medium leading-[1.5] text-[#94A3B8]">
+              <p className="text-[13px] sm:text-[14px] font-medium leading-[1.5] text-muted-foreground">
                 CSV-based analysis <span className="mx-2">•</span> Rule-based logic <span className="mx-2">•</span> No guesswork
               </p>
             </FadeIn>
@@ -82,10 +82,10 @@ export function Hero() {
           {/* Right: Score Card */}
           <div className="flex flex-col items-center justify-center gap-6 w-full max-w-[400px] mx-auto lg:mx-0">
             <FadeIn delay={0.3}>
-              <div className="w-full rounded-2xl border border-[#E2E8F0]/60 bg-white/80 backdrop-blur-xl p-5 sm:p-6 shadow-elevated">
+              <div className="w-full rounded-2xl border border-border/60 bg-card/80 backdrop-blur-xl p-5 sm:p-6 shadow-elevated">
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
                   <div>
-                    <p className="text-[14px] font-medium text-[#94A3B8]">Health Score</p>
+                    <p className="text-[14px] font-medium text-muted-foreground">Health Score</p>
                   </div>
                   <span className="inline-flex items-center rounded-full bg-[#FEF2F2] px-2 py-1 text-[12px] font-semibold text-[#DC2626]">
                     Average
@@ -93,13 +93,13 @@ export function Hero() {
                 </div>
 
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-[42px] sm:text-[56px] lg:text-[72px] font-semibold text-[#0F172A] leading-none">
+                  <span className="text-[42px] sm:text-[56px] lg:text-[72px] font-semibold text-foreground leading-none">
                     <NumberTicker value={42} duration={1.5} />
                   </span>
-                  <span className="text-[18px] sm:text-[22px] lg:text-[24px] text-[#94A3B8]">/100</span>
+                  <span className="text-[18px] sm:text-[22px] lg:text-[24px] text-muted-foreground">/100</span>
                 </div>
 
-                <div className="mb-4 sm:mb-6 h-2 w-full rounded-full bg-[#F1F5F9]">
+                <div className="mb-4 sm:mb-6 h-2 w-full rounded-full bg-muted">
                   <div
                     className="h-full rounded-full bg-[#DC2626] transition-all duration-1000 ease-out"
                     style={{ width: "42%" }}
@@ -111,29 +111,29 @@ export function Hero() {
                     <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-[#DC2626] leading-none">
                       <NumberTicker value={6} />
                     </p>
-                    <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-[#94A3B8]">Kill</p>
+                    <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-muted-foreground">Kill</p>
                   </div>
                   <div className="rounded-lg bg-[#FFFBEB] p-2 sm:p-3 text-center">
                     <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-[#D97706] leading-none">
                       <NumberTicker value={4} />
                     </p>
-                    <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-[#94A3B8]">Fix</p>
+                    <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-muted-foreground">Fix</p>
                   </div>
                   <div className="rounded-lg bg-[#ECFDF5] p-2 sm:p-3 text-center">
                     <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-[#059669] leading-none">
                       <NumberTicker value={2} />
                     </p>
-                    <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-[#94A3B8]">Scale</p>
+                    <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-muted-foreground">Scale</p>
                   </div>
                 </div>
 
-                <div className="border-t border-[#E2E8F0] pt-3 sm:pt-4 space-y-1.5 sm:space-y-2">
+                <div className="border-t border-border pt-3 sm:pt-4 space-y-1.5 sm:space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[13px] sm:text-[14px] text-[#94A3B8]">Wasted Budget</span>
-                    <span className="text-[13px] sm:text-[14px] font-semibold text-[#0F172A]">₹1,27,450</span>
+                    <span className="text-[13px] sm:text-[14px] text-muted-foreground">Wasted Budget</span>
+                    <span className="text-[13px] sm:text-[14px] font-semibold text-foreground">₹1,27,450</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[13px] sm:text-[14px] text-[#94A3B8]">Waste %</span>
+                    <span className="text-[13px] sm:text-[14px] text-muted-foreground">Waste %</span>
                     <span className="text-[13px] sm:text-[14px] font-semibold text-[#DC2626]">38.5%</span>
                   </div>
                 </div>
@@ -144,14 +144,14 @@ export function Hero() {
 
         {/* Stats Section */}
         <FadeIn delay={0.8}>
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 py-6 sm:py-8 border-t border-[#F1F5F9] mt-8 sm:mt-16">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 py-6 sm:py-8 border-t border-border mt-8 sm:mt-16">
             {STATS.map((stat) => (
               <div key={stat.label} className="text-center min-w-[80px]">
-                <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-[#0F172A]">
+                <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-foreground">
                   {stat.prefix && <span className="text-[#6D28D9]">{stat.prefix}</span>}
                   <NumberTicker value={stat.value} suffix={stat.suffix} />
                 </p>
-                <p className="text-[12px] sm:text-[13px] text-[#94A3B8] mt-1">{stat.label}</p>
+                <p className="text-[12px] sm:text-[13px] text-muted-foreground mt-1">{stat.label}</p>
               </div>
             ))}
           </div>

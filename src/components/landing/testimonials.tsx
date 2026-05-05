@@ -38,14 +38,14 @@ export function Testimonials() {
   const prev = () => setCurrent((c) => (c - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
 
   return (
-    <section className="py-16 sm:py-24 bg-[#F8FAFC] overflow-hidden">
+    <section className="py-16 sm:py-24 bg-muted overflow-hidden">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12">
         <ScrollReveal>
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-[#0F172A]">
+            <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-foreground">
               Trusted by Growth Teams
             </h2>
-            <p className="mx-auto mt-4 sm:mt-6 max-w-[600px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-[#475569]">
+            <p className="mx-auto mt-4 sm:mt-6 max-w-[600px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-muted-foreground">
               Real results from real marketers who've optimized their Meta ad spend.
             </p>
           </div>
@@ -61,10 +61,10 @@ export function Testimonials() {
                 {TESTIMONIALS.map((t, i) => (
                   <div key={i} className="w-full flex-shrink-0 px-4 sm:px-8">
                     <div className="mx-auto max-w-[800px]">
-                      <div className="relative bg-white rounded-2xl border border-[#E2E8F0] p-8 sm:p-12 shadow-elevated">
+                      <div className="relative bg-card rounded-2xl border border-border p-8 sm:p-12 shadow-elevated">
                         <Quote className="absolute top-6 left-6 h-10 w-10 text-[#6D28D9]/20" />
                         <blockquote className="relative">
-                          <p className="text-[18px] sm:text-[22px] lg:text-[24px] leading-[1.5] text-[#0F172A] font-medium">
+                          <p className="text-[18px] sm:text-[22px] lg:text-[24px] leading-[1.5] text-foreground font-medium">
                             "{t.quote}"
                           </p>
                           <footer className="mt-8 flex items-center gap-4">
@@ -72,8 +72,8 @@ export function Testimonials() {
                               {t.name.charAt(0)}
                             </div>
                             <div>
-                              <div className="font-semibold text-[#0F172A]">{t.name}</div>
-                              <div className="text-[14px] text-[#475569]">
+                              <div className="font-semibold text-foreground">{t.name}</div>
+                              <div className="text-[14px] text-muted-foreground">
                                 {t.role}, {t.company}
                               </div>
                             </div>
@@ -88,17 +88,17 @@ export function Testimonials() {
 
             <button
               onClick={prev}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 sm:translate-x-0 bg-white border border-[#E2E8F0] rounded-full p-3 shadow-lg hover:bg-[#F8FAFC] transition-colors"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 sm:translate-x-0 bg-card border border-border rounded-full p-3 shadow-lg hover:bg-muted transition-colors"
               aria-label="Previous testimonial"
             >
-              <ChevronLeft className="h-5 w-5 text-[#0F172A]" />
+              <ChevronLeft className="h-5 w-5 text-foreground" />
             </button>
             <button
               onClick={next}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 sm:translate-x-0 bg-white border border-[#E2E8F0] rounded-full p-3 shadow-lg hover:bg-[#F8FAFC] transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 sm:translate-x-0 bg-card border border-border rounded-full p-3 shadow-lg hover:bg-muted transition-colors"
               aria-label="Next testimonial"
             >
-              <ChevronRight className="h-5 w-5 text-[#0F172A]" />
+              <ChevronRight className="h-5 w-5 text-foreground" />
             </button>
           </div>
         </ScrollReveal>
@@ -110,7 +110,7 @@ export function Testimonials() {
                 key={i}
                 onClick={() => setCurrent(i)}
                 className={`w-2 h-2 rounded-full transition-all ${
-                  i === current ? "bg-[#6D28D9] w-6" : "bg-[#E2E8F0]"
+                  i === current ? "bg-[#6D28D9] w-6" : "bg-muted"
                 }`}
                 aria-label={`Go to testimonial ${i + 1}`}
               />
