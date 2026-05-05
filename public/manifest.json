@@ -1,0 +1,28 @@
+{
+  "name": "UM AdFix — Urban Media Ads Auditor",
+  "short_name": "UM AdFix",
+  "description": "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad. Rule-based analysis, no guesswork.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6d28d9",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}

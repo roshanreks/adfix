@@ -61,22 +61,22 @@ export default function AuditDetailPage() {
   const isDetailed = user.plan === "detailed";
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl mx-auto">
+    <div className="flex flex-col gap-4 sm:gap-6 max-w-6xl mx-auto">
       <FadeIn>
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" onClick={() => router.push("/dashboard/audits")} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
+        <div className="flex items-center justify-between gap-2">
+          <Button variant="ghost" onClick={() => router.push("/dashboard/audits")} className="gap-2 min-h-10"><ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Back</span></Button>
           {isDetailed ? <PDFExportButton report={audit} /> : <Button variant="outline" onClick={handleExportPDF} className="gap-2"><Lock className="h-4 w-4" /> Export PDF</Button>}
         </div>
       </FadeIn>
 
       {/* Audit name + health */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <FadeIn delay={0.1} className="md:col-span-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <FadeIn delay={0.1} className="sm:col-span-2 lg:col-span-2">
           <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
-                  <h1 className="text-2xl font-bold">{audit.name}</h1>
+                  <h1 className="text-xl sm:text-2xl font-bold">{audit.name}</h1>
                   <p className="text-sm text-muted-foreground">
                     {audit.audit_metadata.reporting_start ? new Date(audit.audit_metadata.reporting_start).toLocaleDateString("en-IN") : "No date range"}
                     {audit.audit_metadata.reporting_end && ` — ${new Date(audit.audit_metadata.reporting_end).toLocaleDateString("en-IN")}`}

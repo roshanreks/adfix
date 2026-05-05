@@ -121,16 +121,60 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-y: none;
   }
 }
 
+/* Mobile-first responsive typography */
 @layer utilities {
-  /* Stripe-inspired multi-layer chromatic shadows */
+  /* Safe area for notched devices */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  
+  /* Touch optimization */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Prevent selection on UI elements */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  
+  /* Smooth scrolling with momentum on iOS */
+  .smooth-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Stripe-inspired shadows */
+@layer utilities {
   .shadow-elevated {
     box-shadow: rgba(50, 40, 93, 0.18) 0px 30px 45px -30px, rgba(0, 0, 0, 0.08) 0px 18px 36px -18px;
   }
@@ -143,14 +187,13 @@
   .shadow-product {
     box-shadow: rgba(0, 0, 0, 0.22) 3px 5px 30px 0px;
   }
-  /* Apple-inspired press micro-interaction */
+  /* Press interaction */
   .press-scale {
     transition: transform 150ms ease-out;
   }
   .press-scale:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
-  /* Linear-inspired hairline border */
   .border-hairline {
     border-color: #e2e8f0;
   }
@@ -159,6 +202,7 @@
   }
 }
 
+/* Animations */
 @keyframes marquee-left {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -176,4 +220,189 @@
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+/* ========== COMPREHENSIVE MOBILE-FIRST STYLES ========== */
+
+/* Base mobile styles (unprefixed = mobile) */
+@media (max-width: 640px) {
+  /* Ensure readable fonts on mobile */
+  body {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* Minimum touch targets - 44px is Apple HIG recommendation */
+  button, 
+  a, 
+  [role="button"],
+  .btn,
+  .button {
+    min-height: 48px !important;
+    min-width: 48px !important;
+    padding: 12px 20px !important;
+    font-size: 16px !important;
+    border-radius: 12px !important;
+  }
+  
+  /* Larger touch targets for primary actions */
+  .btn-primary,
+  [class*="bg-primary"],
+  .cta-button {
+    min-height: 52px !important;
+    font-size: 17px !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Form inputs */
+  input, 
+  textarea, 
+  select {
+    min-height: 52px !important;
+    font-size: 16px !important;
+    padding: 14px 16px !important;
+    border-radius: 12px !important;
+  }
+  
+  /* Cards */
+  .card,
+  [class*="Card"] {
+    padding: 16px !important;
+    border-radius: 16px !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  
+  /* Headings */
+  h1 { font-size: 1.875rem !important; font-weight: 700 !important; }
+  h2 { font-size: 1.5rem !important; font-weight: 600 !important; }
+  h3 { font-size: 1.25rem !important; font-weight: 600 !important; }
+  h4 { font-size: 1.125rem !important; font-weight: 500 !important; }
+  
+  /* Paragraphs */
+  p, 
+  span, 
+  div {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* Links */
+  a {
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  
+  /* Sheet/Dialog content */
+  [class*="SheetContent"],
+  [class*="DialogContent"] {
+    padding: 20px !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 85vh !important;
+  }
+  
+  /* Navigation items */
+  nav a,
+  nav button,
+  [class*="nav-"] {
+    min-height: 52px !important;
+    padding: 16px !important;
+    font-size: 17px !important;
+  }
+  
+  /* Bottom navigation */
+  [class*="bottom-nav"],
+  [class*="mobile-nav"] {
+    min-height: 64px !important;
+    padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+  
+  /* Tab bars */
+  [class*="TabsList"],
+  [role="tablist"] {
+    min-height: 48px !important;
+    gap: 4px !important;
+  }
+  
+  /* Progress bars */
+  progress,
+  [class*="Progress"] {
+    height: 8px !important;
+    border-radius: 4px !important;
+  }
+  
+  /* Badges */
+  .badge,
+  [class*="Badge"] {
+    min-height: 24px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+  }
+  
+  /* Images */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Tables */
+  table {
+    font-size: 14px !important;
+  }
+  
+  /* Prevent horizontal scroll on body */
+  body {
+    overflow-x: hidden !important;
+  }
+  
+  /* Ensure full width on mobile */
+  .container,
+  [class*="container"] {
+    max-width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .ios-fix {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Fix for iOS viewport height */
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Safe area padding for bottom nav */
+  .pb-safe-ios {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Reduced motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 640px) and (orientation: landscape) {
+  .card,
+  [class*="Card"] {
+    padding: 12px !important;
+  }
+  
+  button, 
+  a, 
+  [role="button"] {
+    min-height: 40px !important;
+  }
 }

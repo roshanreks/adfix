@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { AuditWizard } from "@/components/audit-wizard";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, Home, ClipboardList, Settings, Plus, X } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -15,54 +15,135 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Close sheet on any route change
+  useEffect(() => {
+    setSheetOpen(false);
+  }, [pathname]);
+
+  const navItems = [
+    { href: "/dashboard", icon: Home, label: "Home" },
+    { href: "/dashboard/audits", icon: ClipboardList, label: "Audits" },
+    { href: "/dashboard/settings", icon: Settings, label: "Settings" },
+  ];
+
+  const handleNav = (href: string) => {
+    setSheetOpen(false);
+    router.push(href);
+  };
 
   return (
     <div className="flex min-h-screen">
       <Sidebar onRunAudit={() => setWizardOpen(true)} />
       <div className="flex-1 flex flex-col min-h-screen">
+        {/* Mobile Header */}
         <header className="md:hidden flex items-center justify-between h-16 px-4 border-b border-border bg-white shadow-sm z-10">
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-sm">
-                UM
-              </div>
-              <span className="text-[16px] font-bold text-[#0F172A] tracking-[-0.01em]">UM AdFix</span>
-            </Link>
-          </div>
-          <Sheet>
-            <SheetTrigger
-              className="inline-flex items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 size-8 hover:bg-muted hover:text-foreground"
-              aria-label="Open navigation menu"
+          <button 
+            onClick={() => handleNav("/dashboard")} 
+            className="flex items-center gap-2 min-h-[44px] touch-manipulation"
+          >
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-sm">
+              UM
+            </div>
+            <span className="text-lg font-bold text-[#0F172A]">UM AdFix</span>
+          </button>
+          
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+            <SheetTrigger 
+              className="inline-flex items-center justify-center rounded-lg bg-muted/50 p-2.5 touch-manipulation min-w-[48px] min-h-[48px]"
+              aria-label="Open menu"
             >
-              <Menu className="h-5 w-5" aria-hidden="true" />
+              <Menu className="h-6 w-6" />
             </SheetTrigger>
-            <SheetContent side="right" className="w-[260px] p-0">
-              <div className="flex flex-col h-full">
-                <div className="p-4">
-                  <Button
-                    onClick={() => setWizardOpen(true)}
-                    className="w-full bg-primary text-primary-foreground"
+            <SheetContent side="right" className="w-full sm:w-[360px] p-0 flex flex-col" aria-label="Menu">
+              <div className="flex items-center justify-between p-4 border-b bg-white">
+                <span className="text-lg font-bold text-[#0F172A]">Menu</span>
+                <button 
+                  onClick={() => setSheetOpen(false)} 
+                  className="p-2.5 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-lg hover:bg-muted touch-manipulation"
+                  aria-label="Close menu"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto py-4">
+                <nav className="flex flex-col gap-1 px-3" aria-label="Mobile navigation">
+                  <button
+                    onClick={() => handleNav("/dashboard")}
+                    className="flex items-center gap-3 text-base font-medium text-[#475569] py-4 px-3 rounded-lg hover:bg-muted min-h-[52px] touch-manipulation"
                   >
-                    Run Audit
-                  </Button>
-                </div>
-                <nav className="flex-1 px-2 flex flex-col gap-1" aria-label="Mobile navigation">
-                  <Button variant="ghost" onClick={() => router.push("/dashboard")} className="justify-start">
-                    Home
-                  </Button>
-                  <Button variant="ghost" onClick={() => router.push("/dashboard/audits")} className="justify-start">
-                    Audits
-                  </Button>
-                  <Button variant="ghost" onClick={() => router.push("/dashboard/settings")} className="justify-start">
-                    Settings
-                  </Button>
+                    <Home className="h-5 w-5" /> Home
+                  </button>
+                  <button
+                    onClick={() => handleNav("/dashboard/audits")}
+                    className="flex items-center gap-3 text-base font-medium text-[#475569] py-4 px-3 rounded-lg hover:bg-muted min-h-[52px] touch-manipulation"
+                  >
+                    <ClipboardList className="h-5 w-5" /> Audits
+                  </button>
+                  <button
+                    onClick={() => handleNav("/dashboard/settings")}
+                    className="flex items-center gap-3 text-base font-medium text-[#475569] py-4 px-3 rounded-lg hover:bg-muted min-h-[52px] touch-manipulation"
+                  >
+                    <Settings className="h-5 w-5" /> Settings
+                  </button>
                 </nav>
+              </div>
+              
+              <div className="p-4 border-t bg-white">
+                <Button
+                  onClick={() => { setSheetOpen(false); setWizardOpen(true); }}
+                  className="w-full bg-primary text-primary-foreground text-base font-semibold py-4 min-h-[56px] touch-manipulation"
+                >
+                  <Plus className="h-5 w-5 mr-2" /> Run New Audit
+                </Button>
               </div>
             </SheetContent>
           </Sheet>
         </header>
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">{children}</main>
+        
+        {/* Main Content */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto pb-28 md:pb-4">
+          {children}
+        </main>
+        
+        {/* Mobile Bottom Navigation */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E2E8F0] px-2 py-3 pb-safe z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]" aria-label="Bottom navigation">
+          <div className="flex items-center justify-around">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href));
+              return (
+                <button
+                  key={item.href}
+                  onClick={() => handleNav(item.href)}
+                  className={`flex flex-col items-center gap-1.5 min-w-[64px] min-h-[56px] rounded-xl transition-all touch-manipulation ${
+                    isActive 
+                      ? "text-primary bg-primary/5" 
+                      : "text-[#94A3B8] hover:text-[#475569] hover:bg-muted/50"
+                  }`}
+                  aria-label={`Go to ${item.label}`}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  <item.icon className="h-6 w-6" />
+                  <span className="text-xs font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+            <button
+              onClick={() => setWizardOpen(true)}
+              className="flex flex-col items-center gap-1 min-w-[64px] min-h-[56px] rounded-xl text-primary touch-manipulation"
+              aria-label="Run new audit"
+            >
+              <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center -mt-5 shadow-lg border-4 border-white">
+                <Plus className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xs font-medium mt-1">Run</span>
+            </button>
+          </div>
+        </nav>
       </div>
       <AuditWizard open={wizardOpen} onOpenChange={setWizardOpen} />
     </div>

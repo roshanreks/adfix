@@ -75,14 +75,14 @@ export default function DashboardHome() {
   if (!user) return null;
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl mx-auto">
+    <div className="flex flex-col gap-4 sm:gap-6 max-w-6xl mx-auto">
       <FadeIn>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-[32px] font-semibold tracking-[-0.02em] text-[#0F172A]">Dashboard</h1>
-            <p className="text-[16px] text-[#475569] mt-1">Welcome back, {user.name}</p>
+            <h1 className="text-2xl sm:text-[32px] font-bold text-[#0F172A]">Dashboard</h1>
+            <p className="text-base text-[#475569] mt-1">Welcome back, {user.name}</p>
           </div>
-          <Badge className="bg-[#F3E8FF] text-[#6D28D9] gap-1.5 px-3 py-1 font-semibold border-none">
+          <Badge className="bg-[#F3E8FF] text-[#6D28D9] gap-1.5 px-3 py-1.5 font-semibold border-none text-sm">
             <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
             {planLabel}
           </Badge>
@@ -93,19 +93,19 @@ export default function DashboardHome() {
       <FadeIn delay={0.1}>
         <Card className="bg-white border-[#E2E8F0] shadow-elevated overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-br from-[#F3E8FF]/80 to-transparent opacity-50 pointer-events-none" />
-          <CardContent className="p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
+          <CardContent className="p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
             <div>
-              <h3 className="text-[20px] font-semibold text-[#0F172A] tracking-[-0.01em]">Run a New Audit</h3>
-              <p className="text-[15px] text-[#475569] mt-1">
+              <h3 className="text-lg sm:text-xl font-semibold text-[#0F172A]">Run a New Audit</h3>
+              <p className="text-sm text-[#475569] mt-1">
                 Upload your Meta Ads CSV and get a deterministic classification report.
               </p>
             </div>
             <Button
               onClick={handleRunAudit}
-              className="bg-[#6D28D9] text-white hover:bg-[#5b21b6] gap-2 shadow-[0_4px_14px_0_rgba(109,40,217,0.39)] press-scale shrink-0 h-12 px-6 rounded-lg font-semibold text-[15px]"
+              className="bg-[#6D28D9] text-white hover:bg-[#5b21b6] gap-2 shadow-lg press-scale shrink-0 w-full sm:w-auto h-12 sm:h-12 px-5 rounded-lg font-semibold text-base touch-manipulation"
             >
-              <FileText className="h-4 w-4" aria-hidden="true" />
-              Run New Audit <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <FileText className="h-5 w-5" aria-hidden="true" />
+              Run Audit <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Button>
           </CardContent>
         </Card>
@@ -114,15 +114,14 @@ export default function DashboardHome() {
       {totalAudits === 0 ? (
         <FadeIn delay={0.2}>
           <Card className="border-dashed border-2 border-[#E2E8F0] bg-white shadow-ambient">
-            <CardContent className="p-16 flex flex-col items-center text-center gap-5">
-              <ClipboardList className="h-16 w-16 text-[#94A3B8]" aria-hidden="true" />
-              <h3 className="text-[24px] font-semibold text-[#0F172A] tracking-[-0.01em]">Run Your First Audit</h3>
-              <p className="text-[#475569] max-w-md text-[16px]">
-                Upload your Meta Ads Manager CSV to get started. We support standard export formats
-                with automatic column detection.
+            <CardContent className="p-8 sm:p-16 flex flex-col items-center text-center gap-5">
+              <ClipboardList className="h-14 sm:h-16 w-14 sm:w-16 text-[#94A3B8]" aria-hidden="true" />
+              <h3 className="text-xl sm:text-2xl font-bold text-[#0F172A]">Run Your First Audit</h3>
+              <p className="text-sm sm:text-base text-[#475569] max-w-md">
+                Upload your Meta Ads Manager CSV to get started. We support standard export formats.
               </p>
-              <Button onClick={handleRunAudit} className="bg-[#6D28D9] text-white hover:bg-[#5b21b6] gap-2 press-scale h-11 px-6 rounded-lg font-medium shadow-sm">
-                <FileText className="h-4 w-4" aria-hidden="true" /> Run First Audit
+              <Button onClick={handleRunAudit} className="bg-[#6D28D9] text-white hover:bg-[#5b21b6] gap-2 press-scale h-12 px-6 rounded-lg font-semibold text-base w-full sm:w-auto touch-manipulation">
+                <FileText className="h-5 w-5" aria-hidden="true" /> Run First Audit
               </Button>
             </CardContent>
           </Card>

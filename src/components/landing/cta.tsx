@@ -22,10 +22,10 @@ export function CTA() {
           </p>
         </FadeIn>
         <FadeIn delay={0.2}>
-          <div className="mt-8 sm:mt-10">
+          <div className="mt-6 sm:mt-10">
             <Link
               href="/dashboard"
-              className="inline-flex items-center justify-center gap-2 bg-white text-[#0F172A] px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[15px] sm:text-[16px] font-semibold hover:bg-[#F8FAFC] transition-all press-scale"
+              className="inline-flex items-center justify-center gap-2 bg-white text-[#0F172A] px-5 sm:px-8 py-3.5 sm:py-4 rounded-lg text-base sm:text-[16px] font-semibold hover:bg-[#F8FAFC] transition-all press-scale min-h-[48px] sm:min-h-[52px] touch-manipulation"
             >
               Start Your Audit — From ₹499 <ArrowRight className="h-4 w-4" />
             </Link>

@@ -145,15 +145,15 @@ export default function SettingsPage() {
   if (!user) return null;
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl mx-auto">
+    <div className="flex flex-col gap-4 sm:gap-6 max-w-2xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Manage your account, preferences, and billing.</p>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Settings</h1>
+        <p className="text-sm sm:text-muted-foreground">Manage your account, preferences, and billing.</p>
       </div>
 
       <Tabs defaultValue="profile">
         <div className="overflow-x-auto -mx-4 sm:-mx-0 px-4 sm:px-0">
-        <TabsList className="w-max sm:w-full min-w-full grid grid-cols-4">
+        <TabsList className="w-max sm:w-full min-w-full grid grid-cols-4 gap-1">
           <TabsTrigger value="profile" className="gap-1.5 text-xs sm:text-sm">
             <User className="h-3.5 w-3.5 shrink-0" /> Profile
           </TabsTrigger>

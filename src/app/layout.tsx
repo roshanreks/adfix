@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth-context";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const inter = Inter({
@@ -10,11 +11,20 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#6d28d9",
+};
+
 export const metadata: Metadata = {
   title: "UM AdFix — Urban Media Ads Auditor",
   description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad. Rule-based analysis, no guesswork.",
   keywords: ["Meta Ads", "Facebook Ads", "Ad Audit", "CPA Optimization", "ROAS Analysis", "Ad Performance", "Urban Media"],
   authors: [{ name: "Reachify Innovations" }],
+  manifest: "/manifest.json",
   openGraph: {
     title: "UM AdFix — Urban Media Ads Auditor",
     description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad.",
@@ -26,6 +36,11 @@ export const metadata: Metadata = {
     title: "UM AdFix — Urban Media Ads Auditor",
     description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad.",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "UM AdFix",
+  },
 };
 
 export default function RootLayout({
@@ -35,11 +50,41 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} font-sans antialiased`}>
-      <body className="min-h-full flex flex-col bg-white">
-        <AuthProvider>
-          {children}
-          <Toaster position="top-right" />
-        </AuthProvider>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+        <meta name="theme-color" content="#6d28d9" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="UM AdFix" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link rel="manifest" href="/manifest.json" />
+      </head>
+      <body className="min-h-full flex flex-col bg-white antialiased text-[#0F172A]">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <AuthProvider>
+            {children}
+            <Toaster position="top-right" />
+          </AuthProvider>
+        </ThemeProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js').catch(() => {});
+                });
+              }
+              // Prevent double-tap zoom on mobile
+              document.addEventListener('dblclick', function(event) {
+                if (event.target.tagName === 'BUTTON' || event.target.tagName === 'A' || event.target.tagName === 'INPUT') {
+                  event.preventDefault();
+                }
+              }, { passive: false });
+            `,
+          }}
+        />
       </body>
     </html>
   );

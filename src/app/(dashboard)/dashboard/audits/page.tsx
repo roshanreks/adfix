@@ -67,13 +67,13 @@ export default function AuditsPage() {
   if (!user) return null;
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl mx-auto">
+    <div className="flex flex-col gap-4 sm:gap-6 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Your Audits</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-bold">Your Audits</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             {audits.length} audit{audits.length !== 1 ? "s" : ""}
-            {totalSpend > 0 && ` · ₹${Math.round(totalSpend / 1000)}K analyzed · ₹${Math.round(totalWaste / 1000)}K waste found`}
+            {totalSpend > 0 && ` · ₹${Math.round(totalSpend / 1000)}K analyzed · ₹${Math.round(totalWaste / 1000)}K waste`}
           </p>
         </div>
         <Button
@@ -81,18 +81,18 @@ export default function AuditsPage() {
             const event = new CustomEvent("open-audit-wizard");
             window.dispatchEvent(event);
           }}
-          className="bg-primary text-primary-foreground gap-2 shrink-0"
+          className="bg-primary text-primary-foreground gap-2 shrink-0 h-12 px-5 font-semibold text-base touch-manipulation w-full sm:w-auto"
         >
-          <FileText className="h-4 w-4" aria-hidden="true" /> New Audit
+          <FileText className="h-5 w-5" aria-hidden="true" /> <span className="hidden sm:inline">New Audit</span><span className="sm:hidden">New</span>
         </Button>
       </div>
 
       {audits.length === 0 ? (
         <Card className="border-dashed border-2">
-          <CardContent className="p-12 flex flex-col items-center text-center gap-4">
+          <CardContent className="p-8 sm:p-12 flex flex-col items-center text-center gap-4">
             <BarChart3 className="h-12 w-12 text-muted-foreground" aria-hidden="true" />
-            <h3 className="text-xl font-semibold">No Audits Yet</h3>
-            <p className="text-muted-foreground max-w-md">
+            <h3 className="text-lg sm:text-xl font-bold">No Audits Yet</h3>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-md">
               Run your first audit to see reports here.
             </p>
             <Button
@@ -100,9 +100,9 @@ export default function AuditsPage() {
                 const event = new CustomEvent("open-audit-wizard");
                 window.dispatchEvent(event);
               }}
-              className="bg-primary text-primary-foreground gap-2"
+              className="bg-primary text-primary-foreground gap-2 h-12 px-6 font-semibold text-base touch-manipulation w-full sm:w-auto"
             >
-              <FileText className="h-4 w-4" aria-hidden="true" /> Run Audit
+              <FileText className="h-5 w-5" aria-hidden="true" /> Run Audit
             </Button>
           </CardContent>
         </Card>

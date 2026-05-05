@@ -3,6 +3,7 @@ import { Hero } from "@/components/landing/hero";
 import { Friction } from "@/components/landing/friction";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Trust } from "@/components/landing/trust";
+import { Testimonials } from "@/components/landing/testimonials";
 import { ReportPreview } from "@/components/landing/report-preview";
 import { Pricing } from "@/components/landing/pricing";
 import { FAQ } from "@/components/landing/faq";
@@ -19,6 +20,7 @@ export default function LandingPage() {
         <Friction />
         <HowItWorks />
         <Trust />
+        <Testimonials />
         <ReportPreview />
         <Pricing />
         <FAQ />

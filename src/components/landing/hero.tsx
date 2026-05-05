@@ -8,6 +8,7 @@ import { TextReveal } from "@/components/ui/text-reveal";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { FadeIn } from "@/components/animations";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 const STATS = [
   { label: "Avg Waste Found", value: 32, suffix: "%" },
@@ -56,17 +57,15 @@ export function Hero() {
 
             <FadeIn delay={0.6}>
               <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
-                <MagneticButton className="inline-flex w-full sm:w-auto">
-                  <Link
-                    href="/dashboard"
-                    className="inline-flex items-center justify-center gap-2 bg-[#6D28D9] text-white px-6 py-3 sm:py-3.5 rounded-lg text-[15px] sm:text-[16px] font-semibold hover:bg-[#5b21b6] transition-all press-scale w-full sm:w-auto"
-                  >
-                    Run Free Preview <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </MagneticButton>
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center justify-center gap-2 bg-[#6D28D9] text-white px-5 py-3.5 sm:py-3.5 rounded-lg text-base font-semibold hover:bg-[#5b21b6] transition-all press-scale w-full sm:w-auto min-h-[48px] touch-manipulation"
+                >
+                  Run Free Preview <ArrowRight className="h-5 w-5" />
+                </Link>
                 <Link
                   href="#report"
-                  className="inline-flex items-center justify-center gap-2 bg-white text-[#0F172A] border border-[#E2E8F0] px-6 py-3 sm:py-3.5 rounded-lg text-[15px] sm:text-[16px] font-medium hover:bg-[#F8FAFC] transition-all press-scale w-full sm:w-auto"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-[#0F172A] border border-[#E2E8F0] px-5 py-3.5 sm:py-3.5 rounded-lg text-base font-medium hover:bg-[#F8FAFC] transition-all press-scale w-full sm:w-auto min-h-[48px] touch-manipulation"
                 >
                   View Sample Report
                 </Link>
