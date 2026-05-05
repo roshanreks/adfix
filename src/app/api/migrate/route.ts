@@ -1,17 +1,21 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { execSync } from "child_process";
+import path from "path";
 
 export async function GET() {
   try {
-    // List all tables in the database
-    const tables = await prisma.$queryRaw`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-    `;
-    
-    return NextResponse.json({ tables });
+    const schemaPath = path.join(process.cwd(), "prisma", "schema.prisma");
+    const result = execSync(
+      `npx prisma db push --schema="${schemaPath}" --accept-data-loss`,
+      { encoding: "utf-8", timeout: 30000, env: process.env }
+    );
+    return NextResponse.json({ ok: true, result });
   } catch (error: any) {
-    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ 
+      ok: false, 
+      error: error.message,
+      stderr: error.stderr?.toString(),
+      stdout: error.stdout?.toString()
+    }, { status: 500 });
   }
 }
