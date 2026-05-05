@@ -21,7 +21,7 @@ import {
   CircularScore,
 } from "@/components/report-charts";
 import { ClassificationTable } from "@/components/classification-table";
-import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, ExternalLink } from "lucide-react";
+import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, ExternalLink, Loader2, Calendar, CheckCircle2 } from "lucide-react";
 import { FadeIn } from "@/components/animations";
 import { PDFExportButton } from "@/components/pdf-report";
 
@@ -48,6 +48,10 @@ export default function AuditDetailPage() {
   const [showSticky, setShowSticky] = useState(false);
   const [whatsappModalOpen, setWhatsappModalOpen] = useState(false);
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [hasPaid, setHasPaid] = useState(false);
+  const [paidBooking, setPaidBooking] = useState<{ paymentId: string | null; calendlyLink: string | null; createdAt: Date } | null>(null);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !user) router.push("/dashboard/login");
@@ -85,6 +89,122 @@ export default function AuditDetailPage() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Check if user has already paid for funnel audit
+  useEffect(() => {
+    if (user && params.id) {
+      fetch(`/api/payments/status?auditId=${params.id}`, { credentials: "include" })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.hasPaid) {
+            setHasPaid(true);
+            setPaidBooking(data.booking);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [user, params.id]);
+
+  const loadRazorpayScript = useCallback((): Promise<boolean> => {
+    return new Promise((resolve) => {
+      if ((window as any).Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  }, []);
+
+  const handlePay = useCallback(async () => {
+    if (!user?.id) {
+      toast.error("Please sign in to book");
+      return;
+    }
+    setPaymentLoading(true);
+    try {
+      // Load Razorpay script
+      const loaded = await loadRazorpayScript();
+      if (!loaded) {
+        toast.error("Failed to load payment gateway");
+        return;
+      }
+
+      // Create order
+      const orderRes = await fetch("/api/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ auditId: params.id }),
+      });
+      const orderData = await orderRes.json();
+
+      if (!orderRes.ok) {
+        if (orderRes.status === 409 && orderData.booking) {
+          setHasPaid(true);
+          setPaidBooking(orderData.booking);
+          toast.info("You already have a paid booking");
+          return;
+        }
+        toast.error(orderData.error || "Failed to create order");
+        return;
+      }
+
+      // Open Razorpay checkout
+      const rzp = new (window as any).Razorpay({
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Urban Media — AdFix",
+        description: "AI + Human Full Funnel Audit",
+        order_id: orderData.orderId,
+        prefill: {
+          name: user.name || "",
+          email: user.email || "",
+        },
+        theme: { color: "#6D28D9" },
+        handler: async function (response: any) {
+          try {
+            const verifyRes = await fetch("/api/payments/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                bookingId: orderData.bookingId,
+              }),
+            });
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok && verifyData.success) {
+              setHasPaid(true);
+              setPaidBooking(verifyData.booking);
+              setShowSuccessDialog(true);
+              toast.success("Payment successful! Book your call now.");
+            } else {
+              toast.error(verifyData.error || "Payment verification failed");
+            }
+          } catch {
+            toast.error("Payment verification failed");
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            toast.info("Payment cancelled. You can try again anytime.");
+          },
+        },
+      });
+      rzp.open();
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setPaymentLoading(false);
+    }
+  }, [user, params.id, loadRazorpayScript]);
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -505,15 +625,26 @@ export default function AuditDetailPage() {
                   <Star className="h-3 w-3" /> 100% Refund Guarantee — Not satisfied? Full refund, no questions asked.
                 </Badge>
               </div>
-              <Button
-                className="w-full sm:w-auto gap-2 bg-primary text-primary-foreground h-12 px-6 font-semibold"
-                onClick={() => {
-                  const message = encodeURIComponent("Hi Urban Media team, I'm interested in the ₹999 AI + Human Full Funnel Audit. Please share the next steps.");
-                  window.open(`https://wa.me/919876543210?text=${message}`, "_blank");
-                }}
-              >
-                <MessageSquare className="h-5 w-5" /> Chat on WhatsApp to Book
-              </Button>
+              {hasPaid ? (
+                <Button
+                  className="w-full sm:w-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-6 font-semibold"
+                  onClick={() => setShowSuccessDialog(true)}
+                >
+                  <CheckCircle2 className="h-5 w-5" /> Paid — Book Your Call
+                </Button>
+              ) : (
+                <Button
+                  className="w-full sm:w-auto gap-2 bg-primary text-primary-foreground h-12 px-6 font-semibold"
+                  onClick={handlePay}
+                  disabled={paymentLoading}
+                >
+                  {paymentLoading ? (
+                    <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
+                  ) : (
+                    <><Calendar className="h-5 w-5" /> Pay ₹999 & Book Audit</>
+                  )}
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -596,6 +727,59 @@ export default function AuditDetailPage() {
             >
               <Send className="h-4 w-4" /> Send Summary
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Payment Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-2">
+              <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+            </div>
+            <DialogTitle>Payment Successful!</DialogTitle>
+            <DialogDescription>
+              Your ₹999 AI + Human Full Funnel Audit is confirmed. Book your strategy call now.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="p-4 rounded-lg bg-muted/30 border space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Amount Paid</span>
+                <span className="font-semibold">₹999</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Payment ID</span>
+                <span className="font-mono text-xs">{paidBooking?.paymentId || "N/A"}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Status</span>
+                <Badge variant="default" className="text-xs bg-emerald-500">Paid & Confirmed</Badge>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Pick a time that works for you. Our team will review your entire funnel before the call.
+            </p>
+            <Button
+              className="w-full gap-2 bg-primary text-primary-foreground h-12 font-semibold"
+              onClick={() => {
+                const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/your-link";
+                window.open(calendlyUrl, "_blank");
+              }}
+            >
+              <Calendar className="h-5 w-5" /> Book Strategy Call
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full gap-2"
+              onClick={() => setShowSuccessDialog(false)}
+            >
+              Book Later
+            </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              100% refund guarantee. Not satisfied? Full refund, no questions asked.
+            </p>
           </div>
         </DialogContent>
       </Dialog>
