@@ -3,21 +3,14 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    // Check if emailVerified column exists
-    const check = await prisma.$queryRaw`
-      SELECT column_name 
-      FROM information_schema.columns 
-      WHERE table_name = 'User' AND column_name = 'emailVerified'
+    // List all tables in the database
+    const tables = await prisma.$queryRaw`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
     `;
     
-    if (Array.isArray(check) && check.length > 0) {
-      return NextResponse.json({ ok: true, message: "emailVerified column already exists" });
-    }
-    
-    // Add the column
-    await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN "emailVerified" TIMESTAMP(3)`);
-    
-    return NextResponse.json({ ok: true, message: "emailVerified column added successfully" });
+    return NextResponse.json({ tables });
   } catch (error: any) {
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
