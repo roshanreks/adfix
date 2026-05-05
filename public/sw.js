@@ -1,4 +1,4 @@
-const CACHE_NAME = 'umadfix-v1';
+const CACHE_NAME = 'umadfix-v2';
 const OFFLINE_URL = '/offline';
 const STATIC_ASSETS = [
   '/',
@@ -31,6 +31,14 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Don't cache Next.js build chunks — let them use their own cache headers
+  if (url.pathname.startsWith('/_next/')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(() => {

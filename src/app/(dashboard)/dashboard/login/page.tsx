@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn, UserPlus, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,8 +55,9 @@ export default function LoginPage() {
   const handleGoogleSignIn = useCallback(async () => {
     setIsSubmitting(true);
     try {
-      // Use window.location for Google OAuth (redirect-based flow)
-      window.location.href = "/api/auth/signin/google";
+      // NextAuth v5 requires POST to /api/auth/signin/google
+      // Use the client-side signIn helper which handles CSRF and POST correctly
+      await signIn("google", { callbackUrl: "/dashboard" });
     } catch {
       toast.error("Google sign-in failed");
       setIsSubmitting(false);

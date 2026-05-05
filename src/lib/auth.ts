@@ -19,15 +19,20 @@ export const {
   signOut,
 } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  basePath: "/api/auth",
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  trustHost: true,
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   pages: {
     signIn: "/dashboard/login",
   },
   providers: [
     Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
@@ -38,19 +43,11 @@ export const {
       },
       authorize: async (credentials) => {
         if (!credentials?.email || !credentials?.password) return null;
-
         const email = String(credentials.email).toLowerCase().trim();
         const passwordHash = await hashPassword(String(credentials.password));
-
-        const user = await prisma.user.findUnique({
-          where: { email },
-        });
-
+        const user = await prisma.user.findUnique({ where: { email } });
         if (!user || !user.password) return null;
-
-        // Compare password hash
         if (user.password !== passwordHash) return null;
-
         return {
           id: user.id,
           email: user.email,
@@ -82,7 +79,6 @@ export const {
   events: {
     async signIn({ user, account, isNewUser }) {
       if (isNewUser && account?.provider === "google") {
-        // Auto-promote admin email
         const adminEmail = process.env.ADMIN_EMAIL;
         if (adminEmail && user.email === adminEmail) {
           await prisma.user.update({
