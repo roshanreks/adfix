@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 
 export default function DashboardError({
   error,
@@ -30,14 +29,9 @@ export default function DashboardError({
         />
       </div>
 
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-1"
-      >
+      <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-1">
         <AlertTriangle className="h-8 w-8 text-destructive" aria-hidden="true" />
-      </motion.div>
+      </div>
 
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">We could not load this view</h2>

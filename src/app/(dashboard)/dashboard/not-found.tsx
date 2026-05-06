@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FileQuestion, Home, Search } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function DashboardNotFound() {
   return (
@@ -19,14 +18,9 @@ export default function DashboardNotFound() {
         />
       </div>
 
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-1"
-      >
+      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-1">
         <Search className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
-      </motion.div>
+      </div>
 
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">We could not find that page</h2>

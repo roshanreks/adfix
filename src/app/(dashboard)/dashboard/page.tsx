@@ -17,7 +17,6 @@ import {
 import { ExpertAuditCard } from "@/components/expert-audit-card";
 import { ScaleTeaser } from "@/components/scale-teaser";
 import { FadeIn, AnimatedCounter, SkeletonCard, SkeletonStats } from "@/components/animations";
-import { motion } from "framer-motion";
 
 function parseReportJson(reportJson: unknown): AuditReport | null {
   if (!reportJson) return null;
@@ -242,14 +241,11 @@ export default function DashboardHome() {
         <FadeIn delay={0.2}>
           <Card className="border-dashed border-2 border-border bg-card shadow-ambient hover:shadow-ambient-hover transition-shadow">
             <CardContent className="p-8 sm:p-16 flex flex-col items-center text-center gap-5">
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              >
+              <div className="animate-float-slow">
                 <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/20 to-[#a855f7]/10 flex items-center justify-center">
                   <ClipboardList className="h-10 w-10 text-primary/70" aria-hidden="true" />
                 </div>
-              </motion.div>
+              </div>
               <h3 className="text-xl sm:text-2xl font-bold text-foreground">Run Your First Free Audit</h3>
               <p className="text-sm sm:text-base text-muted-foreground max-w-md">
                 Upload a Meta Ads Manager CSV to see where budget is working, leaking, or ready to scale.

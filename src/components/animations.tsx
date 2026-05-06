@@ -1,14 +1,54 @@
 "use client";
 
-import { motion, useInView, useReducedMotion } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+function usePrefersReducedMotion() {
+  const [prefersReduced, setPrefersReduced] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReduced(media.matches);
+    const handleChange = () => setPrefersReduced(media.matches);
+    media.addEventListener("change", handleChange);
+    return () => media.removeEventListener("change", handleChange);
+  }, []);
+
+  return prefersReduced;
+}
+
+function useInViewportOnce<T extends Element>(margin = "80px") {
+  const ref = useRef<T | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || isVisible) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: margin }
+    );
+
+    observer.observe(node);
+    const frameId = requestAnimationFrame(() => setIsVisible(true));
+
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frameId);
+    };
+  }, [isVisible, margin]);
+
+  return { ref, isVisible };
+}
 
 export function FadeIn({
   children,
   delay = 0,
-  duration = 0.6,
   className = "",
 }: {
   children: React.ReactNode;
@@ -16,77 +56,49 @@ export function FadeIn({
   duration?: number;
   className?: string;
 }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const prefersReduced = useReducedMotion();
-  const [hasEntered, setHasEntered] = useState(false);
-
-  useEffect(() => {
-    if (isInView) setHasEntered(true);
-  }, [isInView]);
-
-  useEffect(() => {
-    const frameId = requestAnimationFrame(() => setHasEntered(true));
-    return () => cancelAnimationFrame(frameId);
-  }, []);
+  const { ref, isVisible } = useInViewportOnce<HTMLDivElement>();
+  const prefersReduced = usePrefersReducedMotion();
 
   if (prefersReduced) {
     return <div className={className}>{children}</div>;
   }
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration, delay, ease: EASE_OUT }}
-      className={className}
+      className={`${className} transition-all duration-500 ease-out ${
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+      }`}
+      style={{ transitionDelay: `${delay * 1000}ms` }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
 export function StaggerContainer({
   children,
   className = "",
-  staggerDelay = 0.1,
+  staggerDelay: _staggerDelay = 0.1,
 }: {
   children: React.ReactNode;
   className?: string;
   staggerDelay?: number;
 }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const prefersReduced = useReducedMotion();
-  const [hasEntered, setHasEntered] = useState(false);
-
-  useEffect(() => {
-    if (isInView) setHasEntered(true);
-  }, [isInView]);
-
-  useEffect(() => {
-    const frameId = requestAnimationFrame(() => setHasEntered(true));
-    return () => cancelAnimationFrame(frameId);
-  }, []);
+  const { ref, isVisible } = useInViewportOnce<HTMLDivElement>();
+  const prefersReduced = usePrefersReducedMotion();
 
   if (prefersReduced) {
     return <div className={className}>{children}</div>;
   }
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial="hidden"
-      animate={hasEntered ? "visible" : "hidden"}
-      variants={{
-        hidden: {},
-        visible: { transition: { staggerChildren: staggerDelay } },
-      }}
-      className={className}
+      className={`${className} transition-opacity duration-500 ${isVisible ? "opacity-100" : "opacity-0"}`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -97,22 +109,18 @@ export function StaggerItem({
   children: React.ReactNode;
   className?: string;
 }) {
-  const prefersReduced = useReducedMotion();
+  const prefersReduced = usePrefersReducedMotion();
 
   if (prefersReduced) {
     return <div className={className}>{children}</div>;
   }
 
   return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT } },
-      }}
-      className={className}
+    <div
+      className={`${className} transition-all duration-500 ease-out`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -130,12 +138,11 @@ export function AnimatedCounter({
   className?: string;
 }) {
   const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-  const prefersReduced = useReducedMotion();
+  const { ref, isVisible } = useInViewportOnce<HTMLSpanElement>();
+  const prefersReduced = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isVisible) return;
     if (prefersReduced) {
       setCount(target);
       return;
@@ -153,7 +160,7 @@ export function AnimatedCounter({
     };
     rafId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId);
-  }, [isInView, target, duration, prefersReduced]);
+  }, [isVisible, target, duration, prefersReduced]);
 
   return (
     <span ref={ref} className={className}>
@@ -171,21 +178,18 @@ export function ScaleIn({
   children: React.ReactNode;
   className?: string;
 }) {
-  const prefersReduced = useReducedMotion();
+  const prefersReduced = usePrefersReducedMotion();
 
   if (prefersReduced) {
     return <div className={className}>{children}</div>;
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className={className}
+    <div
+      className={`${className} scale-100 opacity-100 transition-all duration-300 ease-out`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 

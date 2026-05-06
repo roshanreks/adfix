@@ -9,7 +9,6 @@ import { useAuth } from "@/lib/auth-context";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn, UserPlus, CheckCircle2, TrendingUp, Shield, Zap, Loader2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { trackPixelEvent } from "@/lib/meta-pixel";
 
 const VALUE_PROPS = [
@@ -120,19 +119,16 @@ export default function LoginPage() {
 
         {/* Value props */}
         <div className="relative z-10 space-y-4">
-          {VALUE_PROPS.map((prop, i) => (
-            <motion.div
+          {VALUE_PROPS.map((prop) => (
+            <div
               key={prop.text}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
               className="flex items-center gap-3"
             >
               <div className="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center">
                 <prop.icon className="h-4 w-4 text-primary" />
               </div>
               <span className="text-[14px] text-white/80">{prop.text}</span>
-            </motion.div>
+            </div>
           ))}
         </div>
 
@@ -163,14 +159,7 @@ export default function LoginPage() {
         </div>
 
         <div className="w-full max-w-md mt-16 lg:mt-0">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={isRegistering ? "register" : "login"}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.25 }}
-            >
+          <div>
               <div className="mb-8">
                 <h2 className="text-[28px] font-medium tracking-[-0.02em] text-foreground">
                   {isRegistering ? "Create your free audit account" : "Welcome back"}
@@ -212,11 +201,7 @@ export default function LoginPage() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {isRegistering && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="space-y-2"
-                  >
+                  <div className="space-y-2">
                     <Label htmlFor="name">Full name</Label>
                     <Input
                       id="name"
@@ -228,7 +213,7 @@ export default function LoginPage() {
                       autoComplete="name"
                       className="h-11 focus-visible:ring-primary/30 focus-visible:border-primary/50"
                     />
-                  </motion.div>
+                  </div>
                 )}
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
@@ -315,8 +300,7 @@ export default function LoginPage() {
                   </>
                 )}
               </div>
-            </motion.div>
-          </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>

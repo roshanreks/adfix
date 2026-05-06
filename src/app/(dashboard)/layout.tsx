@@ -2,12 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import { Sidebar } from "@/components/dashboard/sidebar";
-import { AuditWizard } from "@/components/audit-wizard";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Home, ClipboardList, Settings, Plus, X, Camera, Flame, TrendingUp } from "lucide-react";
+
+const AuditWizard = dynamic(
+  () => import("@/components/audit-wizard").then((mod) => mod.AuditWizard),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 export default function DashboardLayout({
   children,
@@ -23,6 +31,12 @@ export default function DashboardLayout({
   useEffect(() => {
     setSheetOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    const openWizard = () => setWizardOpen(true);
+    window.addEventListener("open-audit-wizard", openWizard);
+    return () => window.removeEventListener("open-audit-wizard", openWizard);
+  }, []);
 
   if (pathname === "/dashboard/login") {
     return <>{children}</>;
@@ -188,7 +202,7 @@ export default function DashboardLayout({
           </div>
         </nav>
       </div>
-      <AuditWizard open={wizardOpen} onOpenChange={setWizardOpen} />
+      {wizardOpen && <AuditWizard open={wizardOpen} onOpenChange={setWizardOpen} />}
     </div>
   );
 }

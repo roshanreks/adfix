@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,18 +15,70 @@ import { useAuth } from "@/lib/auth-context";
 
 import { toast } from "sonner";
 import type { AuditReport } from "@/lib/types";
-import {
-  WasteDistributionChart,
-  CpaComparisonChart,
-  ClassificationBarChart,
-  CircularScore,
-} from "@/components/report-charts";
 import { ClassificationTable } from "@/components/classification-table";
 import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, Loader2, Calendar, CheckCircle2, Flame } from "lucide-react";
 import { FadeIn } from "@/components/animations";
-import { PDFExportButton } from "@/components/pdf-report";
 import { trackPixelEvent } from "@/lib/meta-pixel";
 
+const ChartLoading = () => <div className="h-[300px] w-full rounded-lg bg-muted animate-pulse" />;
+
+const WasteDistributionChart = dynamic(
+  () => import("@/components/report-charts").then((mod) => mod.WasteDistributionChart),
+  { ssr: false, loading: ChartLoading }
+);
+
+const CpaComparisonChart = dynamic(
+  () => import("@/components/report-charts").then((mod) => mod.CpaComparisonChart),
+  { ssr: false, loading: ChartLoading }
+);
+
+const ClassificationBarChart = dynamic(
+  () => import("@/components/report-charts").then((mod) => mod.ClassificationBarChart),
+  { ssr: false, loading: ChartLoading }
+);
+
+const PDFExportButton = dynamic(
+  () => import("@/components/pdf-report").then((mod) => mod.PDFExportButton),
+  { ssr: false, loading: () => null }
+);
+
+function CircularScore({ score, size = 120 }: { score: number; size?: number }) {
+  const radius = (size - 12) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (score / 100) * circumference;
+
+  return (
+    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="10"
+          fill="transparent"
+          className="text-muted"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="10"
+          fill="transparent"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className="text-primary transition-all duration-700"
+        />
+      </svg>
+      <div className="absolute text-center">
+        <div className="text-2xl font-bold">{score}</div>
+        <div className="text-xs text-muted-foreground">/100</div>
+      </div>
+    </div>
+  );
+}
 
 function parseReportJson(reportJson: unknown): AuditReport | null {
   if (!reportJson) return null;
