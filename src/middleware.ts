@@ -1,21 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { jwtVerify } from "jose";
-
-const ADMIN_SECRET = new TextEncoder().encode(
-  process.env.ADMIN_SECRET || `admin-secret-roshan-adfix`
-);
+import { verifyAdminSession } from "@/lib/admin-auth";
 
 async function verifyAdminCookie(req: NextRequest): Promise<boolean> {
   const adminCookie = req.cookies.get("admin-session")?.value;
   if (!adminCookie) return false;
-  try {
-    const { payload } = await jwtVerify(adminCookie, ADMIN_SECRET, { clockTolerance: 60 });
-    return payload.role === "admin";
-  } catch {
-    return false;
-  }
+  return verifyAdminSession(adminCookie);
 }
 
 export async function middleware(req: NextRequest) {

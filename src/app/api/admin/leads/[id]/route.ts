@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdminAuthenticated } from "@/lib/admin-auth";
+import { verifyAdminSession, COOKIE_NAME } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import { calculateLeadScore } from "@/lib/lead-score";
 
@@ -14,7 +14,8 @@ async function getLeadWithActivities(id: string) {
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const authenticated = await isAdminAuthenticated();
+    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const authenticated = token ? await verifyAdminSession(token) : false;
     if (!authenticated) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -34,7 +35,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const authenticated = await isAdminAuthenticated();
+    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const authenticated = token ? await verifyAdminSession(token) : false;
     if (!authenticated) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -126,7 +128,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const authenticated = await isAdminAuthenticated();
+    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const authenticated = token ? await verifyAdminSession(token) : false;
     if (!authenticated) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

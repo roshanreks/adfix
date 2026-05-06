@@ -1,15 +1,9 @@
-import { SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
-
 const ADMIN_USERNAME = "urban media";
 const ADMIN_PASSWORD = "roshan";
-const COOKIE_NAME = "admin-session";
+export const COOKIE_NAME = "admin-session";
 
-// Generate a secret from the password (or env var)
-function getSecret(): Uint8Array {
-  const secret = process.env.ADMIN_SECRET || `admin-secret-${ADMIN_PASSWORD}-adfix`;
-  return new TextEncoder().encode(secret);
-}
+const SECRET = process.env.ADMIN_SECRET || "admin-secret-roshan-adfix";
+const SESSION_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
 
 // Hash password with SHA-256 for constant-time comparison
 async function hashPassword(password: string): Promise<string> {
@@ -36,40 +30,59 @@ export async function verifyAdminCredentials(username: string, password: string)
   return username === ADMIN_USERNAME && timingSafeEqual(expectedHash, providedHash);
 }
 
-export async function createAdminSession(): Promise<string> {
-  const token = await new SignJWT({ role: "admin" })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("2h")
-    .sign(getSecret());
-  return token;
+// Simple signed token: timestamp.signature (HMAC-SHA256)
+// Works in both Node.js and Edge Runtime
+async function signData(data: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(SECRET);
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(data));
+  return Array.from(new Uint8Array(signature))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-export async function verifyAdminSession(token: string): Promise<boolean> {
+async function verifySignature(data: string, signatureHex: string): Promise<boolean> {
   try {
-    const { payload } = await jwtVerify(token, getSecret(), {
-      clockTolerance: 60,
-    });
-    return payload.role === "admin";
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(SECRET);
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw",
+      keyData,
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"]
+    );
+    const signature = new Uint8Array(signatureHex.match(/.{2}/g)!.map((b) => parseInt(b, 16)));
+    return await crypto.subtle.verify("HMAC", cryptoKey, signature, encoder.encode(data));
   } catch {
     return false;
   }
 }
 
-export async function getAdminSessionCookie(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  return cookieStore.get(COOKIE_NAME)?.value;
+export async function createAdminSession(): Promise<string> {
+  const timestamp = Date.now();
+  const signature = await signData(String(timestamp));
+  return `${timestamp}.${signature}`;
 }
 
-export async function isAdminAuthenticated(): Promise<boolean> {
-  const token = await getAdminSessionCookie();
-  if (!token) return false;
-  return verifyAdminSession(token);
-}
+export async function verifyAdminSession(token: string): Promise<boolean> {
+  try {
+    const [timestampStr, signature] = token.split(".");
+    if (!timestampStr || !signature) return false;
 
-export function setAdminSessionCookie(token: string): void {
-  // This must be called in a Route Handler where cookies() is writable
-  // We'll set cookies directly in the route handlers
-}
+    const timestamp = parseInt(timestampStr, 10);
+    if (isNaN(timestamp)) return false;
+    if (Date.now() - timestamp > SESSION_TTL_MS) return false;
 
-export { COOKIE_NAME };
+    return await verifySignature(timestampStr, signature);
+  } catch {
+    return false;
+  }
+}
