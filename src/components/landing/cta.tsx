@@ -26,17 +26,17 @@ export function CTA() {
       <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 text-center">
         <FadeIn>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-primary mb-6">
-            Start for Free
+            Ready When You Are
           </span>
         </FadeIn>
         <FadeIn>
           <h2 className="text-[28px] sm:text-[36px] lg:text-[48px] font-medium leading-[1.12] tracking-[-0.02em] text-white text-balance">
-            Structured clarity — or continued guesswork?
+            Stop guessing. Run the free audit.
           </h2>
         </FadeIn>
         <FadeIn delay={0.1}>
           <p className="mx-auto mt-4 sm:mt-6 max-w-[540px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-white/50">
-            Stop guessing which ads to kill, fix, or scale. Upload your CSV and get deterministic answers in seconds.
+            Upload your Meta Ads CSV and see which campaigns need action before more budget gets wasted.
           </p>
         </FadeIn>
         <FadeIn delay={0.2}>
@@ -48,14 +48,14 @@ export function CTA() {
               {/* Shimmer effect */}
               <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
               <span className="relative z-10 flex items-center gap-2">
-                Start Your Audit — From ₹499 <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+                Start Free Audit <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </span>
             </Link>
           </div>
         </FadeIn>
         <FadeIn delay={0.3}>
           <p className="mt-4 sm:mt-6 text-[11px] sm:text-[12px] text-white/30">
-            CSV-based analysis <span className="mx-2">•</span> One-time payment <span className="mx-2">•</span> Instant delivery
+            Free CSV audit <span className="mx-2">•</span> No ad account access <span className="mx-2">•</span> Instant report
           </p>
         </FadeIn>
       </div>

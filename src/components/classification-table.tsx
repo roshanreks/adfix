@@ -26,7 +26,7 @@ export const ClassificationTable = memo(function ClassificationTable({
     return (
       <div className="flex flex-col items-center gap-3 py-12 text-center">
         <CheckCircle2 className="h-8 w-8 text-muted-foreground/40" aria-hidden="true" />
-        <p className="text-sm text-muted-foreground">No ads in this category.</p>
+        <p className="text-sm text-muted-foreground">No ads need this action right now.</p>
       </div>
     );
   }
@@ -67,10 +67,10 @@ export const ClassificationTable = memo(function ClassificationTable({
         <div className="p-8 text-center border-t border-dashed">
           <Lock className="h-8 w-8 text-muted-foreground mx-auto mb-2" aria-hidden="true" />
           <p className="text-sm text-muted-foreground mb-2">
-            {data.length - limit} more items hidden
+            {data.length - limit} more ads are available in the full report
           </p>
-          <Button variant="outline" size="sm" onClick={() => toast.info("Upgrade to Detailed tier to view all items")}>
-            Upgrade to Detailed
+          <Button variant="outline" size="sm" onClick={() => toast.info("Book the ₹999 expert audit to review the full action list with Urban Media.")}>
+            Book Expert Audit
           </Button>
         </div>
       )}

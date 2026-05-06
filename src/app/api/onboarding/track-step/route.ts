@@ -46,6 +46,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Track step error:", error);
-    return NextResponse.json({ error: "Failed to track step" }, { status: 500 });
+    return NextResponse.json({ error: "We could not save onboarding progress." }, { status: 500 });
   }
 }

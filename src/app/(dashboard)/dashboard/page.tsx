@@ -204,8 +204,8 @@ export default function DashboardHome() {
       <FadeIn>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-base text-muted-foreground mt-1">Welcome back, {user.name}</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">AdFix Dashboard</h1>
+            <p className="text-base text-muted-foreground mt-1">Welcome back, {user.name}. Ready to find wasted spend?</p>
           </div>
           <Badge className="bg-primary/10 text-primary gap-1.5 px-3 py-1.5 font-semibold border-none text-sm">
             <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
@@ -222,9 +222,9 @@ export default function DashboardHome() {
           <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
           <CardContent className="p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
             <div>
-              <h3 className="text-lg sm:text-xl font-semibold text-foreground">Run a New Audit</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-foreground">Run a Free Audit</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Upload your Meta Ads CSV and get a deterministic classification report.
+                Upload your Meta Ads CSV and get clear Kill, Fix, Scale, or No Action recommendations.
               </p>
             </div>
             <Button
@@ -232,7 +232,7 @@ export default function DashboardHome() {
               className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 shadow-glow-sm shrink-0 w-full sm:w-auto h-12 px-5 rounded-xl font-semibold text-base touch-manipulation"
             >
               <FileText className="h-5 w-5" aria-hidden="true" />
-              Run Audit <ArrowRight className="h-5 w-5" aria-hidden="true" />
+              Start Free Audit <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Button>
           </CardContent>
         </Card>
@@ -250,12 +250,12 @@ export default function DashboardHome() {
                   <ClipboardList className="h-10 w-10 text-primary/70" aria-hidden="true" />
                 </div>
               </motion.div>
-              <h3 className="text-xl sm:text-2xl font-bold text-foreground">Run Your First Audit</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground">Run Your First Free Audit</h3>
               <p className="text-sm sm:text-base text-muted-foreground max-w-md">
-                Upload your Meta Ads Manager CSV to get started. We support standard export formats.
+                Upload a Meta Ads Manager CSV to see where budget is working, leaking, or ready to scale.
               </p>
               <Button onClick={handleRunAudit} className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 h-12 px-6 rounded-xl font-semibold text-base w-full sm:w-auto touch-manipulation shadow-glow-sm">
-                <FileText className="h-5 w-5" aria-hidden="true" /> Run First Audit
+                <FileText className="h-5 w-5" aria-hidden="true" /> Start First Audit
               </Button>
             </CardContent>
           </Card>
@@ -286,7 +286,7 @@ export default function DashboardHome() {
               />
               <StatCard
                 icon={TrendingDown}
-                label="Waste Found"
+                label="Wasted Spend Found"
                 value={Math.round(totalWasteIdentified / 1000)}
                 suffix="K"
                 colorClass="text-destructive"
@@ -407,7 +407,7 @@ export default function DashboardHome() {
                   <CardContent className="p-6">
                     <p className="text-sm font-medium mb-3 flex items-center gap-2">
                       <ClipboardList className="h-4 w-4 text-primary" />
-                      All Audits
+                      Audit History
                     </p>
                     <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
                       {audits.filter(a => a.account_summary).map((a) => {

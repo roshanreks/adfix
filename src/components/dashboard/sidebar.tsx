@@ -41,7 +41,7 @@ export function Sidebar({ onRunAudit }: SidebarProps) {
           onClick={onRunAudit}
           className="w-full bg-[#6D28D9] text-white hover:bg-[#5b21b6] gap-2 press-scale font-semibold h-11 rounded-lg"
         >
-          <Plus className="h-4 w-4" aria-hidden="true" /> Run New Audit
+          <Plus className="h-4 w-4" aria-hidden="true" /> Start Free Audit
         </Button>
       </div>
 

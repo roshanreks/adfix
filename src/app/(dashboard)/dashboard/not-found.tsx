@@ -29,22 +29,21 @@ export default function DashboardNotFound() {
       </motion.div>
 
       <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Page not found</h2>
+        <h2 className="text-xl font-semibold">We could not find that page</h2>
         <p className="text-muted-foreground max-w-md text-sm leading-relaxed">
-          The page you are looking for does not exist or has been moved.
-          Check the URL or head back to the dashboard.
+          The link may be old, or the report may have been deleted. Head back to your dashboard to continue.
         </p>
       </div>
 
       <div className="flex gap-3">
         <Link href="/dashboard">
           <Button variant="default" className="gap-2">
-            <Home className="h-4 w-4" /> Go to Dashboard
+            <Home className="h-4 w-4" /> Back to Dashboard
           </Button>
         </Link>
         <Link href="/dashboard/audits">
           <Button variant="outline" className="gap-2">
-            <FileQuestion className="h-4 w-4" /> All Audits
+            <FileQuestion className="h-4 w-4" /> Audit History
           </Button>
         </Link>
       </div>

@@ -10,9 +10,9 @@ import { FadeIn } from "@/components/animations";
 import { motion } from "framer-motion";
 
 const STATS = [
-  { label: "Avg Waste Found", value: 32, suffix: "%" },
+  { label: "Average Waste Found", value: 32, suffix: "%" },
   { label: "Audits Run", value: 1240, suffix: "+" },
-  { label: "Budget Saved", value: 47, prefix: "₹", suffix: "L" },
+  { label: "Media Spend Reviewed", value: 47, prefix: "₹", suffix: "L" },
 ];
 
 export function Hero() {
@@ -32,12 +32,12 @@ export function Hero() {
           <div className="flex flex-col gap-6 sm:gap-8 w-full pt-8 lg:pt-0">
             <FadeIn>
               <span className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.08em] text-primary">
-                Deterministic Meta Ads Audit
+                Free Meta Ads CSV Audit
               </span>
             </FadeIn>
 
             <TextReveal
-              text="You Might Be Wasting 20–40% of Your Meta Budget"
+              text="Find the Ads Quietly Draining Your Meta Budget"
               delay={0.2}
               wordDelay={0.04}
               className="text-[28px] sm:text-[40px] lg:text-[56px] font-medium leading-[1.1] sm:leading-[1.08] tracking-[-0.03em] text-foreground text-balance"
@@ -45,12 +45,10 @@ export function Hero() {
 
             <FadeIn delay={0.5}>
               <p className="max-w-[520px] text-[15px] sm:text-[17px] leading-[1.6] font-normal text-muted-foreground">
-                Upload your Meta Ads CSV. AdFix analyzes your data, calculates a fixed Target CPA, and classifies every ad into{" "}
+                Upload your Meta Ads CSV and get a clear, rule-based report that shows which ads to{" "}
                 <span className="font-medium text-foreground">Kill</span>,{" "}
                 <span className="font-medium text-foreground">Fix</span>,{" "}
-                <span className="font-medium text-foreground">Scale</span>, or{" "}
-                <span className="font-medium text-foreground">No Action</span>{" "}
-                using deterministic rules.
+                <span className="font-medium text-foreground">Scale</span>, or leave running. No ad account access required.
               </p>
             </FadeIn>
 
@@ -62,7 +60,7 @@ export function Hero() {
                 >
                   <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                   <span className="relative z-10 flex items-center gap-2">
-                    Get My Free Audit <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
+                    Start Free Audit <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
                   </span>
                 </Link>
                 <Link
@@ -76,12 +74,12 @@ export function Hero() {
 
             <FadeIn delay={0.7}>
               <p className="text-[13px] sm:text-[14px] font-medium leading-[1.5] text-muted-foreground">
-                CSV-based analysis <span className="mx-2">•</span> Rule-based logic <span className="mx-2">•</span> No guesswork
+                CSV-only upload <span className="mx-2">•</span> Rule-based decisions <span className="mx-2">•</span> No ad account access
               </p>
             </FadeIn>
             <FadeIn delay={0.75}>
               <p className="text-[12px] sm:text-[13px] text-muted-foreground/70">
-                Trusted by 500+ D2C Brands <span className="mx-1.5">|</span> Powered by Urban Media
+                Built for D2C founders and performance teams <span className="mx-1.5">|</span> Powered by Urban Media
               </p>
             </FadeIn>
           </div>

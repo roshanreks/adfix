@@ -185,27 +185,27 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
       setMissingFields(result.missingFields);
       setDateRange(result.dateRange);
       if (result.data.length > 0) {
-        toast.success(`Parsed ${result.data.length} ads`);
+        toast.success(`CSV loaded: ${result.data.length} ads found.`);
         if (!auditName) setAuditName(`Audit — ${new Date().toLocaleDateString("en-IN")}`);
       } else {
-        toast.error("No valid ad data found in this CSV");
+        toast.error("We could not find usable ad data in this CSV.");
       }
     } catch {
-      toast.error("Failed to parse CSV");
-      setParseErrors(["Failed to parse CSV file"]);
+      toast.error("We could not read this CSV. Export it again from Meta Ads Manager and retry.");
+      setParseErrors(["We could not read this CSV file."]);
     }
   };
 
   const handleContinue = async () => {
     if (step === 2) {
-      if (parsedData.length === 0) { toast.error("Please upload a valid CSV first"); return; }
+      if (parsedData.length === 0) { toast.error("Upload a valid Meta Ads CSV before continuing."); return; }
       setStep(3);
     } else if (step === 3) {
       setStep(4);
     } else if (step === 4) {
-      if (!auditName.trim()) { toast.error("Please enter an audit name"); return; }
+      if (!auditName.trim()) { toast.error("Name this audit so you can find it later."); return; }
       setIsProcessing(true);
-      const steps = ["Reading CSV...", "Calculating 25+ metrics...", "Running benchmark engine...", "Computing confidence & health scores...", "Classifying each ad...", "Analyzing waste & structure...", "Generating report..."];
+      const steps = ["Reading your CSV...", "Calculating performance metrics...", "Comparing against benchmarks...", "Checking confidence levels...", "Classifying each ad...", "Finding wasted spend...", "Building your report..."];
       for (let i = 0; i < steps.length; i++) {
         setProcessingStep(i);
         await new Promise((r) => setTimeout(r, 300));
@@ -245,10 +245,10 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
           }
         }
       } catch {
-        console.error("Failed to save audit to database");
+        console.error("Audit report could not be saved to the database");
       }
       setIsProcessing(false);
-      toast.success("Audit complete!");
+      toast.success("Audit report is ready.");
       handleClose(false);
       router.push(`/dashboard/audits/${navigateId}?new=true`);
       router.refresh();
@@ -264,7 +264,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
     a.download = "adfix-sample.csv";
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Sample CSV downloaded");
+    toast.success("Sample CSV downloaded.");
   };
 
   const detectedCount = Object.keys(mappedColumns).length;
@@ -277,7 +277,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
       <DialogContent className="sm:max-w-2xl max-h-[95dvh] sm:max-h-[85vh] overflow-y-auto p-0 sm:p-4">
         <div className="p-4 sm:p-0">
         <DialogHeader>
-          <DialogTitle>Run New Audit</DialogTitle>
+          <DialogTitle>Run a Free Meta Ads Audit</DialogTitle>
         </DialogHeader>
 
         <div className="flex items-center gap-1 sm:gap-2 mb-4">
@@ -309,7 +309,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 <CardContent className="p-4 flex flex-col gap-3">
                   <div className="flex items-center gap-2">
                     <PlayCircle className="h-5 w-5 text-primary" />
-                    <h4 className="font-medium">Step 1: Open Meta Ads Manager Reporting</h4>
+                    <h4 className="font-medium">Step 1: Open Meta Ads Manager Reports</h4>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
                     <span className="text-sm text-muted-foreground truncate flex-1 font-mono">https://adsmanager.facebook.com/adsmanager/reporting</span>
@@ -344,10 +344,10 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 <CardContent className="p-4 flex flex-col gap-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                    <h4 className="font-medium">Required Columns (we auto-detect these)</h4>
+                    <h4 className="font-medium">Required columns AdFix can auto-detect</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    <strong>The 6 columns above are all you need for a complete audit.</strong> We handle the rest. AdFix is flexible — we accept many column name variants.
+                    <strong>These columns are enough to run your free audit.</strong> AdFix accepts common column name variants, so your export does not need to be perfect.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {[
@@ -412,9 +412,9 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
               </Card>
 
               <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
-                <Button variant="outline" onClick={() => setStep(2)} className="w-full sm:w-auto">I already have a CSV</Button>
+                <Button variant="outline" onClick={() => setStep(2)} className="w-full sm:w-auto">I Have My CSV</Button>
                 <Button onClick={() => setStep(2)} className="bg-primary text-primary-foreground gap-2 w-full sm:w-auto">
-                  Next: Upload CSV <ArrowRight className="h-4 w-4" />
+                  Upload CSV <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
             </motion.div>
@@ -423,7 +423,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
           {step === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="flex flex-col gap-6">
               <div>
-                <h3 className="font-semibold text-lg">Upload Your CSV</h3>
+                <h3 className="font-semibold text-lg">Upload Your Meta Ads CSV</h3>
                 <p className="text-sm text-muted-foreground">We automatically detect and map your column names.</p>
               </div>
               <div
@@ -490,7 +490,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                       <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="font-medium">{parsedData.length} ads parsed</span>
+                      <span className="font-medium">{parsedData.length} ads ready to audit</span>
                       <span className="text-emerald-600/70 dark:text-emerald-400/60 ml-2">{detectedCount}/{totalFields} columns detected</span>
                     </div>
                   </div>
@@ -621,7 +621,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
           {step === 3 && (
             <motion.div key="step3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="flex flex-col gap-6">
               <div>
-                <h3 className="font-semibold text-lg">Audit Setup</h3>
+                <h3 className="font-semibold text-lg">Set Your Audit Context</h3>
                 <p className="text-sm text-muted-foreground">Tell us about your business so the audit can give better recommendations.</p>
               </div>
               <div className="grid gap-4">
@@ -701,7 +701,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
               <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="audit-name">Audit Name</Label>
-                  <Input id="audit-name" placeholder="e.g. June 2025 Account Audit" value={auditName} onChange={(e) => setAuditName(e.target.value)} />
+                  <Input id="audit-name" placeholder="Example: June 2026 Meta Ads Audit" value={auditName} onChange={(e) => setAuditName(e.target.value)} />
                 </div>
                 <div className="grid gap-2">
                   <Label>Time Window</Label>
@@ -715,7 +715,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 <div className="p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50/40 dark:bg-emerald-950/20">
                   <div className="flex items-center gap-2 mb-2">
                     <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                    <span className="font-semibold text-sm text-emerald-800 dark:text-emerald-300">Free Comprehensive Audit</span>
+                    <span className="font-semibold text-sm text-emerald-800 dark:text-emerald-300">Free CSV Audit Included</span>
                   </div>
                   <p className="text-xs text-emerald-700 dark:text-emerald-400 mb-3">
                     All features included at no cost. You get the full health score, waste analysis, benchmarks, and complete Kill/Fix/Scale classification.
@@ -746,7 +746,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                       <Loader2 className="h-6 w-6 animate-spin text-primary" />
                     </div>
                     <p className="text-sm font-medium text-foreground">
-                      {["Reading CSV", "Calculating 25+ metrics", "Running benchmark engine", "Computing confidence & health scores", "Classifying each ad", "Analyzing waste & structure", "Generating report"][processingStep]}
+                      {["Reading your CSV", "Calculating performance metrics", "Comparing against benchmarks", "Checking confidence levels", "Classifying each ad", "Finding wasted spend", "Building your report"][processingStep]}
                     </p>
                     <p className="text-xs text-muted-foreground">Step {processingStep + 1} of 7</p>
                   </div>
@@ -754,11 +754,11 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                     {[
                       { label: "Reading CSV", icon: FileText },
                       { label: "Calculating metrics", icon: BarChart3 },
-                      { label: "Benchmark engine", icon: TrendingUp },
+                      { label: "Benchmarking", icon: TrendingUp },
                       { label: "Confidence scoring", icon: CheckCircle2 },
                       { label: "Classifying ads", icon: Filter },
                       { label: "Waste analysis", icon: AlertCircle },
-                      { label: "Generating report", icon: ClipboardCheck },
+                      { label: "Building report", icon: ClipboardCheck },
                     ].map((step, i) => {
                       const isComplete = i < processingStep;
                       const isCurrent = i === processingStep;
@@ -801,7 +801,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
               <div className="flex flex-col sm:flex-row justify-between gap-2">
                 <Button variant="outline" onClick={() => setStep(3)} className="gap-2 w-full sm:w-auto"><ArrowLeft className="h-4 w-4" /> Back</Button>
                 <Button onClick={handleContinue} disabled={isProcessing} className="bg-primary text-primary-foreground gap-2 w-full sm:w-auto">
-                  {isProcessing ? (<><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>) : (<><FileText className="h-4 w-4" /> Run Free Audit →</>)}
+                  {isProcessing ? (<><Loader2 className="h-4 w-4 animate-spin" /> Building report...</>) : (<><FileText className="h-4 w-4" /> Run Free Audit</>)}
                 </Button>
               </div>
             </motion.div>
@@ -816,7 +816,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ExternalLink className="h-5 w-5 text-primary" />
-              How to Export Your Meta Ads Report
+              How to Export the Right Meta Ads CSV
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-5">
@@ -853,11 +853,11 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 {
                   step: 3,
                   title: "Set Your Date Range",
-                  desc: "Pick the date range you want to audit (e.g., Last 30 days, Last 90 days). Make sure it covers enough data for meaningful results.",
+                  desc: "Pick the date range you want to audit, such as the last 30 or 90 days. Choose a window with enough spend for meaningful results.",
                 },
                 {
                   step: 4,
-                  title: "Add Required Columns",
+                  title: "Add the Required Columns",
                   desc: "Click the Columns button and make sure these are included: Campaign Name, Ad Name, Amount Spent, Impressions, Clicks, Purchases. Add Purchase Conversion Value if you want ROAS analysis.",
                 },
                 {
@@ -868,7 +868,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 {
                   step: 6,
                   title: "Upload to AdFix",
-                  desc: "Come back here, go to Step 2, and drop your CSV file. AdFix will auto-detect columns and calculate all metrics.",
+                  desc: "Come back here, drop in your CSV, and AdFix will auto-detect columns and calculate the report.",
                 },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-3">
@@ -886,12 +886,12 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 flex items-start gap-2">
               <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
               <p className="text-sm text-amber-700">
-                <strong>Tip:</strong> AdFix accepts many column name variants. If your export says &ldquo;Spent&rdquo; instead of &ldquo;Amount Spent&rdquo; or &ldquo;Conversions&rdquo; instead of &ldquo;Purchases&rdquo; — it will still work.
+                <strong>Tip:</strong> AdFix accepts many column name variants. If your export says &ldquo;Spent&rdquo; instead of &ldquo;Amount Spent&rdquo; or &ldquo;Conversions&rdquo; instead of &ldquo;Purchases&rdquo;, it should still work.
               </p>
             </div>
 
             <Button onClick={() => { setGuideOpen(false); setStep(2); }} className="w-full bg-primary text-primary-foreground gap-2">
-              Got it — Upload CSV <ArrowRight className="h-4 w-4" />
+              Upload CSV <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
         </DialogContent>

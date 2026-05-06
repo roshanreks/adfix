@@ -102,7 +102,7 @@ export default function DashboardLayout({
                   onClick={() => { setSheetOpen(false); setWizardOpen(true); }}
                   className="w-full bg-primary text-primary-foreground text-base font-semibold py-4 min-h-[56px] touch-manipulation"
                 >
-                  <Plus className="h-5 w-5 mr-2" /> Run New Audit
+                  <Plus className="h-5 w-5 mr-2" /> Start Free Audit
                 </Button>
               </div>
             </SheetContent>

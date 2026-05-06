@@ -27,7 +27,7 @@ export function Navbar() {
   const communityLinks = [
     { label: "Urban Media", href: "https://www.instagram.com/theurbanmedia.in/", icon: Camera, external: true },
     { label: "Founder: Roshan", href: "https://www.instagram.com/roshanreks/", icon: Camera, external: true },
-    { label: "Scale Your Brand", href: "https://scale.theurbanmedia.in/?utm_source=adfix&utm_medium=app&utm_campaign=nav", icon: ExternalLink, external: true },
+    { label: "Scale System", href: "https://scale.theurbanmedia.in/?utm_source=adfix&utm_medium=app&utm_campaign=nav", icon: ExternalLink, external: true },
   ];
 
   // Close sheet on any route change (including hash navigation)
@@ -76,7 +76,7 @@ export function Navbar() {
             </div>
             <div className="flex flex-col">
               <span className="text-lg sm:text-[18px] font-bold text-foreground tracking-tight">UM AdFix</span>
-              <span className="text-[9px] text-muted-foreground -mt-0.5 hidden sm:block">Urban Media Ads Auditor</span>
+              <span className="text-[9px] text-muted-foreground -mt-0.5 hidden sm:block">Free Meta Ads CSV Audit</span>
             </div>
           </Link>
 
@@ -131,7 +131,7 @@ export function Navbar() {
               href="/dashboard"
               className="inline-flex items-center justify-center bg-primary text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-all press-scale touch-manipulation min-h-[44px] shadow-glow-sm"
             >
-              Run Audit
+              Start Free Audit
             </Link>
           </div>
 
@@ -209,7 +209,7 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className="flex items-center justify-center gap-2 bg-primary text-white text-lg font-semibold py-3.5 rounded-xl press-scale min-h-[52px] touch-manipulation shadow-glow-sm"
                 >
-                  Run Audit →
+                  Start Free Audit →
                 </Link>
               </div>
             </SheetContent>

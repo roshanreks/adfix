@@ -8,14 +8,14 @@ export async function POST(req: NextRequest) {
   try {
     const user = await getSessionUser(req);
     if (!user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Please sign in to verify payment." }, { status: 401 });
     }
 
     const body = await req.json();
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, bookingId } = body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !bookingId) {
-      return NextResponse.json({ error: "Missing payment details" }, { status: 400 });
+      return NextResponse.json({ error: "Payment details are missing. Please contact support before paying again." }, { status: 400 });
     }
 
     // Verify signature
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       .digest("hex");
 
     if (generatedSignature !== razorpay_signature) {
-      return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
+      return NextResponse.json({ error: "Payment could not be verified. Please contact support before paying again." }, { status: 400 });
     }
 
     // Update booking as paid
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Verify payment error:", error);
     return NextResponse.json(
-      { error: "Failed to verify payment" },
+      { error: "We could not verify this payment. Please contact support before paying again." },
       { status: 500 }
     );
   }

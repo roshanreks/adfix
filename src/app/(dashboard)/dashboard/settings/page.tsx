@@ -91,13 +91,13 @@ export default function SettingsPage() {
   }, [user, isLoading, router]);
 
   const handleSaveProfile = useCallback(async () => {
-    if (!name.trim()) { toast.error("Name cannot be empty"); return; }
+    if (!name.trim()) { toast.error("Enter a name before saving."); return; }
     setIsSavingProfile(true);
     try {
       await updateUser({ name: name.trim() });
-      toast.success("Profile updated");
+      toast.success("Profile updated.");
     } catch {
-      toast.error("Failed to update profile");
+      toast.error("We could not update your profile.");
     } finally {
       setIsSavingProfile(false);
     }
@@ -111,7 +111,7 @@ export default function SettingsPage() {
         defaultMinSpend,
         defaultTargetCPA: defaultTargetCPA ? parseFloat(defaultTargetCPA) : undefined,
       });
-      toast.success("Preferences saved — will be used as defaults in new audits");
+      toast.success("Preferences saved for future audits.");
     } finally {
       setIsSavingPrefs(false);
     }
@@ -119,19 +119,19 @@ export default function SettingsPage() {
 
   const handleChangePassword = useCallback(async () => {
     if (user?.id === "demo-1") {
-      toast.info("Demo accounts cannot change passwords");
+      toast.info("Demo accounts cannot change passwords.");
       return;
     }
-    if (newPassword.length < 4) { toast.error("New password must be at least 4 characters"); return; }
-    if (newPassword !== confirmPassword) { toast.error("Passwords do not match"); return; }
+    if (newPassword.length < 4) { toast.error("Use at least 4 characters for your new password."); return; }
+    if (newPassword !== confirmPassword) { toast.error("The new passwords do not match."); return; }
     setIsSavingPassword(true);
     try {
       const ok = await changePassword(currentPassword, newPassword);
       if (ok) {
-        toast.success("Password changed successfully");
+        toast.success("Password changed.");
         setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
       } else {
-        toast.error("Current password is incorrect");
+        toast.error("Your current password is incorrect.");
       }
     } finally {
       setIsSavingPassword(false);

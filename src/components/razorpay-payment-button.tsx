@@ -67,7 +67,7 @@ export function RazorpayPaymentButton({
   const handlePay = useCallback(async () => {
     onClick?.();
     if (!user?.id) {
-      toast.error("Please sign in to book");
+      toast.error("Sign in first so we can attach the booking to your account.");
       return;
     }
     // Track expert audit click for lead scoring
@@ -80,7 +80,7 @@ export function RazorpayPaymentButton({
     try {
       const loaded = await loadRazorpayScript();
       if (!loaded) {
-        toast.error("Failed to load payment gateway");
+        toast.error("We could not load Razorpay. Check your connection and try again.");
         return;
       }
 
@@ -94,17 +94,17 @@ export function RazorpayPaymentButton({
 
       if (!orderRes.ok) {
         if (orderRes.status === 409 && orderData.booking) {
-          toast.info("You already have a paid booking");
+          toast.info("You already have an expert audit booked.");
           onSuccess?.();
           return;
         }
-        toast.error(orderData.error || "Failed to create order");
+        toast.error(orderData.error || "We could not start checkout. Please try again.");
         return;
       }
 
       const Razorpay = (window as WindowWithRazorpay).Razorpay;
       if (!Razorpay) {
-        toast.error("Payment gateway is unavailable");
+        toast.error("Razorpay is unavailable right now. Please try again in a minute.");
         return;
       }
 
@@ -121,7 +121,7 @@ export function RazorpayPaymentButton({
         amount: orderData.amount,
         currency: orderData.currency,
         name: "Urban Media — AdFix",
-        description: "AI + Human Full Funnel Audit",
+        description: "Urban Media Expert Audit",
         order_id: orderData.orderId,
         prefill: {
           name: user.name || "",
@@ -143,7 +143,7 @@ export function RazorpayPaymentButton({
             });
             const verifyData = await verifyRes.json();
             if (verifyRes.ok && verifyData.success) {
-              toast.success("Payment successful! Our team will contact you within 24 hours.");
+              toast.success("Booking confirmed. Urban Media will contact you on WhatsApp within 24 hours.");
               // Track Meta Pixel Purchase + Lead
               trackPixelEvent("Purchase", {
                 content_name: "Expert Audit — ₹999",
@@ -160,22 +160,22 @@ export function RazorpayPaymentButton({
               });
               onSuccess?.();
             } else {
-              toast.error(verifyData.error || "Payment verification failed");
+              toast.error(verifyData.error || "Payment went through, but verification failed. Contact support before paying again.");
             }
           } catch {
-            toast.error("Payment verification failed");
+            toast.error("Payment went through, but verification failed. Contact support before paying again.");
           }
         },
         modal: {
           ondismiss: function () {
-            toast.info("Payment cancelled. You can try again anytime.");
+            toast.info("Checkout closed. Your card was not charged.");
           },
         },
       });
       rzp.open();
     } catch (err) {
       console.error("Payment error:", err);
-      toast.error("Something went wrong. Please try again.");
+      toast.error("We could not open checkout. Please try again.");
     } finally {
       setIsPaying(false);
     }
@@ -190,10 +190,10 @@ export function RazorpayPaymentButton({
       >
         {isPaying ? (
           <>
-            <Loader2 className="h-3 w-3 animate-spin" /> Processing...
+            <Loader2 className="h-3 w-3 animate-spin" /> Opening checkout...
           </>
         ) : (
-          children || "Book Now — ₹999"
+          children || "Book Expert Audit — ₹999"
         )}
       </button>
     );
@@ -215,12 +215,12 @@ export function RazorpayPaymentButton({
     >
       {isPaying ? (
         <>
-          <Loader2 className="h-4 w-4 animate-spin" /> Processing...
+          <Loader2 className="h-4 w-4 animate-spin" /> Opening checkout...
         </>
       ) : (
         <>
           <Calendar className="h-4 w-4" />
-          {children || "Pay ₹999 & Get Full Audit"}
+          {children || "Book Expert Audit — ₹999"}
         </>
       )}
     </Button>

@@ -3,32 +3,32 @@ import type { AuditReport, PricingPlan, UserPreferences } from "@/lib/types";
 export const PRICING_PLANS: PricingPlan[] = [
   {
     id: "basic",
-    name: "Basic",
-    price: 499,
-    description: "Core diagnostic for quick decisions",
+    name: "Free CSV Audit",
+    price: 0,
+    description: "A fast diagnostic for your Meta Ads data",
     features: [
       "Health Score & Verdict",
       "Kill / Fix / Scale classification",
-      "First 3 items per category",
-      "Strategic overview",
+      "Waste analysis and benchmarks",
+      "Top 3 priority actions",
       "Web report view",
     ],
   },
   {
     id: "detailed",
-    name: "Detailed",
+    name: "₹999 Expert Audit",
     price: 999,
-    description: "Complete audit with full breakdown",
+    description: "A full-funnel review by Urban Media",
     features: [
-      "Everything in Basic",
-      "Unlimited items per category",
+      "Everything in the Free CSV Audit",
+      "Complete Kill / Fix / Scale lists",
       "Full benchmarking analysis",
-      "Complete metric breakdown per ad",
+      "Per-ad optimization roadmap",
       "PDF export",
-      "Historical trend view",
       "Campaign structure audit",
       "Creative & funnel analysis",
       "Tracking audit",
+      "30-minute strategy call",
     ],
     popular: true,
   },
@@ -37,23 +37,23 @@ export const PRICING_PLANS: PricingPlan[] = [
 export const FAQ_ITEMS = [
   {
     question: "Does AdFix change anything in my ad account?",
-    answer: "No. AdFix is a read-only CSV analyzer. It does not connect to Meta APIs, modify ads, or execute any actions in your account.",
+    answer: "No. AdFix works from a CSV export. It does not connect to your Meta account, change campaigns, or make decisions for you.",
   },
   {
     question: "What is AdFix benchmarking against?",
-    answer: "AdFix benchmarks ads against your own account averages (account-level CPA, ROAS, CTR, CPM). You can also provide target CPA/ROAS for more precise analysis.",
+    answer: "AdFix compares ads against your own account averages, including CPA, ROAS, CTR, CPM, and spend. You can add target CPA or ROAS for sharper recommendations.",
   },
   {
     question: "Will this disrupt the learning phase?",
-    answer: "No. AdFix does not touch your ad account. You decide whether to act on the recommendations.",
+    answer: "No. AdFix is read-only. You get the recommendation, and you decide what to do inside Meta Ads Manager.",
   },
   {
     question: "What if I disagree with a K/F/S decision?",
-    answer: "You have full control. AdFix provides reasoning for every classification. You can override any recommendation based on your business context.",
+    answer: "You stay in control. Every classification includes reasoning, so you can accept it, ignore it, or use it as a starting point for your own judgment.",
   },
   {
     question: "Is this AI-based?",
-    answer: "AdFix uses deterministic rules based on your CSV data. Same data always produces the same output, ensuring consistency and transparency.",
+    answer: "The audit engine is rule-based. That means the same CSV produces the same report, without black-box guesses.",
   },
   {
     question: "Is this useful for small accounts?",
@@ -65,7 +65,7 @@ export const FAQ_ITEMS = [
   },
   {
     question: "What do I receive after running the audit?",
-    answer: "A structured web report with executive summary, waste analysis, per-ad classifications, benchmarks, funnel audit, creative audit, tracking audit, and methodology. Detailed tier includes PDF export.",
+    answer: "You get a web report with health score, waste analysis, ad-level classifications, benchmarks, funnel signals, creative signals, and priority actions. The ₹999 expert audit adds Urban Media's human review and strategy call.",
   },
 ];
 

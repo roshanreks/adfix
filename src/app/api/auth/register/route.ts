@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
     if (!email || !password || !name) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Name, email, and password are required." },
         { status: 400 }
       );
     }
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
     if (existing) {
       return NextResponse.json(
-        { error: "Email already registered" },
+        { error: "This email already has an AdFix account. Please sign in instead." },
         { status: 409 }
       );
     }
@@ -97,7 +97,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
-      { error: "Failed to create account" },
+      { error: "We could not create your account. Please try again." },
       { status: 500 }
     );
   }

@@ -174,7 +174,7 @@ export default function AuditDetailPage() {
 
   const handlePay = useCallback(async () => {
     if (!user?.id) {
-      toast.error("Please sign in to book");
+      toast.error("Sign in first so we can attach the booking to your account.");
       return;
     }
     setPaymentLoading(true);
@@ -182,7 +182,7 @@ export default function AuditDetailPage() {
       // Load Razorpay script
       const loaded = await loadRazorpayScript();
       if (!loaded) {
-        toast.error("Failed to load payment gateway");
+        toast.error("We could not load Razorpay. Check your connection and try again.");
         return;
       }
 
@@ -199,17 +199,17 @@ export default function AuditDetailPage() {
         if (orderRes.status === 409 && orderData.booking) {
           setHasPaid(true);
           setPaidBooking(orderData.booking);
-          toast.info("You already have a paid booking");
+          toast.info("You already have an expert audit booked.");
           return;
         }
-        toast.error(orderData.error || "Failed to create order");
+        toast.error(orderData.error || "We could not start checkout. Please try again.");
         return;
       }
 
       // Open Razorpay checkout
       const Razorpay = (window as WindowWithRazorpay).Razorpay;
       if (!Razorpay) {
-        toast.error("Payment gateway is unavailable");
+        toast.error("Razorpay is unavailable right now. Please try again in a minute.");
         return;
       }
 
@@ -218,7 +218,7 @@ export default function AuditDetailPage() {
         amount: orderData.amount,
         currency: orderData.currency,
         name: "Urban Media — AdFix",
-        description: "AI + Human Full Funnel Audit",
+        description: "Urban Media Expert Audit",
         order_id: orderData.orderId,
         prefill: {
           name: user.name || "",
@@ -243,23 +243,23 @@ export default function AuditDetailPage() {
               setHasPaid(true);
               setPaidBooking(verifyData.booking);
               setShowSuccessDialog(true);
-              toast.success("Payment successful! Book your call now.");
+              toast.success("Booking confirmed. Urban Media will contact you on WhatsApp within 24 hours.");
             } else {
-              toast.error(verifyData.error || "Payment verification failed");
+              toast.error(verifyData.error || "Payment went through, but verification failed. Contact support before paying again.");
             }
           } catch {
-            toast.error("Payment verification failed");
+            toast.error("Payment went through, but verification failed. Contact support before paying again.");
           }
         },
         modal: {
           ondismiss: function () {
-            toast.info("Payment cancelled. You can try again anytime.");
+            toast.info("Checkout closed. Your card was not charged.");
           },
         },
       });
       rzp.open();
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("We could not open checkout. Please try again.");
     } finally {
       setPaymentLoading(false);
     }
@@ -294,7 +294,7 @@ export default function AuditDetailPage() {
       <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
         <HelpCircle className="h-12 w-12 text-muted-foreground" />
         <h2 className="text-xl font-semibold">Unable to load audit</h2>
-        <p className="text-muted-foreground max-w-sm">We couldn't fetch your audit. Please check your connection and try again.</p>
+        <p className="text-muted-foreground max-w-sm">We could not fetch your audit. Check your connection and try again.</p>
         <Button onClick={() => window.location.reload()} variant="outline">
           <ArrowLeft className="h-4 w-4 mr-2" /> Tap to Retry
         </Button>
@@ -305,10 +305,10 @@ export default function AuditDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
         <HelpCircle className="h-12 w-12 text-muted-foreground" />
-        <h2 className="text-xl font-semibold">Audit not found</h2>
-        <p className="text-muted-foreground">The audit you are looking for does not exist or has been removed.</p>
+        <h2 className="text-xl font-semibold">We could not find that audit</h2>
+        <p className="text-muted-foreground">The report may have been deleted, or the link may be old.</p>
         <Button onClick={() => router.push("/dashboard/audits")} variant="outline">
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Audits
+          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Audit History
         </Button>
       </div>
     );
@@ -343,7 +343,7 @@ export default function AuditDetailPage() {
             <div className="flex items-center gap-3 min-w-0">
               <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard/audits")} className="gap-1.5 h-10 px-3 shrink-0 min-h-[44px]">
                 <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline text-xs">Audits</span>
+                <span className="hidden sm:inline text-xs">Audit History</span>
               </Button>
               <div className="h-4 w-px bg-border shrink-0 hidden sm:block" />
               <h2 className="text-sm font-semibold truncate max-w-[140px] sm:max-w-xs">{audit.name}</h2>
@@ -407,7 +407,7 @@ export default function AuditDetailPage() {
             className="w-full gap-2 bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:text-green-800 dark:bg-green-950/20 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-950/30"
             onClick={() => setWhatsappModalOpen(true)}
           >
-            <MessageSquare className="h-4 w-4" /> Send Report to WhatsApp
+            <MessageSquare className="h-4 w-4" /> Send Summary to WhatsApp
           </Button>
           <Card>
             <CardContent className="p-6 flex flex-col gap-2">
@@ -448,21 +448,21 @@ export default function AuditDetailPage() {
                 <Star className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-bold">Want a Deeper Audit?</h3>
+                <h3 className="text-lg font-bold">Want Expert Eyes on This?</h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Our team of AI + Human experts will audit your entire funnel — Shopify store, Facebook Ads, Google Ads, landing pages, creatives, and offer.
+                  Book the ₹999 expert audit and Urban Media will review your ads, store, funnel, creatives, and offer.
                 </p>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                "Full Meta Ads account deep-dive",
-                "Google Ads performance review",
-                "Shopify store CRO & UX audit",
-                "Landing page & funnel analysis",
-                "Creative strategy & fatigue review",
-                "30-min strategy call with our team",
-                "Custom action plan delivered in 48 hours",
+                "Full Meta Ads performance review",
+                "Google Ads snapshot, if you run Google",
+                "Shopify store CRO and UX review",
+                "Landing page and funnel analysis",
+                "Creative fatigue and offer review",
+                "30-minute strategy call with Urban Media",
+                "Custom action plan delivered within 48 hours",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Check className="h-4 w-4 text-primary shrink-0" />
@@ -477,10 +477,10 @@ export default function AuditDetailPage() {
                   <span className="text-sm text-muted-foreground">One-time</span>
                 </div>
                 <Badge variant="secondary" className="mt-1 gap-1">
-                  <Star className="h-3 w-3" /> 100% Refund Guarantee — Not satisfied? Full refund, no questions asked.
+                  <Star className="h-3 w-3" /> Satisfaction guarantee: if the audit is not useful, ask for a refund.
                 </Badge>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Our team will contact you within 24 hours on your registered WhatsApp number after payment.
+                  Urban Media contacts you within 24 hours on your registered WhatsApp number after booking.
                 </p>
               </div>
               {hasPaid ? (
@@ -488,7 +488,7 @@ export default function AuditDetailPage() {
                   className="w-full sm:w-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-6 font-semibold"
                   onClick={() => setShowSuccessDialog(true)}
                 >
-                  <CheckCircle2 className="h-5 w-5" /> Paid — We&apos;ll Contact You
+                  <CheckCircle2 className="h-5 w-5" /> Booked — We&apos;ll Contact You
                 </Button>
               ) : (
                 <Button
@@ -497,9 +497,9 @@ export default function AuditDetailPage() {
                   disabled={paymentLoading}
                 >
                   {paymentLoading ? (
-                    <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
+                    <><Loader2 className="h-5 w-5 animate-spin" /> Opening checkout...</>
                   ) : (
-                    <><Calendar className="h-5 w-5" /> Pay ₹999 & Get Full Audit</>
+                    <><Calendar className="h-5 w-5" /> Book Expert Audit — ₹999</>
                   )}
                 </Button>
               )}
@@ -795,8 +795,8 @@ export default function AuditDetailPage() {
                 <Flame className="h-4 w-4 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate">Want a Deeper Audit?</p>
-                <p className="text-xs text-muted-foreground truncate hidden sm:block">AI + Human experts audit your entire funnel</p>
+                <p className="text-sm font-semibold truncate">Want Expert Eyes on This?</p>
+                <p className="text-xs text-muted-foreground truncate hidden sm:block">Urban Media reviews your full funnel</p>
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -819,7 +819,7 @@ export default function AuditDetailPage() {
                   {paymentLoading ? (
                     <><Loader2 className="h-4 w-4 animate-spin" /></>
                   ) : (
-                    <><Calendar className="h-4 w-4" /> Pay ₹999</>
+                    <><Calendar className="h-4 w-4" /> Book ₹999</>
                   )}
                 </Button>
               )}
@@ -835,9 +835,9 @@ export default function AuditDetailPage() {
             <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-2">
               <MessageSquare className="h-6 w-6 text-green-600" />
             </div>
-            <DialogTitle>Send Report to WhatsApp</DialogTitle>
+            <DialogTitle>Send Summary to WhatsApp</DialogTitle>
             <DialogDescription>
-              Get a concise summary of your audit delivered straight to your WhatsApp.
+              Send yourself the key numbers and next action in a WhatsApp message.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -850,22 +850,22 @@ export default function AuditDetailPage() {
                 onChange={(e) => setWhatsappNumber(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                You&apos;ll also receive D2C scaling tips from Urban Media.
+                You may also receive relevant D2C growth insights from Urban Media.
               </p>
             </div>
             <Button
               className="w-full gap-2 bg-green-600 hover:bg-green-700 text-white"
               onClick={() => {
                 if (!whatsappNumber.trim()) {
-                  toast.error("Please enter a WhatsApp number");
+                  toast.error("Enter a WhatsApp number to send the summary.");
                   return;
                 }
-                const summary = `📊 *AdFix Audit Summary*\n\n🏥 Health Score: ${audit.account_summary.health_score}/100\n💸 Waste: ${audit.account_summary.waste_percentage.toFixed(1)}% (₹${audit.account_summary.wasted_budget.toLocaleString("en-IN")})\n🎯 Top Action: ${audit.priority_actions[0]?.action || "Review your account"}\n\n_View full report: ${typeof window !== "undefined" ? window.location.href : ""}_`;
+                const summary = `*AdFix Audit Summary*\n\nHealth Score: ${audit.account_summary.health_score}/100\nWasted Spend: ${audit.account_summary.waste_percentage.toFixed(1)}% (₹${audit.account_summary.wasted_budget.toLocaleString("en-IN")})\nTop Action: ${audit.priority_actions[0]?.action || "Review your account"}\n\nView full report: ${typeof window !== "undefined" ? window.location.href : ""}`;
                 const encoded = encodeURIComponent(summary);
                 const cleanNumber = whatsappNumber.replace(/\D/g, "");
                 window.open(`https://wa.me/${cleanNumber}?text=${encoded}`, "_blank");
                 setWhatsappModalOpen(false);
-                toast.success("Report summary sent to WhatsApp!");
+                toast.success("WhatsApp summary opened.");
               }}
             >
               <Send className="h-4 w-4" /> Send Summary
@@ -881,15 +881,15 @@ export default function AuditDetailPage() {
             <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-2">
               <CheckCircle2 className="h-6 w-6 text-emerald-600" />
             </div>
-            <DialogTitle>Payment Successful!</DialogTitle>
+            <DialogTitle>Expert audit booked</DialogTitle>
             <DialogDescription>
-              Your ₹999 AI + Human Full Funnel Audit is confirmed. Our team will reach out to you shortly.
+              Your ₹999 Urban Media expert audit is confirmed. Our team will reach out on WhatsApp.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="p-4 rounded-lg bg-muted/30 border space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Amount Paid</span>
+                <span className="text-muted-foreground">Amount paid</span>
                 <span className="font-semibold">₹999</span>
               </div>
               <div className="flex items-center justify-between text-sm">
@@ -898,20 +898,20 @@ export default function AuditDetailPage() {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Status</span>
-                <Badge variant="default" className="text-xs bg-emerald-500">Paid & Confirmed</Badge>
+                <Badge variant="default" className="text-xs bg-emerald-500">Booked</Badge>
               </div>
             </div>
             <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-800">
               <p className="text-sm text-emerald-800 dark:text-emerald-300 font-medium flex items-start gap-2">
                 <MessageSquare className="h-4 w-4 shrink-0 mt-0.5" />
-                Our team will contact you within 24 hours on your registered WhatsApp number.
+                Urban Media will contact you within 24 hours on your registered WhatsApp number.
               </p>
             </div>
             <Button
               className="w-full gap-2 bg-primary text-primary-foreground h-12 font-semibold"
               onClick={() => setShowSuccessDialog(false)}
             >
-              <Check className="h-5 w-5" /> Got It
+              <Check className="h-5 w-5" /> Got it
             </Button>
             <p className="text-xs text-muted-foreground text-center">
               100% refund guarantee. Not satisfied? Full refund, no questions asked.

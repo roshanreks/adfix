@@ -26,14 +26,14 @@ export default function AdminLoginPage() {
         });
 
         if (res.ok) {
-          toast.success("Welcome back, admin");
+          toast.success("Admin session started.");
           // Hard navigation ensures cookie is sent on next request
           window.location.href = "/admin";
         } else {
-          toast.error("Invalid credentials");
+          toast.error("Those admin credentials do not match.");
         }
       } catch {
-        toast.error("Something went wrong");
+        toast.error("We could not start the admin session.");
       } finally {
         setIsLoading(false);
       }
@@ -49,8 +49,8 @@ export default function AdminLoginPage() {
             <Shield className="h-6 w-6 text-white" />
           </div>
           <div className="text-center">
-            <h1 className="text-xl font-bold text-white">Admin Login</h1>
-            <p className="text-sm text-slate-400 mt-1">UM AdFix Lead Dashboard</p>
+            <h1 className="text-xl font-bold text-white">Admin Sign In</h1>
+            <p className="text-sm text-slate-400 mt-1">UM AdFix Lead Desk</p>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username"
+              placeholder="Admin username"
               required
               className="h-11 bg-slate-900 border-slate-700 text-white placeholder:text-slate-500"
             />
@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
+              placeholder="Admin password"
               required
               className="h-11 bg-slate-900 border-slate-700 text-white placeholder:text-slate-500"
             />
@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
                 <Loader2 className="h-4 w-4 animate-spin mr-2" /> Signing in...
               </>
             ) : (
-              "Sign In"
+              "Sign in"
             )}
           </Button>
         </form>

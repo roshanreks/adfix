@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   try {
     const user = await getSessionUser(req);
     if (!user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Please sign in to book the expert audit." }, { status: 401 });
     }
 
     const body = await req.json();
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     if (existingPaid) {
       return NextResponse.json(
-        { error: "You already have a paid booking", booking: existingPaid },
+        { error: "You already have an expert audit booked.", booking: existingPaid },
         { status: 409 }
       );
     }
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         userId: user.id,
         userEmail: user.email,
         auditId: auditId || "",
-        service: "AI + Human Full Funnel Audit",
+        service: "Urban Media Expert Audit",
       },
     });
 
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: unknown) {
     console.error("Create order error:", error);
-    const message = error instanceof Error ? error.message : "Failed to create payment order";
+    const message = error instanceof Error ? error.message : "We could not start checkout. Please try again.";
     return NextResponse.json(
       { error: message },
       { status: 500 }

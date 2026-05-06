@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ lead });
   } catch (error) {
     console.error("Get lead error:", error);
-    return NextResponse.json({ error: "Failed to fetch lead" }, { status: 500 });
+    return NextResponse.json({ error: "We could not load this lead." }, { status: 500 });
   }
 }
 
@@ -122,7 +122,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ success: true, lead: updated });
   } catch (error) {
     console.error("Update lead error:", error);
-    return NextResponse.json({ error: "Failed to update lead" }, { status: 500 });
+    return NextResponse.json({ error: "We could not update this lead." }, { status: 500 });
   }
 }
 
@@ -139,6 +139,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Delete lead error:", error);
-    return NextResponse.json({ error: "Failed to delete lead" }, { status: 500 });
+    return NextResponse.json({ error: "We could not delete this lead." }, { status: 500 });
   }
 }

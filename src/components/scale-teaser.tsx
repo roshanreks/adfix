@@ -17,10 +17,10 @@ export function ScaleTeaser({ variant = "card" }: ScaleTeaserProps) {
           <div>
             <p className="text-sm font-semibold text-white flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-primary" />
-              Stuck at ₹20L/month?
+              Ready to scale beyond the audit?
             </p>
             <p className="text-xs text-white/50 mt-0.5">
-              We scale D2C brands to ₹1CR/month. See our full system →
+              See how Urban Media helps D2C brands build a repeatable growth system.
             </p>
           </div>
           <Button
@@ -29,7 +29,7 @@ export function ScaleTeaser({ variant = "card" }: ScaleTeaserProps) {
             className="shrink-0 border-primary/30 text-primary hover:bg-primary/10 hover:text-primary gap-1.5 text-xs h-9"
             onClick={() => window.open("https://scale.theurbanmedia.in/?utm_source=adfix&utm_medium=app&utm_campaign=scale_teaser", "_blank")}
           >
-            Learn More <ArrowRight className="h-3 w-3" />
+            View Scale System <ArrowRight className="h-3 w-3" />
           </Button>
         </div>
       </div>
@@ -48,20 +48,20 @@ export function ScaleTeaser({ variant = "card" }: ScaleTeaserProps) {
           <span className="text-[11px] font-semibold uppercase tracking-wider text-primary/80">Scale</span>
         </div>
         <h4 className="text-base font-semibold text-white leading-snug">
-          Stuck at ₹20L/month?
+          Ready to scale beyond the audit?
         </h4>
         <p className="text-sm text-white/50 mt-1 leading-relaxed">
-          Here's how I scale D2C brands to ₹1CR/month — without juggling 15 different agencies.
+          See the Urban Media system for turning audit insights into a growth plan.
         </p>
         <Button
           size="sm"
           className="mt-4 w-full bg-primary text-white hover:bg-primary/90 gap-1.5 text-xs h-9"
           onClick={() => window.open("https://scale.theurbanmedia.in/?utm_source=adfix&utm_medium=app&utm_campaign=scale_card", "_blank")}
         >
-          Show Me Your Full System <ArrowRight className="h-3 w-3" />
+          View Scale System <ArrowRight className="h-3 w-3" />
         </Button>
         <p className="mt-2 text-[10px] text-white/30 text-center">
-          ⚡ Over 50+ D2C brands scaled • Just ₹499 • No spam, ever
+          Built for D2C founders who want one clear scaling system
         </p>
       </CardContent>
     </Card>

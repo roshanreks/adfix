@@ -8,7 +8,7 @@ import { Footer } from "@/components/landing/footer";
 
 const STATS = [
   { value: "₹127CR+", label: "Revenue Generated" },
-  { value: "3.2x", label: "Avg ROAS Boost" },
+  { value: "3.2x", label: "Average ROAS Lift" },
   { value: "50+", label: "Brands Scaled" },
 ];
 
@@ -53,7 +53,7 @@ export default function ScalePage() {
                     <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <span className="text-sm text-white/70">4.9/5 from 127+ founders</span>
+              <span className="text-sm text-white/70">Rated 4.9/5 by 127+ founders</span>
               </div>
             </motion.div>
 
@@ -64,12 +64,12 @@ export default function ScalePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-[32px] sm:text-[44px] lg:text-[56px] font-medium leading-[1.1] tracking-[-0.02em] text-white max-w-[800px] mx-auto text-balance"
             >
-              Stuck at ₹20L/month?
+              Ready to Scale Past Your Current Ceiling?
               <br />
-              <span className="text-primary">Here's how I scale D2C brands to ₹1CR/month</span>
+              <span className="text-primary">See the Urban Media system for D2C growth</span>
               <br />
               <span className="text-white/40 text-[24px] sm:text-[32px] lg:text-[40px]">
-                —without juggling 15 different agencies.
+                without juggling five disconnected vendors.
               </span>
             </motion.h1>
 
@@ -81,8 +81,7 @@ export default function ScalePage() {
               className="mt-8 sm:mt-10 max-w-[560px] mx-auto"
             >
               <p className="text-[15px] sm:text-[17px] text-white/40 leading-[1.6]">
-                Watch what happens when a D2C brand follows our system to the letter.
-                Not a highlight reel. A raw, unfiltered case study of a real client who applied exactly what we teach.
+                See how Urban Media turns acquisition, creative, funnel, and retention into one operating system for growth.
               </p>
             </motion.div>
 
@@ -114,11 +113,11 @@ export default function ScalePage() {
                 rel="noopener noreferrer"
                 className="group inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-xl text-base font-semibold hover:bg-primary/90 transition-all min-h-[52px] shadow-glow"
               >
-                Show Me Your Full System
+                View the Scale System
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
               </a>
               <p className="mt-3 text-[12px] text-white/30">
-                ⚡ Over 50+ D2C brands scaled • Just ₹499 • No spam, ever
+                Built for D2C founders who want one clear growth system
               </p>
             </motion.div>
 
@@ -129,11 +128,11 @@ export default function ScalePage() {
               transition={{ duration: 0.5, delay: 0.5 }}
               className="mt-6 flex items-center justify-center gap-4 text-[12px] text-white/30"
             >
-              <span>Instant Access</span>
+              <span>Clear Framework</span>
               <span>•</span>
-              <span>100% Free</span>
+              <span>D2C Focused</span>
               <span>•</span>
-              <span>No Credit Card</span>
+              <span>Urban Media System</span>
             </motion.div>
           </div>
         </section>
@@ -142,7 +141,7 @@ export default function ScalePage() {
         <section className="py-12 sm:py-16 border-t border-white/5">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12">
             <p className="text-center text-[12px] uppercase tracking-widest text-white/30 mb-8">
-              Trusted by Leading D2C Brands
+              Brands Urban Media Has Worked With
             </p>
 
             {/* Marquee row 1 */}
@@ -179,7 +178,7 @@ export default function ScalePage() {
         <section className="py-16 sm:py-24 border-t border-white/5">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 text-center">
             <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-white text-balance">
-              Ready to stop guessing and start scaling?
+              Ready to turn audit insights into a scaling system?
             </h2>
             <div className="mt-8">
               <a
@@ -188,7 +187,7 @@ export default function ScalePage() {
                 rel="noopener noreferrer"
                 className="group inline-flex items-center justify-center gap-2 bg-white text-[#0a0514] px-8 py-4 rounded-xl text-base font-semibold hover:bg-white/90 transition-all min-h-[52px]"
               >
-                Show Me Your Full System
+                View the Scale System
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
               </a>
             </div>
@@ -197,8 +196,8 @@ export default function ScalePage() {
                 <TrendingUp className="h-5 w-5 text-white" />
               </div>
               <div className="text-left">
-                <p className="text-sm font-semibold text-white">UrbanMedia</p>
-                <p className="text-[11px] text-white/40">Scaling D2C brands to ₹1CR/month</p>
+                <p className="text-sm font-semibold text-white">Urban Media</p>
+                <p className="text-[11px] text-white/40">A growth system for D2C brands</p>
               </div>
             </div>
           </div>

@@ -14,7 +14,7 @@ export async function PUT(req: NextRequest) {
   try {
     const user = await getSessionUser(req);
     if (!user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Please sign in to change your password." }, { status: 401 });
     }
 
     const body = await req.json();
@@ -22,7 +22,7 @@ export async function PUT(req: NextRequest) {
 
     if (!currentPassword || !newPassword) {
       return NextResponse.json(
-        { error: "Missing passwords" },
+        { error: "Current password and new password are required." },
         { status: 400 }
       );
     }
@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest) {
 
     if (!dbUser || !dbUser.password) {
       return NextResponse.json(
-        { error: "Cannot change password for OAuth accounts" },
+        { error: "Google sign-in accounts do not use an AdFix password." },
         { status: 400 }
       );
     }
@@ -41,7 +41,7 @@ export async function PUT(req: NextRequest) {
     const currentHash = await hashPassword(currentPassword);
     if (dbUser.password !== currentHash) {
       return NextResponse.json(
-        { error: "Current password is incorrect" },
+        { error: "Your current password is incorrect." },
         { status: 400 }
       );
     }
@@ -56,7 +56,7 @@ export async function PUT(req: NextRequest) {
   } catch (error) {
     console.error("Change password error:", error);
     return NextResponse.json(
-      { error: "Failed to change password" },
+      { error: "We could not change your password. Please try again." },
       { status: 500 }
     );
   }

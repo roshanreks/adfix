@@ -8,32 +8,32 @@ import { FadeIn } from "@/components/animations";
 const SIGNALS = [
   {
     icon: Flame,
-    title: "Spend with zero purchases",
-    desc: "Ads burning budget without a single conversion.",
+    title: "Spend with no purchases",
+    desc: "See which ads are consuming budget without creating revenue.",
     iconClass: "text-destructive",
     bgClass: "bg-destructive/10",
     glowClass: "group-hover:shadow-[0_0_20px_-5px_rgba(220,38,38,0.3)]",
   },
   {
     icon: MousePointer,
-    title: "High CTR, weak conversion",
-    desc: "Great creative engagement, but the funnel is broken.",
+    title: "Clicks that do not convert",
+    desc: "Spot ads that attract attention but fail deeper in the funnel.",
     iconClass: "text-amber-500",
     bgClass: "bg-amber-500/10",
     glowClass: "group-hover:shadow-[0_0_20px_-5px_rgba(245,158,11,0.3)]",
   },
   {
     icon: TrendingUp,
-    title: "Strong ads underfunded",
-    desc: "Winning ads not getting enough budget to scale.",
+    title: "Winners stuck on low spend",
+    desc: "Find ads that deserve more budget before momentum fades.",
     iconClass: "text-emerald-500",
     bgClass: "bg-emerald-500/10",
     glowClass: "group-hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)]",
   },
   {
     icon: Target,
-    title: "Budget concentrated in inefficient sets",
-    desc: "Most spend going to underperforming ad sets.",
+    title: "Budget trapped in weak ad sets",
+    desc: "Identify where spend is concentrated without enough return.",
     iconClass: "text-muted-foreground",
     bgClass: "bg-muted",
     glowClass: "group-hover:shadow-[0_0_20px_-5px_rgba(0,0,0,0.1)]",
@@ -42,12 +42,12 @@ const SIGNALS = [
 
 const RISKS = [
   {
-    title: "Pause the wrong ad → performance drops",
-    desc: "Without data, you might kill your best performer.",
+    title: "Pause the wrong ad",
+    desc: "A rushed decision can remove the ad that was holding performance together.",
   },
   {
-    title: "Scale too early → CPA spikes",
-    desc: "Scaling without signals leads to budget bleed.",
+    title: "Scale before the signal is clear",
+    desc: "More budget without proof can turn a promising ad into an expensive lesson.",
   },
 ];
 
@@ -59,13 +59,13 @@ export function Friction() {
       <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12">
         <FadeIn className="mb-12 sm:mb-16 text-center">
           <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-primary mb-4">
-            Why Audit
+            Why It Matters
           </span>
           <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-foreground">
-            The data exists. The decision framework doesn&apos;t.
+            Your ad account has the data. AdFix turns it into decisions.
           </h2>
           <p className="mx-auto mt-4 sm:mt-6 max-w-[600px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-muted-foreground">
-            Every day you wait, inefficient ads drain your budget. Without a structured audit, you&apos;re guessing.
+            Instead of staring at columns and arguing over opinions, get a simple view of what to stop, fix, and scale next.
           </p>
         </FadeIn>
 

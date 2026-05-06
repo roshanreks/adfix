@@ -7,20 +7,20 @@ const STEPS = [
   {
     step: "01",
     icon: ScanLine,
-    title: "Scan Performance Data",
-    desc: "Upload your Meta Ads Manager CSV. AdFix reads performance data across all key metrics for your selected time window.",
+    title: "Upload Your CSV",
+    desc: "Export your Meta Ads Manager report and upload the CSV. AdFix reads the key metrics for your selected time window.",
   },
   {
     step: "02",
     icon: SlidersHorizontal,
-    title: "Apply Decision Thresholds",
-    desc: "Deterministic rules evaluate CPA, ROAS, CTR, and spend against account-level benchmarks. No black box.",
+    title: "Compare Against Benchmarks",
+    desc: "Rule-based logic evaluates CPA, ROAS, CTR, spend, and conversion quality against your account averages.",
   },
   {
     step: "03",
     icon: FileText,
-    title: "Generate Action Report",
-    desc: "Every ad gets a classification: Kill, Fix, Scale, or No Action — with clear reasoning.",
+    title: "Get Your Action Report",
+    desc: "Every ad gets a clear next step: Kill, Fix, Scale, or No Action, with the reason behind the call.",
   },
 ];
 
@@ -33,10 +33,10 @@ export function HowItWorks() {
             How It Works
           </span>
           <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-foreground">
-            What AdFix Does
+            From CSV to Action Plan
           </h2>
           <p className="mx-auto mt-4 sm:mt-6 max-w-[600px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-muted-foreground">
-            A deterministic 3-step process. Same data → same output. Every single time.
+            Upload once. Get a clear read on wasted spend, winning ads, and the next actions to take.
           </p>
         </FadeIn>
 
@@ -75,7 +75,7 @@ export function HowItWorks() {
 
         <FadeIn delay={0.3} className="mt-12 sm:mt-16 text-center">
           <p className="font-mono text-[12px] sm:text-[14px] text-muted-foreground">
-            Same data → same output. Every single time.
+            Same data. Same rules. Clearer decisions.
           </p>
         </FadeIn>
       </div>

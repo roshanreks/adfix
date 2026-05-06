@@ -40,9 +40,9 @@ export default function DashboardError({
       </motion.div>
 
       <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Something went wrong</h2>
+        <h2 className="text-xl font-semibold">We could not load this view</h2>
         <p className="text-muted-foreground max-w-md text-sm leading-relaxed">
-          {error.message || "An unexpected error occurred while loading the dashboard."}
+          {error.message || "Refresh the page or return to the dashboard to continue."}
         </p>
         {error.digest && (
           <p className="text-xs text-muted-foreground font-mono">Ref: {error.digest}</p>
@@ -51,11 +51,11 @@ export default function DashboardError({
 
       <div className="flex gap-3">
         <Button onClick={reset} variant="default" className="gap-2">
-          <RefreshCw className="h-4 w-4" /> Try again
+            <RefreshCw className="h-4 w-4" /> Try again
         </Button>
         <Link href="/dashboard">
           <Button variant="outline" className="gap-2">
-            <Home className="h-4 w-4" /> Dashboard
+            <Home className="h-4 w-4" /> Back to Dashboard
           </Button>
         </Link>
       </div>

@@ -13,10 +13,10 @@ export function Pricing() {
       <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12">
         <FadeIn className="mb-12 sm:mb-16 text-center">
           <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-foreground">
-            Free Audit. Premium Results.
+            Start Free. Upgrade When You Want Expert Eyes.
           </h2>
           <p className="mx-auto mt-4 sm:mt-6 max-w-[600px] text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-muted-foreground">
-            Start with a completely free audit. Upgrade to unlock your full action plan + a 1-on-1 strategy call with Urban Media.
+            Run the free CSV audit first. If you want a human strategist to review your full funnel, book the ₹999 expert audit.
           </p>
         </FadeIn>
 
@@ -29,8 +29,8 @@ export function Pricing() {
             >
               <div className="relative p-4 sm:p-8">
                 <div>
-                  <h3 className="text-[18px] sm:text-[20px] font-medium leading-[1.4] text-foreground">Free AI Audit</h3>
-                  <p className="mt-1 text-[13px] sm:text-[14px] leading-[1.5] text-muted-foreground">Core diagnostic for quick decisions</p>
+                  <h3 className="text-[18px] sm:text-[20px] font-medium leading-[1.4] text-foreground">Free CSV Audit</h3>
+                  <p className="mt-1 text-[13px] sm:text-[14px] leading-[1.5] text-muted-foreground">A fast diagnostic for your Meta Ads data</p>
                 </div>
 
                 <div className="mt-4 sm:mt-6 flex items-baseline gap-1">
@@ -42,7 +42,7 @@ export function Pricing() {
                     "Health Score & Verdict",
                     "Kill / Fix / Scale Classification",
                     "Waste Analysis & Benchmarks",
-                    "Priority Actions (Top 3)",
+                    "Top 3 Priority Actions",
                     "Top Waste Contributors",
                     "Charts & Visual Breakdown",
                   ].map((f) => (
@@ -57,7 +57,7 @@ export function Pricing() {
                   onClick={() => router.push("/dashboard/login")}
                   className="mt-6 sm:mt-8 w-full rounded-lg py-3 text-[15px] sm:text-[16px] font-semibold transition-all press-scale border border-border bg-card text-foreground hover:bg-muted min-h-[48px] touch-manipulation"
                 >
-                  Get Free Audit
+                  Start Free Audit
                 </button>
               </div>
             </SpotlightCard>
@@ -75,8 +75,8 @@ export function Pricing() {
                 </span>
 
                 <div>
-                  <h3 className="text-[18px] sm:text-[20px] font-medium leading-[1.4] text-foreground">Expert AI + Human Review</h3>
-                  <p className="mt-1 text-[13px] sm:text-[14px] leading-[1.5] text-muted-foreground">Complete audit with full breakdown + strategy call</p>
+                  <h3 className="text-[18px] sm:text-[20px] font-medium leading-[1.4] text-foreground">₹999 Expert Audit</h3>
+                  <p className="mt-1 text-[13px] sm:text-[14px] leading-[1.5] text-muted-foreground">A full-funnel review by Urban Media</p>
                 </div>
 
                 <div className="mt-4 sm:mt-6 flex items-baseline gap-1">
@@ -86,13 +86,13 @@ export function Pricing() {
 
                 <ul className="mt-6 sm:mt-8 flex flex-col gap-2 sm:gap-3">
                   {[
-                    "Everything in Free Audit",
+                    "Everything in the Free Audit",
                     "Complete Kill / Fix / Scale Lists",
                     "Campaign Structure Audit",
                     "Creative Fatigue Analysis",
                     "Funnel & Tracking Audit",
                     "Per-Ad Optimization Roadmap",
-                    "30-min Strategy Call with Urban Media",
+                    "30-minute Strategy Call with Urban Media",
                     "Custom Scaling Plan for Your Niche",
                     "7-Day WhatsApp Support",
                   ].map((f) => (
@@ -108,12 +108,12 @@ export function Pricing() {
                   className="mt-6 sm:mt-8 w-full rounded-lg py-3 text-[15px] sm:text-[16px] font-semibold transition-all press-scale bg-primary text-primary-foreground hover:bg-primary/90 min-h-[48px] touch-manipulation"
                 >
                   <span className="flex items-center justify-center gap-2">
-                    <Calendar className="h-4 w-4" /> Book My Strategy Call
+                    <Calendar className="h-4 w-4" /> Book Expert Audit
                   </span>
                 </button>
 
                 <p className="mt-3 text-center text-xs text-muted-foreground">
-                  By Urban Media — Performance Marketing Agency for D2C Brands
+                  One-time payment. Our team contacts you on WhatsApp after booking.
                 </p>
               </div>
             </SpotlightCard>

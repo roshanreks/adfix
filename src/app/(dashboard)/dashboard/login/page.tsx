@@ -13,10 +13,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { trackPixelEvent } from "@/lib/meta-pixel";
 
 const VALUE_PROPS = [
-  { icon: CheckCircle2, text: "CSV-based, deterministic analysis" },
-  { icon: TrendingUp, text: "Fixed Target CPA calculation" },
-  { icon: Shield, text: "Kill / Fix / Scale classification" },
-  { icon: Zap, text: "Instant report in 60 seconds" },
+  { icon: CheckCircle2, text: "CSV-only Meta Ads audit" },
+  { icon: TrendingUp, text: "Clear Kill / Fix / Scale decisions" },
+  { icon: Shield, text: "No ad account access required" },
+  { icon: Zap, text: "Instant report after upload" },
 ];
 
 export default function LoginPage() {
@@ -37,12 +37,12 @@ export default function LoginPage() {
       try {
         if (isRegistering) {
           if (!name.trim()) {
-            toast.error("Name is required");
+            toast.error("Enter your name to create the account.");
             return;
           }
           const ok = await register(name, email, password);
           if (ok) {
-            toast.success("Account created successfully");
+            toast.success("Account created. Let's tailor your audit.");
             // Track Meta Pixel Lead event
             trackPixelEvent("Lead", {
               content_name: "User Registration",
@@ -54,7 +54,7 @@ export default function LoginPage() {
         } else {
           const ok = await login(email, password);
           if (ok) {
-            toast.success("Welcome back!");
+            toast.success("Welcome back.");
             // Hard navigation ensures the auth cookie is sent on the next request
             window.location.href = "/dashboard";
           }
@@ -71,7 +71,7 @@ export default function LoginPage() {
     try {
       await signIn("google", { callbackUrl: "/dashboard", redirect: true });
     } catch {
-      toast.error("Google sign-in failed");
+      toast.error("Google sign-in did not complete. Please try again.");
       setIsSubmitting(false);
     }
   }, []);
@@ -110,11 +110,11 @@ export default function LoginPage() {
             <span className="text-xl font-bold tracking-tight">UM AdFix</span>
           </div>
           <h1 className="text-[36px] xl:text-[42px] font-medium leading-[1.15] tracking-[-0.02em] mb-4">
-            Stop Guessing.<br />
-            Start Scaling.
+            Stop guessing.<br />
+            Audit your ads.
           </h1>
           <p className="text-[16px] leading-[1.6] text-white/60 max-w-[400px]">
-            Upload your Meta Ads CSV. Get deterministic Kill, Fix, or Scale decisions for every ad in your account.
+            Upload your Meta Ads CSV and see which ads deserve budget, fixes, or a clean stop.
           </p>
         </div>
 
@@ -144,7 +144,7 @@ export default function LoginPage() {
                 <div key={i} className={`h-8 w-8 rounded-full ${color} border-2 border-[#2d1b4e]`} />
               ))}
             </div>
-            <span className="text-[13px] text-white/60">500+ D2C brands trust AdFix</span>
+            <span className="text-[13px] text-white/60">Built for D2C founders and growth teams</span>
           </div>
           <p className="text-[12px] text-white/40">
             Powered by Urban Media
@@ -173,12 +173,12 @@ export default function LoginPage() {
             >
               <div className="mb-8">
                 <h2 className="text-[28px] font-medium tracking-[-0.02em] text-foreground">
-                  {isRegistering ? "Create Account" : "Welcome Back"}
+                  {isRegistering ? "Create your free audit account" : "Welcome back"}
                 </h2>
                 <p className="mt-1.5 text-[15px] text-muted-foreground">
                   {isRegistering
-                    ? "Sign up to start auditing your Meta Ads"
-                    : "Sign in to your UM AdFix dashboard"}
+                    ? "Save your reports and get your first audit moving."
+                    : "Sign in to continue your audits."}
                 </p>
               </div>
 
@@ -205,7 +205,7 @@ export default function LoginPage() {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-background px-3 text-muted-foreground">
-                    or continue with email
+                    or use email
                   </span>
                 </div>
               </div>
@@ -217,11 +217,11 @@ export default function LoginPage() {
                     animate={{ opacity: 1, height: "auto" }}
                     className="space-y-2"
                   >
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name">Full name</Label>
                     <Input
                       id="name"
                       type="text"
-                      placeholder="John Doe"
+                      placeholder="Rohan Sharma"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
@@ -276,11 +276,11 @@ export default function LoginPage() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span className="animate-pulse">Processing...</span>
+                      <span className="animate-pulse">Please wait...</span>
                     </>
                   ) : isRegistering ? (
                     <>
-                      <UserPlus className="h-4 w-4" /> Create Account
+                      <UserPlus className="h-4 w-4" /> Create Free Account
                     </>
                   ) : (
                     <>

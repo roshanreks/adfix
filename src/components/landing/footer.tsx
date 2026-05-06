@@ -41,10 +41,10 @@ export function Footer() {
   const handleNewsletter = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
-      toast.error("Please enter a valid email");
+      toast.error("Enter a valid email to join the list.");
       return;
     }
-    toast.success("Thanks for subscribing!");
+    toast.success("You are on the list.");
     setEmail("");
   };
 
@@ -57,10 +57,10 @@ export function Footer() {
             <div>
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                 <Flame className="h-5 w-5 text-amber-500" />
-                Want a Deeper Audit?
+                Want Expert Eyes on Your Funnel?
               </h3>
               <p className="text-sm text-muted-foreground mt-1 max-w-md">
-                AI found issues. Now let humans fix them. Our experts audit your entire funnel for ₹999.
+                Book the ₹999 expert audit and Urban Media will review your ads, store, funnel, creatives, and offer.
               </p>
               <p className="text-[11px] text-muted-foreground mt-1">
                 By the team behind{" "}
@@ -73,7 +73,7 @@ export function Footer() {
               size="default"
               className="shrink-0 shadow-glow-sm"
             >
-              <Flame className="h-4 w-4" /> Book My Expert Audit
+              <Flame className="h-4 w-4" /> Book Expert Audit
             </RazorpayPaymentButton>
           </div>
         </div>
@@ -88,8 +88,8 @@ export function Footer() {
                 <TrendingUp className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Scale Your D2C Brand</p>
-                <p className="text-xs text-white/40">Stuck at ₹20L/month? We scale brands to ₹1CR/month</p>
+                <p className="text-sm font-semibold text-white">Scale Beyond the Audit</p>
+                <p className="text-xs text-white/40">See Urban Media&apos;s growth system for D2C brands</p>
               </div>
             </div>
             <a
@@ -98,7 +98,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 border border-primary/30 text-primary hover:bg-primary/10 px-4 py-2.5 rounded-lg text-sm font-medium transition-all shrink-0 min-h-[40px]"
             >
-              See Our Full System <ArrowRight className="h-4 w-4" />
+              View Scale System <ArrowRight className="h-4 w-4" />
             </a>
           </div>
         </div>
@@ -115,7 +115,7 @@ export function Footer() {
               <span className="text-lg font-bold text-foreground tracking-[-0.01em]">UM AdFix</span>
             </div>
             <p className="max-w-[320px] text-sm leading-[1.6] text-muted-foreground">
-              Urban Media Ads Auditor. Kill, Fix, or Scale with clarity. Trusted by 500+ D2C brands.
+              A free Meta Ads CSV audit by Urban Media. Find what to kill, fix, scale, or leave running.
             </p>
 
             {/* Newsletter */}
@@ -124,7 +124,7 @@ export function Footer() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email"
+                placeholder="you@brand.com"
                 className="flex-1 h-10 rounded-lg border border-input bg-background px-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               />
               <button
@@ -158,7 +158,7 @@ export function Footer() {
             <p className="text-sm font-semibold text-foreground">Product</p>
             <ul className="mt-3 sm:mt-4 flex flex-col gap-1">
               {[
-                { label: "Run Audit", href: "/dashboard" },
+                { label: "Start Free Audit", href: "/dashboard" },
                 { label: "Pricing", href: "#pricing" },
                 { label: "Sample Report", href: "#report" },
                 { label: "FAQ", href: "#faq" },
@@ -205,7 +205,7 @@ export function Footer() {
               <li>
                 <a href="https://scale.theurbanmedia.in/?utm_source=adfix&utm_medium=app&utm_campaign=footer_connect" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2 block touch-manipulation min-h-[44px] flex items-center gap-2">
                   <TrendingUp className="h-3.5 w-3.5" />
-                  Scale Your Brand
+                  Urban Media Scale System
                 </a>
               </li>
             </ul>

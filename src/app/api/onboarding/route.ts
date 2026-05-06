@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     const user = await getSessionUser(req);
     if (!user?.id) {
       return NextResponse.json(
-        { error: "Unauthorized" },
+        { error: "Please sign in to save your audit details." },
         { status: 401 }
       );
     }
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     // Validate required fields
     if (!phone || !companyName || !niche || !monthlySpend || !role) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Phone, brand name, category, monthly spend, and role are required." },
         { status: 400 }
       );
     }
@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Onboarding error:", error);
     return NextResponse.json(
-      { error: "Failed to complete onboarding" },
+      { error: "We could not save your audit details. Please try again." },
       { status: 500 }
     );
   }

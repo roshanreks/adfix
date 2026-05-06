@@ -17,6 +17,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ error: "Failed to track" }, { status: 500 });
+    return NextResponse.json({ error: "We could not save this event." }, { status: 500 });
   }
 }

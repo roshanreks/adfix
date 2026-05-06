@@ -119,7 +119,7 @@ export default function OnboardingPage() {
       e.preventDefault();
 
       if (!phone || !companyName || !niche || !monthlySpend || !role) {
-        toast.error("Please fill in all required fields");
+        toast.error("Complete the required fields so we can tailor your audit.");
         return;
       }
 
@@ -144,12 +144,12 @@ export default function OnboardingPage() {
 
         if (!res.ok) {
           const data = await res.json();
-          toast.error(data.error || "Failed to complete onboarding");
+          toast.error(data.error || "We could not save your details. Please try again.");
           return;
         }
 
         await updateSession({ user: { onboardingComplete: true } });
-        toast.success("Welcome to AdFix by Urban Media!");
+        toast.success("Your audit workspace is ready.");
         // Track Meta Pixel CompleteRegistration
         trackPixelEvent("CompleteRegistration", {
           content_name: "Onboarding Complete",
@@ -162,7 +162,7 @@ export default function OnboardingPage() {
         router.refresh();
       } catch (err) {
         console.error("Onboarding submit error:", err);
-        toast.error("Something went wrong. Please try again.");
+        toast.error("We could not save your details. Please try again.");
       } finally {
         setIsSubmitting(false);
       }
@@ -207,9 +207,9 @@ export default function OnboardingPage() {
                   <Sparkles className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl sm:text-2xl">Let&apos;s Get to Know You</CardTitle>
+                  <CardTitle className="text-xl sm:text-2xl">Tailor Your Audit</CardTitle>
                   <CardDescription className="text-[13px] sm:text-sm mt-0.5">
-                    Help us tailor your audit and recommendations to your D2C brand.
+                    A few details help AdFix read your numbers in the right business context.
                   </CardDescription>
                 </div>
               </div>
@@ -250,7 +250,7 @@ export default function OnboardingPage() {
                   <div className="grid gap-2">
                     <Label htmlFor="name">
                       <User className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                      Full Name
+                      Full name
                     </Label>
                     <Input
                       id="name"
@@ -266,7 +266,7 @@ export default function OnboardingPage() {
                     <div className="grid gap-2">
                       <Label htmlFor="phone">
                         <Phone className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                        Mobile Number <span className="text-destructive">*</span>
+                        Mobile number <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="phone"
@@ -281,7 +281,7 @@ export default function OnboardingPage() {
                     <div className="grid gap-2">
                       <Label htmlFor="whatsapp">
                         <MessageSquare className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                        WhatsApp Number
+                        WhatsApp number
                       </Label>
                       <Input
                         id="whatsapp"
@@ -299,7 +299,7 @@ export default function OnboardingPage() {
                           onChange={(e) => setSameAsPhone(e.target.checked)}
                         />
                         <label htmlFor="same-as-phone" className="text-xs text-muted-foreground cursor-pointer">
-                          Same as mobile
+                          Same as mobile number
                         </label>
                       </div>
                     </div>
@@ -314,7 +314,7 @@ export default function OnboardingPage() {
                     <div className="grid gap-2">
                       <Label htmlFor="company">
                         <Building2 className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                        Company / Brand Name <span className="text-destructive">*</span>
+                        Brand name <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="company"
@@ -351,11 +351,11 @@ export default function OnboardingPage() {
                     <div className="grid gap-2">
                       <Label htmlFor="niche">
                         <Tag className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                        Industry / Niche <span className="text-destructive">*</span>
+                        Category <span className="text-destructive">*</span>
                       </Label>
                       <Select value={niche} onValueChange={(v) => setNiche(v ?? "")}>
                         <SelectTrigger id="niche" className="h-11">
-                          <SelectValue placeholder="Select niche" />
+                          <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
                           {NICHES.map((n) => (
@@ -367,11 +367,11 @@ export default function OnboardingPage() {
                     <div className="grid gap-2">
                       <Label htmlFor="spend">
                         <IndianRupee className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                        Monthly Meta Ad Spend <span className="text-destructive">*</span>
+                        Monthly Meta ad spend <span className="text-destructive">*</span>
                       </Label>
                       <Select value={monthlySpend} onValueChange={(v) => setMonthlySpend(v ?? "")}>
                         <SelectTrigger id="spend" className="h-11">
-                          <SelectValue placeholder="Select range" />
+                          <SelectValue placeholder="Select spend range" />
                         </SelectTrigger>
                         <SelectContent>
                           {SPEND_RANGES.map((s) => (
@@ -390,11 +390,11 @@ export default function OnboardingPage() {
                   <div className="grid gap-2">
                     <Label htmlFor="role">
                       <Briefcase className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                      Your Role <span className="text-destructive">*</span>
+                      Your role <span className="text-destructive">*</span>
                     </Label>
                     <Select value={role} onValueChange={(v) => setRole(v ?? "")}>
                       <SelectTrigger id="role" className="h-11">
-                        <SelectValue placeholder="Select role" />
+                        <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
                         {ROLES.map((r) => (
@@ -406,13 +406,13 @@ export default function OnboardingPage() {
 
                   <div className="grid gap-2">
                     <Label htmlFor="challenge">
-                      Biggest Challenge with Meta Ads
+                      Biggest Meta Ads challenge
                     </Label>
                     <Textarea
                       id="challenge"
                       value={challenge}
                       onChange={(e) => setChallenge(e.target.value)}
-                      placeholder="e.g., My CPA has doubled in the last 3 months and I don't know why..."
+                      placeholder="Example: CPA has doubled in 3 months and I cannot tell which ads are causing it."
                       className="min-h-[100px] resize-none"
                     />
                   </div>
@@ -451,17 +451,17 @@ export default function OnboardingPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin" /> Saving...
+                        <Loader2 className="h-4 w-4 animate-spin" /> Saving details...
                       </>
                     ) : (
-                      "Continue to Dashboard →"
+                      "Continue to Dashboard"
                     )}
                   </Button>
                 )}
               </div>
 
               <p className="text-xs text-muted-foreground text-center">
-                By continuing, you agree to let Urban Media contact you about your audit and D2C marketing insights.
+                By continuing, you agree that Urban Media may contact you about your audit and relevant D2C growth insights.
               </p>
             </form>
           </CardContent>

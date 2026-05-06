@@ -7,12 +7,12 @@ export async function POST(req: NextRequest) {
     const { username, password } = body;
 
     if (!username || !password) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json({ error: "Those admin credentials do not match." }, { status: 401 });
     }
 
     const valid = await verifyAdminCredentials(username, password);
     if (!valid) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json({ error: "Those admin credentials do not match." }, { status: 401 });
     }
 
     const token = await createAdminSession();
@@ -28,6 +28,6 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch {
-    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    return NextResponse.json({ error: "Those admin credentials do not match." }, { status: 401 });
   }
 }

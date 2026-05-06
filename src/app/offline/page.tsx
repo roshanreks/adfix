@@ -13,10 +13,10 @@ export default function OfflinePage() {
           </div>
         </div>
         <h1 className="text-2xl font-bold text-[#0F172A] mb-3">
-          You&apos;re Offline
+          You&apos;re offline
         </h1>
         <p className="text-muted-foreground mb-8">
-          UM AdFix requires an internet connection to analyze your Meta Ads data. Please check your connection and try again.
+          AdFix needs an internet connection to load your account and save audit reports. Check your connection and try again.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
@@ -24,13 +24,13 @@ export default function OfflinePage() {
             className="inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
           >
             <RefreshCw className="h-4 w-4" />
-            Retry Connection
+            Try again
           </button>
           <Link
             href="/"
             className="inline-flex items-center justify-center gap-2 border border-border bg-white px-6 py-3 rounded-lg font-semibold hover:bg-muted transition-colors"
           >
-            Go Home
+            Go home
           </Link>
         </div>
       </div>

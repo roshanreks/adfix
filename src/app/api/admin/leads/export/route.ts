@@ -99,6 +99,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Export leads error:", error);
-    return NextResponse.json({ error: "Failed to export leads" }, { status: 500 });
+    return NextResponse.json({ error: "We could not export leads." }, { status: 500 });
   }
 }

@@ -148,10 +148,10 @@ export default function AdminPage() {
         setLeads(data.leads);
         setTotal(data.total);
       } else {
-        toast.error(data.error || "Failed to load leads");
+        toast.error(data.error || "We could not load leads.");
       }
     } catch {
-      toast.error("Failed to load leads");
+      toast.error("We could not load leads.");
     } finally {
       setIsLoading(false);
     }
@@ -188,7 +188,7 @@ export default function AdminPage() {
         setEditNotes(data.lead.adminNotes || "");
       }
     } catch {
-      toast.error("Failed to load lead details");
+      toast.error("We could not load this lead.");
     } finally {
       setIsDetailLoading(false);
     }
@@ -203,14 +203,14 @@ export default function AdminPage() {
         body: JSON.stringify({ adminNotes: editNotes }),
       });
       if (res.ok) {
-        toast.success("Notes saved");
+        toast.success("Notes saved.");
         setDetailLead((prev) => (prev ? { ...prev, adminNotes: editNotes } : null));
         setLeads((prev) =>
           prev.map((l) => (l.id === detailLead.id ? { ...l, adminNotes: editNotes } : l))
         );
       }
     } catch {
-      toast.error("Failed to save notes");
+      toast.error("We could not save notes.");
     }
   }, [detailLead, editNotes]);
 
@@ -223,7 +223,7 @@ export default function AdminPage() {
           body: JSON.stringify({ status: newStatus }),
         });
         if (res.ok) {
-          toast.success("Status updated");
+          toast.success("Lead status updated.");
           setLeads((prev) =>
             prev.map((l) => (l.id === leadId ? { ...l, status: newStatus } : l))
           );
@@ -232,7 +232,7 @@ export default function AdminPage() {
           }
         }
       } catch {
-        toast.error("Failed to update status");
+        toast.error("We could not update the lead status.");
       }
     },
     [detailLead]
@@ -243,13 +243,13 @@ export default function AdminPage() {
     try {
       const res = await fetch(`/api/admin/leads/${deleteLeadId}`, { method: "DELETE" });
       if (res.ok) {
-        toast.success("Lead deleted");
+        toast.success("Lead deleted.");
         setLeads((prev) => prev.filter((l) => l.id !== deleteLeadId));
         setDeleteLeadId(null);
         if (detailLead?.id === deleteLeadId) setDetailOpen(false);
       }
     } catch {
-      toast.error("Failed to delete lead");
+      toast.error("We could not delete this lead.");
     }
   }, [deleteLeadId, detailLead]);
 

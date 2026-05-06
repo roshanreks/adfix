@@ -24,7 +24,7 @@ function validateEmail(email: string): boolean {
 }
 
 function validatePassword(password: string): { valid: boolean; error?: string } {
-  if (password.length < 4) return { valid: false, error: "Password must be at least 4 characters" };
+  if (password.length < 4) return { valid: false, error: "Use at least 4 characters for your password." };
   return { valid: true };
 }
 
@@ -49,7 +49,7 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
   const login = React.useCallback(
     async (email: string, password: string): Promise<boolean> => {
       if (!validateEmail(email)) {
-        toast.error("Invalid email address");
+        toast.error("Enter a valid email address.");
         return false;
       }
       const result = await signIn("credentials", {
@@ -58,7 +58,7 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
         redirect: false,
       });
       if (result?.error) {
-        toast.error("Invalid email or password");
+        toast.error("That email and password do not match.");
         return false;
       }
       return true;
@@ -69,11 +69,11 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
   const register = React.useCallback(
     async (name: string, email: string, password: string): Promise<boolean> => {
       if (!name.trim()) {
-        toast.error("Name is required");
+        toast.error("Enter your name to create the account.");
         return false;
       }
       if (!validateEmail(email)) {
-        toast.error("Invalid email address");
+        toast.error("Enter a valid email address.");
         return false;
       }
       const pwCheck = validatePassword(password);
@@ -100,7 +100,7 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
 
         if (!res.ok) {
           const data = await res.json();
-          toast.error(data.error || "Registration failed");
+          toast.error(data.error || "We could not create your account. Please try again.");
           return false;
         }
 
@@ -112,13 +112,13 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
         });
 
         if (loginResult?.error) {
-          toast.error("Account created but auto-login failed. Please sign in.");
+          toast.error("Account created, but sign-in did not complete. Please sign in.");
           return false;
         }
 
         return true;
       } catch {
-        toast.error("Registration failed");
+        toast.error("We could not create your account. Please try again.");
         return false;
       }
     },
@@ -143,7 +143,7 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
         if (!res.ok) throw new Error();
         return true;
       } catch {
-        toast.error("Failed to update profile");
+        toast.error("We could not update your profile.");
         return false;
       }
     },
@@ -161,12 +161,12 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
         });
         if (!res.ok) {
           const data = await res.json();
-          toast.error(data.error || "Failed to change password");
+          toast.error(data.error || "We could not change your password.");
           return false;
         }
         return true;
       } catch {
-        toast.error("Failed to change password");
+        toast.error("We could not change your password.");
         return false;
       }
     },
@@ -179,9 +179,9 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
       if (!res.ok) throw new Error();
       await signOut({ redirect: false });
       router.push("/");
-      toast.success("Account deleted");
+      toast.success("Account deleted.");
     } catch {
-      toast.error("Failed to delete account");
+      toast.error("We could not delete the account. Please try again.");
     }
   }, [router]);
 

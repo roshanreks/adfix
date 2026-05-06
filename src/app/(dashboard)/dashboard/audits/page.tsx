@@ -86,7 +86,7 @@ export default function AuditsPage() {
       const res = await fetch(`/api/audits/${id}`, { method: "DELETE", credentials: "include" });
       if (res.ok) {
         setAudits((prev) => prev.filter((a) => a.id !== id));
-        toast.success("Audit deleted");
+        toast.success("Audit deleted.");
         router.refresh();
       } else {
         throw new Error();
@@ -94,7 +94,7 @@ export default function AuditsPage() {
     } catch {
       deleteAudit(id);
       setAudits((prev) => prev.filter((a) => a.id !== id));
-      toast.warning("Deleted locally — sync with server failed");
+      toast.warning("Removed from this device, but server sync failed. Refresh and check once more.");
       router.refresh();
     } finally {
       setIsDeleting(null);
@@ -115,7 +115,7 @@ export default function AuditsPage() {
         <div className="flex items-center justify-center py-12">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Fetching your audits...</p>
+            <p className="text-sm text-muted-foreground">Loading your audit history...</p>
           </div>
         </div>
         <div className="animate-pulse">
@@ -132,10 +132,10 @@ export default function AuditsPage() {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-20 text-center max-w-6xl mx-auto">
         <HelpCircle className="h-12 w-12 text-muted-foreground" />
-        <h2 className="text-xl font-semibold">Unable to load audits</h2>
-        <p className="text-muted-foreground max-w-sm">We couldn't fetch your audits. Please check your connection and try again.</p>
+        <h2 className="text-xl font-semibold">We could not load your audits</h2>
+        <p className="text-muted-foreground max-w-sm">Check your connection and retry. Your saved reports are safe.</p>
         <Button onClick={() => window.location.reload()} variant="outline">
-          Tap to Retry
+          Try again
         </Button>
       </div>
     );
@@ -145,7 +145,7 @@ export default function AuditsPage() {
     <div className="flex flex-col gap-4 sm:gap-6 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold">Your Audits</h1>
+          <h1 className="text-xl sm:text-2xl font-bold">Your Audit History</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             {audits.length} audit{audits.length !== 1 ? "s" : ""}
             {totalSpend > 0 && ` · ₹${Math.round(totalSpend / 1000)}K analyzed · ₹${Math.round(totalWaste / 1000)}K waste`}
@@ -158,7 +158,7 @@ export default function AuditsPage() {
           }}
           className="bg-primary text-primary-foreground gap-2 shrink-0 h-12 px-5 font-semibold text-base touch-manipulation w-full sm:w-auto"
         >
-          <FileText className="h-5 w-5" aria-hidden="true" /> <span className="hidden sm:inline">New Audit</span><span className="sm:hidden">New</span>
+          <FileText className="h-5 w-5" aria-hidden="true" /> <span className="hidden sm:inline">Run Free Audit</span><span className="sm:hidden">Audit</span>
         </Button>
       </div>
 
@@ -169,9 +169,9 @@ export default function AuditsPage() {
               <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
                 <BarChart3 className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold">No Audits Yet</h3>
+              <h3 className="text-lg sm:text-xl font-bold">No audits yet</h3>
               <p className="text-sm sm:text-base text-muted-foreground max-w-md">
-                Run your first audit to see reports here. Upload a Meta Ads Manager CSV and get instant insights.
+                Upload your Meta Ads Manager CSV and your reports will appear here.
               </p>
               <Button
                 onClick={() => {
@@ -180,11 +180,11 @@ export default function AuditsPage() {
                 }}
                 className="bg-primary text-primary-foreground gap-2 h-12 px-6 font-semibold text-base touch-manipulation w-full sm:w-auto press-scale"
               >
-                <FileText className="h-5 w-5" aria-hidden="true" /> Run First Audit
+                <FileText className="h-5 w-5" aria-hidden="true" /> Start First Audit
               </Button>
             </CardContent>
           </Card>
-          <ExpertAuditCard headline="Get an expert to audit your funnel" />
+          <ExpertAuditCard headline="Want Urban Media to review the funnel?" />
         </div>
       ) : (
         <>
@@ -192,7 +192,7 @@ export default function AuditsPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <Input
-              placeholder="Search audits..."
+              placeholder="Search audit reports..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9 pr-9"
@@ -213,7 +213,7 @@ export default function AuditsPage() {
           {/* List */}
           <div className="flex flex-col gap-3">
             {filtered.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">No audits match your search.</p>
+              <p className="text-center text-muted-foreground py-8">No reports match that search.</p>
             ) : (
               filtered.map((audit, index) => (
                 <>
@@ -275,7 +275,7 @@ export default function AuditsPage() {
                           size="sm"
                           className="gap-2 group-hover:border-primary/50 transition-colors"
                         >
-                          View Report <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                          Open Report <ArrowRight className="h-4 w-4" aria-hidden="true" />
                         </Button>
                       </Link>
                       <Button
@@ -293,14 +293,14 @@ export default function AuditsPage() {
                 </Card>
                 {/* Insert upsell after every 3rd card */}
                 {(index + 1) % 3 === 0 && index !== filtered.length - 1 && (
-                  <ExpertAuditCard variant="inline" headline="Want a Deeper Audit?" />
+                  <ExpertAuditCard variant="inline" headline="Want Urban Media to review the funnel?" />
                 )}
                 </>
               ))
             )}
             {/* Show upsell at bottom if fewer than 3 audits or as final card */}
             {filtered.length > 0 && filtered.length < 3 && (
-              <ExpertAuditCard variant="inline" headline="Want a Deeper Audit?" />
+              <ExpertAuditCard variant="inline" headline="Want Urban Media to review the funnel?" />
             )}
           </div>
         </>
@@ -312,9 +312,9 @@ export default function AuditsPage() {
       <Dialog open={!!deleteTarget} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
         <DialogContent showCloseButton={false} className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Delete this audit?</DialogTitle>
+            <DialogTitle>Delete this audit report?</DialogTitle>
             <DialogDescription>
-              <strong className="text-foreground">{deleteTarget?.name}</strong> will be permanently removed. This cannot be undone.
+              <strong className="text-foreground">{deleteTarget?.name}</strong> will be permanently removed from your account.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

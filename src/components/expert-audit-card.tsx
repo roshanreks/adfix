@@ -14,18 +14,18 @@ interface ExpertAuditCardProps {
 }
 
 const BULLETS = [
-  "Full Meta Ads account deep-dive",
-  "Google Ads performance review",
-  "Shopify store CRO & UX audit",
-  "Landing page & funnel analysis",
-  "Creative strategy & fatigue review",
-  "30-min strategy call with our team",
-  "Custom action plan delivered in 48 hours",
+  "Full Meta Ads performance review",
+  "Google Ads snapshot, if you run Google",
+  "Shopify store CRO and UX review",
+  "Landing page and funnel analysis",
+  "Creative fatigue and offer review",
+  "30-minute strategy call with Urban Media",
+  "Custom action plan delivered within 48 hours",
 ];
 
 export function ExpertAuditCard({
   variant = "default",
-  headline = "Want a Deeper Audit?",
+  headline = "Want Expert Eyes on This?",
   showBadge = true,
 }: ExpertAuditCardProps) {
   const [expanded, setExpanded] = useState(false);
@@ -39,7 +39,7 @@ export function ExpertAuditCard({
             <div className="flex-1">
               <h4 className="font-semibold text-sm text-foreground">{headline}</h4>
               <p className="text-xs text-muted-foreground mt-0.5">
-                AI + Human experts audit your entire funnel
+                Urban Media reviews your ads, funnel, store, and offer
               </p>
             </div>
             <div className="text-right shrink-0">
@@ -48,7 +48,7 @@ export function ExpertAuditCard({
             </div>
           </div>
           <RazorpayPaymentButton variant="compact" size="sm" className="mt-3 w-full">
-            Book My Expert Audit
+            Book Expert Audit
           </RazorpayPaymentButton>
         </CardContent>
       </Card>
@@ -65,11 +65,11 @@ export function ExpertAuditCard({
               {headline}
             </h4>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Our team audits your Shopify, Meta Ads, Google Ads, landing pages, creatives & offer
+              Urban Media reviews your ads, store, funnel, creatives, and offer
             </p>
           </div>
           <RazorpayPaymentButton variant="compact" size="sm">
-            Book Now — ₹999
+            Book Expert Audit — ₹999
           </RazorpayPaymentButton>
         </div>
       </div>
@@ -86,12 +86,12 @@ export function ExpertAuditCard({
             <div>
               {showBadge && (
                 <Badge className="mb-2 bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">
-                  <Flame className="h-3 w-3 mr-1" /> Popular
+                  <Flame className="h-3 w-3 mr-1" /> One-time ₹999
                 </Badge>
               )}
               <h3 className="text-lg font-semibold text-white">{headline}</h3>
               <p className="text-sm text-amber-200/60 mt-1">
-                Our team of AI + Human experts will audit your entire funnel
+                Urban Media reviews your full growth funnel and gives you the next moves
               </p>
             </div>
             <div className="text-right shrink-0">
@@ -115,21 +115,21 @@ export function ExpertAuditCard({
               onClick={() => setExpanded(true)}
               className="text-xs text-amber-400 hover:text-amber-300 mb-3 underline underline-offset-2"
             >
-              Show all 7 items
+              Show everything included
             </button>
           )}
 
           <RazorpayPaymentButton size="default" className="w-full">
-            Book My Expert Audit
+            Book Expert Audit
           </RazorpayPaymentButton>
 
           <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-emerald-400/80">
             <ShieldCheck className="h-3 w-3" />
-            100% Refund Guarantee — Not satisfied? Full refund, no questions asked.
+            Satisfaction guarantee: if the audit is not useful, ask for a refund.
           </div>
           <div className="mt-2 flex items-center justify-center gap-1.5 text-[10px] text-amber-200/40">
             <MessageSquare className="h-3 w-3" />
-            Our team will contact you within 24 hours on your registered WhatsApp
+            Our team contacts you within 24 hours on your registered WhatsApp
           </div>
         </CardContent>
       </Card>
@@ -146,12 +146,12 @@ export function ExpertAuditCard({
           <div>
             {showBadge && (
               <Badge className="mb-2 bg-amber-500/10 text-amber-600 border-amber-500/20 text-[10px]">
-                <Flame className="h-3 w-3 mr-1" /> Popular
+                <Flame className="h-3 w-3 mr-1" /> One-time ₹999
               </Badge>
             )}
             <h3 className="text-lg font-semibold text-foreground">{headline}</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Our team of AI + Human experts will audit your entire funnel — Shopify store, Facebook Ads, Google Ads, landing pages, creatives, and offer.
+              Urban Media reviews your ads, store, landing pages, creatives, and offer, then gives you a practical action plan.
             </p>
           </div>
           <div className="text-right shrink-0 hidden sm:block">
@@ -175,7 +175,7 @@ export function ExpertAuditCard({
             onClick={() => setExpanded(true)}
             className="text-xs text-amber-600 hover:text-amber-700 mb-3 underline underline-offset-2"
           >
-            Show all 7 items
+            Show everything included
           </button>
         )}
 
@@ -184,16 +184,16 @@ export function ExpertAuditCard({
         </div>
 
         <RazorpayPaymentButton size="default" className="w-full">
-          Book My Expert Audit
+          Book Expert Audit
         </RazorpayPaymentButton>
 
         <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-emerald-600">
           <ShieldCheck className="h-3 w-3" />
-          100% Refund Guarantee — Not satisfied? Full refund, no questions asked.
+          Satisfaction guarantee: if the audit is not useful, ask for a refund.
         </div>
         <div className="mt-2 flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground">
           <MessageSquare className="h-3 w-3" />
-          Our team will contact you within 24 hours on your registered WhatsApp
+          Our team contacts you within 24 hours on your registered WhatsApp
         </div>
       </CardContent>
     </Card>

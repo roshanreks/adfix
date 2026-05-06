@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     const user = await getSessionUser(req);
     if (!user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Please sign in to view booking status." }, { status: 401 });
     }
 
     const { searchParams } = new URL(req.url);
@@ -27,6 +27,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Get booking status error:", error);
-    return NextResponse.json({ error: "Failed to fetch status" }, { status: 500 });
+    return NextResponse.json({ error: "We could not load your booking status. Please try again." }, { status: 500 });
   }
 }

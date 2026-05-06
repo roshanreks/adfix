@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const user = await getSessionUser(req);
     if (!user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Please sign in to view your audits." }, { status: 401 });
     }
 
     const audits = await prisma.audit.findMany({
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ audits });
   } catch (error) {
     console.error("Get audits error:", error);
-    return NextResponse.json({ error: "Failed to fetch audits" }, { status: 500 });
+    return NextResponse.json({ error: "We could not load your audits. Please try again." }, { status: 500 });
   }
 }
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   try {
     const user = await getSessionUser(req);
     if (!user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Please sign in to save this audit." }, { status: 401 });
     }
 
     const body = await req.json();
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const audit = await prisma.audit.create({
       data: {
         userId: user.id,
-        name: name || "Untitled Audit",
+        name: name || "Untitled audit",
         reportJson: JSON.stringify(reportJson),
         csvUrl: csvUrl || null,
         healthScore: healthScore || 0,
@@ -74,6 +74,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ audit }, { status: 201 });
   } catch (error) {
     console.error("Create audit error:", error);
-    return NextResponse.json({ error: "Failed to create audit" }, { status: 500 });
+    return NextResponse.json({ error: "We could not save this audit. Please try again." }, { status: 500 });
   }
 }

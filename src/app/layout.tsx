@@ -21,21 +21,21 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "UM AdFix — Urban Media Ads Auditor",
-  description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad. Rule-based analysis, no guesswork.",
+  title: "UM AdFix — Free Meta Ads CSV Audit",
+  description: "Upload your Meta Ads CSV and see which ads to kill, fix, scale, or leave running. Rule-based analysis for D2C brands.",
   keywords: ["Meta Ads", "Facebook Ads", "Ad Audit", "CPA Optimization", "ROAS Analysis", "Ad Performance", "Urban Media"],
   authors: [{ name: "Reachify Innovations" }],
   manifest: "/manifest.json",
   openGraph: {
-    title: "UM AdFix — Urban Media Ads Auditor",
-    description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad.",
+    title: "UM AdFix — Free Meta Ads CSV Audit",
+    description: "Upload your Meta Ads CSV and get clear Kill, Fix, Scale, or No Action recommendations.",
     type: "website",
     siteName: "UM AdFix",
   },
   twitter: {
     card: "summary_large_image",
-    title: "UM AdFix — Urban Media Ads Auditor",
-    description: "Upload your Meta Ads CSV. Get Kill, Fix, or Scale decisions for every ad.",
+    title: "UM AdFix — Free Meta Ads CSV Audit",
+    description: "Upload your Meta Ads CSV and get clear Kill, Fix, Scale, or No Action recommendations.",
   },
   appleWebApp: {
     capable: true,
