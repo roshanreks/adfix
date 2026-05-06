@@ -316,7 +316,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="shrink-0 h-8 gap-1.5"
+                      className="shrink-0 h-10 gap-1.5 min-h-[44px]"
                       onClick={() => {
                         navigator.clipboard.writeText("https://adsmanager.facebook.com/adsmanager/reporting");
                         setCopied(true);
@@ -587,8 +587,8 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                         <tbody>
                           {parsedData.slice(0, 3).map((ad, i) => (
                             <tr key={i} className="border-b last:border-0 hover:bg-muted/20 transition-colors">
-                              <td className="px-3 py-2 max-w-[140px] truncate">{ad.ad_name || "—"}</td>
-                              <td className="px-3 py-2 max-w-[120px] truncate text-muted-foreground">{ad.campaign_name || "—"}</td>
+                              <td className="px-3 py-2 max-w-[100px] sm:max-w-[140px] truncate">{ad.ad_name || "—"}</td>
+                              <td className="px-3 py-2 max-w-[90px] sm:max-w-[120px] truncate text-muted-foreground">{ad.campaign_name || "—"}</td>
                               <td className="px-3 py-2 text-right font-mono">₹{ad.spend.toLocaleString("en-IN")}</td>
                               <td className="px-3 py-2 text-right font-mono">{ad.purchases}</td>
                             </tr>
@@ -827,7 +827,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="shrink-0 gap-1.5 h-8"
+                  className="shrink-0 gap-1.5 h-10 min-h-[44px]"
                   onClick={() => {
                     navigator.clipboard.writeText("https://adsmanager.facebook.com/adsmanager/reporting");
                     toast.success("Link copied");

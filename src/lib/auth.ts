@@ -61,8 +61,8 @@ export const {
   callbacks: {
     async jwt({ token, user, trigger }) {
       if (trigger === "signIn" && user) {
-        token.onboardingComplete = user.onboardingComplete as boolean;
         token.userId = user.id as string;
+        token.onboardingComplete = (user.onboardingComplete as boolean) ?? false;
       }
       return token;
     },

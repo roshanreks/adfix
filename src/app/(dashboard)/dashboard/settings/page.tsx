@@ -486,7 +486,7 @@ export default function SettingsPage() {
                     <button
                       type="button"
                       onClick={() => setShowCurrentPw((p) => !p)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                       aria-label={showCurrentPw ? "Hide password" : "Show password"}
                     >
                       {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -508,7 +508,7 @@ export default function SettingsPage() {
                     <button
                       type="button"
                       onClick={() => setShowNewPw((p) => !p)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                       aria-label={showNewPw ? "Hide password" : "Show password"}
                     >
                       {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

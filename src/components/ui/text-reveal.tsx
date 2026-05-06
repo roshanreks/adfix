@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface TextRevealProps {
   text: string;
@@ -37,7 +38,7 @@ export function TextReveal({ text, className = "", delay = 0, wordDelay = 0.03, 
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-50px" }}
-      className={className}
+      className={cn("text-wrap", className)}
     >
       {words.map((word, i) => (
         <motion.span key={i} variants={child} className="inline-block mr-[0.25em]">

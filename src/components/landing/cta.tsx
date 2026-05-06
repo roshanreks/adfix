@@ -25,14 +25,14 @@ export function CTA() {
           <div className="mt-6 sm:mt-10">
             <Link
               href="/dashboard"
-              className="inline-flex items-center justify-center gap-2 bg-white text-foreground px-5 sm:px-8 py-3.5 sm:py-4 rounded-lg text-base sm:text-[16px] font-semibold hover:bg-white/10 transition-all press-scale min-h-[48px] sm:min-h-[52px] touch-manipulation"
+              className="inline-flex items-center justify-center gap-2 bg-white text-slate-900 px-5 sm:px-8 py-3.5 sm:py-4 rounded-lg text-base sm:text-[16px] font-semibold hover:bg-white/90 transition-all press-scale min-h-[48px] sm:min-h-[52px] touch-manipulation"
             >
               Start Your Audit — From ₹499 <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </FadeIn>
         <FadeIn delay={0.3}>
-          <p className="mt-4 sm:mt-6 text-[11px] sm:text-[12px] text-muted">
+          <p className="mt-4 sm:mt-6 text-[11px] sm:text-[12px] text-muted-foreground/70">
             CSV-based analysis <span className="mx-2">•</span> One-time payment <span className="mx-2">•</span> Instant delivery
           </p>
         </FadeIn>

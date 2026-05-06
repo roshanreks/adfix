@@ -86,7 +86,7 @@
 .dark {
   --background: #0a0a0a;
   --foreground: #fafafa;
-  --card: #141414;
+  --card: #111111;
   --card-foreground: #fafafa;
   --popover: #141414;
   --popover-foreground: #fafafa;
@@ -94,8 +94,8 @@
   --primary-foreground: #0a0a0a;
   --secondary: #1e1b2e;
   --secondary-foreground: #a78bfa;
-  --muted: #1e1e1e;
-  --muted-foreground: #a3a3a3;
+  --muted: #1c1c1c;
+  --muted-foreground: #a8a8a8;
   --accent: #1e1b2e;
   --accent-foreground: #a78bfa;
   --destructive: #ef4444;
@@ -180,10 +180,11 @@
     transform: scale(0.96);
   }
   .border-hairline {
-    border-color: #e2e8f0;
+    border-color: var(--border);
   }
   .border-hairline-strong {
-    border-color: #cbd5e1;
+    border-color: var(--border);
+    opacity: 0.8;
   }
 }
 

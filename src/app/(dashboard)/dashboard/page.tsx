@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/lib/auth-context";
 import { getStoredAudits } from "@/lib/data";
-import { seedSampleAudit } from "@/lib/seed";
 import type { AuditReport } from "@/lib/types";
 import {
   ArrowRight, BarChart3, TrendingDown, AlertTriangle, TrendingUp,
@@ -36,7 +35,6 @@ export default function DashboardHome() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [audits, setAudits] = useState<AuditReport[]>([]);
-  const [seeded, setSeeded] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
@@ -45,12 +43,12 @@ export default function DashboardHome() {
     }
   }, [user, isLoading, router]);
 
+  // Onboarding safety net: redirect if not completed
   useEffect(() => {
-    if (!seeded) {
-      seedSampleAudit();
-      setSeeded(true);
+    if (user && user.onboardingComplete === false) {
+      router.push("/onboarding");
     }
-  }, [seeded]);
+  }, [user, router]);
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -70,20 +68,11 @@ export default function DashboardHome() {
               }
             }
           }
-          // Merge with localStorage audits, dedupe by id
-          const localAudits = getStoredAudits();
-          const all = [...dbAudits];
-          for (const local of localAudits) {
-            if (!all.find((a) => a.id === local.id)) {
-              all.push(local);
-            }
-          }
           // Sort by createdAt desc
-          all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-          setAudits(all);
+          dbAudits.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          setAudits(dbAudits);
         })
         .catch(() => {
-          // Fallback to localStorage only
           setAudits(getStoredAudits());
         })
         .finally(() => setIsFetching(false));
@@ -132,10 +121,10 @@ export default function DashboardHome() {
       <FadeIn>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-[32px] font-bold text-[#0F172A]">Dashboard</h1>
-            <p className="text-base text-[#475569] mt-1">Welcome back, {user.name}</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-base text-muted-foreground mt-1">Welcome back, {user.name}</p>
           </div>
-          <Badge className="bg-[#F3E8FF] text-[#6D28D9] gap-1.5 px-3 py-1.5 font-semibold border-none text-sm">
+          <Badge className="bg-primary/10 text-primary gap-1.5 px-3 py-1.5 font-semibold border-none text-sm">
             <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
             {planLabel}
           </Badge>
@@ -144,18 +133,18 @@ export default function DashboardHome() {
 
       {/* Run Audit CTA */}
       <FadeIn delay={0.1}>
-        <Card className="bg-white border-[#E2E8F0] shadow-elevated overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#F3E8FF]/80 to-transparent opacity-50 pointer-events-none" />
+        <Card className="bg-card border-border shadow-elevated overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-50 pointer-events-none" />
           <CardContent className="p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
             <div>
-              <h3 className="text-lg sm:text-xl font-semibold text-[#0F172A]">Run a New Audit</h3>
-              <p className="text-sm text-[#475569] mt-1">
+              <h3 className="text-lg sm:text-xl font-semibold text-foreground">Run a New Audit</h3>
+              <p className="text-sm text-muted-foreground mt-1">
                 Upload your Meta Ads CSV and get a deterministic classification report.
               </p>
             </div>
             <Button
               onClick={handleRunAudit}
-              className="bg-[#6D28D9] text-white hover:bg-[#5b21b6] gap-2 shadow-lg press-scale shrink-0 w-full sm:w-auto h-12 sm:h-12 px-5 rounded-lg font-semibold text-base touch-manipulation"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 shadow-lg press-scale shrink-0 w-full sm:w-auto h-12 sm:h-12 px-5 rounded-lg font-semibold text-base touch-manipulation"
             >
               <FileText className="h-5 w-5" aria-hidden="true" />
               Run Audit <ArrowRight className="h-5 w-5" aria-hidden="true" />
@@ -166,14 +155,14 @@ export default function DashboardHome() {
 
       {totalAudits === 0 ? (
         <FadeIn delay={0.2}>
-          <Card className="border-dashed border-2 border-[#E2E8F0] bg-white shadow-ambient">
+          <Card className="border-dashed border-2 border-border bg-card shadow-ambient">
             <CardContent className="p-8 sm:p-16 flex flex-col items-center text-center gap-5">
-              <ClipboardList className="h-14 sm:h-16 w-14 sm:w-16 text-[#94A3B8]" aria-hidden="true" />
-              <h3 className="text-xl sm:text-2xl font-bold text-[#0F172A]">Run Your First Audit</h3>
-              <p className="text-sm sm:text-base text-[#475569] max-w-md">
+              <ClipboardList className="h-14 sm:h-16 w-14 sm:w-16 text-muted-foreground/60" aria-hidden="true" />
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground">Run Your First Audit</h3>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-md">
                 Upload your Meta Ads Manager CSV to get started. We support standard export formats.
               </p>
-              <Button onClick={handleRunAudit} className="bg-[#6D28D9] text-white hover:bg-[#5b21b6] gap-2 press-scale h-12 px-6 rounded-lg font-semibold text-base w-full sm:w-auto touch-manipulation">
+              <Button onClick={handleRunAudit} className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 press-scale h-12 px-6 rounded-lg font-semibold text-base w-full sm:w-auto touch-manipulation">
                 <FileText className="h-5 w-5" aria-hidden="true" /> Run First Audit
               </Button>
             </CardContent>
@@ -184,7 +173,7 @@ export default function DashboardHome() {
           {/* Aggregate stats */}
           <FadeIn delay={0.15}>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="shadow-ambient border-[#E2E8F0] hover:shadow-ambient-hover transition-shadow duration-300">
+              <Card className="shadow-ambient border-border hover:shadow-ambient-hover transition-shadow duration-300">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <BarChart3 className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -195,7 +184,7 @@ export default function DashboardHome() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="shadow-ambient border-[#E2E8F0] hover:shadow-ambient-hover transition-shadow duration-300">
+              <Card className="shadow-ambient border-border hover:shadow-ambient-hover transition-shadow duration-300">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <IndianRupee className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -206,7 +195,7 @@ export default function DashboardHome() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="shadow-ambient border-[#E2E8F0] hover:shadow-ambient-hover transition-shadow duration-300">
+              <Card className="shadow-ambient border-border hover:shadow-ambient-hover transition-shadow duration-300">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <TrendingDown className="h-4 w-4 text-destructive" aria-hidden="true" />
@@ -217,7 +206,7 @@ export default function DashboardHome() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="shadow-ambient border-[#E2E8F0] hover:shadow-ambient-hover transition-shadow duration-300">
+              <Card className="shadow-ambient border-border hover:shadow-ambient-hover transition-shadow duration-300">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <Zap className="h-4 w-4 text-amber-500" aria-hidden="true" />
@@ -235,7 +224,7 @@ export default function DashboardHome() {
             <div className="md:col-span-2 flex flex-col gap-6">
               {latestAudit && (
                 <FadeIn delay={0.2}>
-                  <Card className="shadow-ambient border-[#E2E8F0] hover:shadow-ambient-hover transition-shadow duration-300">
+                  <Card className="shadow-ambient border-border hover:shadow-ambient-hover transition-shadow duration-300">
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg">Latest Audit</CardTitle>
@@ -286,7 +275,7 @@ export default function DashboardHome() {
 
             <div className="flex flex-col gap-6">
               <FadeIn delay={0.25}>
-                <Card className="shadow-ambient border-[#E2E8F0]">
+                <Card className="shadow-ambient border-border">
                   <CardContent className="p-6 flex flex-col gap-3">
                     <span className="font-semibold text-sm">Latest Classifications</span>
               {latestAudit && latestAudit.account_summary && (
@@ -322,7 +311,7 @@ export default function DashboardHome() {
               </FadeIn>
 
               <FadeIn delay={0.3}>
-                <Card className="shadow-ambient border-[#E2E8F0]">
+                <Card className="shadow-ambient border-border">
                   <CardContent className="p-6">
                     <p className="text-sm font-medium mb-3">All Audits</p>
             <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">

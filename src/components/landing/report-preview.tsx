@@ -14,16 +14,16 @@ export function ReportPreview() {
   ];
 
   return (
-    <section id="report" className="bg-card py-[120px]">
-      <div className="mx-auto max-w-[1200px] px-6 lg:px-12">
+    <section id="report" className="bg-card py-16 sm:py-[120px]">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12">
         <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
           {/* LEFT — Feature list */}
           <div>
             <FadeIn>
-              <h2 className="text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-foreground">
+              <h2 className="text-[28px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-foreground">
                 The AdFix Report
               </h2>
-              <p className="mt-4 text-[18px] leading-[1.6] text-muted-foreground">
+              <p className="mt-4 text-[15px] sm:text-[17px] lg:text-[18px] leading-[1.6] text-muted-foreground">
                 A structured, actionable report that tells you exactly what to do next.
               </p>
             </FadeIn>
@@ -32,9 +32,9 @@ export function ReportPreview() {
               {items.map((item) => (
                 <FadeIn key={item.title} delay={0.05}>
                   <div className="flex items-start gap-3">
-                    <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-[#6D28D9]" />
+                    <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                     <div>
-                      <p className="text-[16px] font-medium text-foreground">{item.title}</p>
+                      <p className="text-[14px] sm:text-[16px] font-medium text-foreground">{item.title}</p>
                     </div>
                   </div>
                 </FadeIn>
@@ -51,14 +51,14 @@ export function ReportPreview() {
                   <p className="text-[14px] font-semibold text-foreground">Acme Corp</p>
                   <p className="text-[12px] text-muted-foreground">May 2025</p>
                 </div>
-                <span className="rounded bg-[#F3E8FF] px-2 py-1 text-[12px] font-semibold text-[#6D28D9]">
+                <span className="rounded bg-primary/10 px-2 py-1 text-[12px] font-semibold text-primary">
                   Detailed
                 </span>
               </div>
 
               {/* Executive Summary */}
               <div className="bg-muted px-6 py-4">
-                <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6D28D9]">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-primary">
                   Executive Summary
                 </p>
                 <p className="mt-2 text-[14px] leading-[1.6] text-muted-foreground">
@@ -70,7 +70,7 @@ export function ReportPreview() {
               <div className="grid grid-cols-3 gap-4 border-b border-border px-6 py-4">
                 <div className="text-center">
                   <p className="text-[12px] text-muted-foreground">Health Label</p>
-                  <span className="mt-1 inline-block rounded-full bg-[#FEF2F2] px-3 py-1 text-[12px] font-bold text-[#DC2626]">
+                  <span className="mt-1 inline-block rounded-full bg-destructive/10 px-3 py-1 text-[12px] font-bold text-destructive">
                     AVERAGE
                   </span>
                 </div>
@@ -82,13 +82,13 @@ export function ReportPreview() {
                 </div>
                 <div className="text-center">
                   <p className="text-[12px] text-muted-foreground">Confidence</p>
-                  <p className="mt-1 text-[16px] font-semibold text-[#059669]">HIGH</p>
+                  <p className="mt-1 text-[16px] font-semibold text-emerald-500">HIGH</p>
                 </div>
               </div>
 
               {/* Waste Analysis */}
               <div className="px-6 py-4">
-                <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6D28D9]">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-primary">
                   Waste Analysis
                 </p>
                 <div className="mt-3 grid grid-cols-3 gap-4">
@@ -98,11 +98,11 @@ export function ReportPreview() {
                   </div>
                   <div>
                     <p className="text-[12px] text-muted-foreground">Efficiency Loss</p>
-                    <p className="text-[20px] font-semibold text-[#DC2626]">38.50%</p>
+                    <p className="text-[20px] font-semibold text-destructive">38.50%</p>
                   </div>
                   <div>
                     <p className="text-[12px] text-muted-foreground">Actions Required</p>
-                    <p className="text-[20px] font-semibold text-[#6D28D9]">8</p>
+                    <p className="text-[20px] font-semibold text-primary">8</p>
                   </div>
                 </div>
               </div>

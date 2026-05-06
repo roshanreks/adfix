@@ -26,11 +26,11 @@ export function Hero() {
       />
 
       <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12">
-        <div className="flex flex-col lg:grid lg:grid-cols-[55%_45%] gap-12 lg:gap-16 items-center min-h-[calc(100vh-80px)]">
+        <div className="flex flex-col lg:grid lg:grid-cols-[55%_45%] gap-12 lg:gap-16 items-center min-h-[calc(100dvh-80px)] lg:min-h-[calc(100vh-80px)]">
           {/* Left: Copy */}
           <div className="flex flex-col gap-6 sm:gap-8 w-full pt-8 lg:pt-0">
             <FadeIn>
-              <span className="inline-flex w-fit items-center rounded-full bg-[#F3E8FF] px-3 py-1 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6D28D9]">
+              <span className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.08em] text-primary">
                 Deterministic Meta Ads Audit
               </span>
             </FadeIn>
@@ -90,7 +90,7 @@ export function Hero() {
                   <div>
                     <p className="text-[14px] font-medium text-muted-foreground">Health Score</p>
                   </div>
-                  <span className="inline-flex items-center rounded-full bg-[#FEF2F2] px-2 py-1 text-[12px] font-semibold text-[#DC2626]">
+                  <span className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-1 text-[12px] font-semibold text-destructive">
                     Average
                   </span>
                 </div>
@@ -110,20 +110,20 @@ export function Hero() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
-                  <div className="rounded-lg bg-[#FEF2F2] p-2 sm:p-3 text-center">
-                    <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-[#DC2626] leading-none">
+                  <div className="rounded-lg bg-destructive/10 p-2 sm:p-3 text-center">
+                    <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-destructive leading-none">
                       <NumberTicker value={6} />
                     </p>
                     <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-muted-foreground">Kill</p>
                   </div>
-                  <div className="rounded-lg bg-[#FFFBEB] p-2 sm:p-3 text-center">
-                    <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-[#D97706] leading-none">
+                  <div className="rounded-lg bg-amber-500/10 p-2 sm:p-3 text-center">
+                    <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-amber-500 leading-none">
                       <NumberTicker value={4} />
                     </p>
                     <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-muted-foreground">Fix</p>
                   </div>
-                  <div className="rounded-lg bg-[#ECFDF5] p-2 sm:p-3 text-center">
-                    <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-[#059669] leading-none">
+                  <div className="rounded-lg bg-emerald-500/10 p-2 sm:p-3 text-center">
+                    <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-emerald-500 leading-none">
                       <NumberTicker value={2} />
                     </p>
                     <p className="mt-1 text-[12px] sm:text-[14px] font-medium text-muted-foreground">Scale</p>
@@ -137,7 +137,7 @@ export function Hero() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] sm:text-[14px] text-muted-foreground">Waste %</span>
-                    <span className="text-[13px] sm:text-[14px] font-semibold text-[#DC2626]">38.5%</span>
+                    <span className="text-[13px] sm:text-[14px] font-semibold text-destructive">38.5%</span>
                   </div>
                 </div>
               </div>
@@ -151,7 +151,7 @@ export function Hero() {
             {STATS.map((stat) => (
               <div key={stat.label} className="text-center min-w-[80px]">
                 <p className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold text-foreground">
-                  {stat.prefix && <span className="text-[#6D28D9]">{stat.prefix}</span>}
+                  {stat.prefix && <span className="text-primary">{stat.prefix}</span>}
                   <NumberTicker value={stat.value} suffix={stat.suffix} />
                 </p>
                 <p className="text-[12px] sm:text-[13px] text-muted-foreground mt-1">{stat.label}</p>

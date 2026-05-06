@@ -8,9 +8,9 @@ interface AuroraProps {
 
 export function Aurora({ size = "lg", blendMode = "screen", className = "" }: AuroraProps) {
   const sizeMap = {
-    sm: "w-[500px] h-[500px]",
-    md: "w-[800px] h-[800px]",
-    lg: "w-[1200px] h-[1200px]",
+    sm: "w-[300px] sm:w-[500px] h-[300px] sm:h-[500px]",
+    md: "w-[500px] sm:w-[800px] h-[500px] sm:h-[800px]",
+    lg: "w-[600px] sm:w-[1200px] h-[600px] sm:h-[1200px]",
     full: "w-full h-full",
   };
 

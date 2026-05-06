@@ -4,7 +4,7 @@ import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Lock } from "lucide-react";
+import { Lock, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import type { AdAuditResult } from "@/lib/types";
 import { verdictColor, verdictLabel } from "@/lib/utils";
@@ -21,6 +21,15 @@ export const ClassificationTable = memo(function ClassificationTable({
   isDetailed,
 }: ClassificationTableProps) {
   const displayData = limit && !isDetailed ? data.slice(0, limit) : data;
+
+  if (displayData.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-3 py-12 text-center">
+        <CheckCircle2 className="h-8 w-8 text-muted-foreground/40" aria-hidden="true" />
+        <p className="text-sm text-muted-foreground">No ads in this category.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-auto -mx-1 px-1">

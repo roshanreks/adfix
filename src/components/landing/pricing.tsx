@@ -47,7 +47,7 @@ export function Pricing() {
                     "Charts & Visual Breakdown",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 sm:gap-3">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#6D28D9]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <span className="text-[13px] sm:text-[14px] text-muted-foreground">{f}</span>
                     </li>
                   ))}
@@ -55,7 +55,7 @@ export function Pricing() {
 
                 <button
                   onClick={() => router.push("/dashboard/login")}
-                  className="mt-6 sm:mt-8 w-full rounded-lg py-3 text-[15px] sm:text-[16px] font-semibold transition-all press-scale border border-border bg-card text-foreground hover:bg-muted"
+                  className="mt-6 sm:mt-8 w-full rounded-lg py-3 text-[15px] sm:text-[16px] font-semibold transition-all press-scale border border-border bg-card text-foreground hover:bg-muted min-h-[48px] touch-manipulation"
                 >
                   Get Free Audit
                 </button>
@@ -66,11 +66,11 @@ export function Pricing() {
           {/* Expert Review */}
           <FadeIn delay={0.1}>
             <SpotlightCard
-              className="border-2 border-[#6D28D9]"
+              className="border-2 border-primary"
               spotlightColor="rgba(109, 40, 217, 0.1)"
             >
               <div className="relative p-4 sm:p-8">
-                <span className="absolute -top-3 right-6 inline-block rounded-full bg-[#6D28D9] px-3 py-1 text-[11px] sm:text-[12px] font-semibold text-white">
+                <span className="absolute -top-3 right-6 inline-block rounded-full bg-primary px-3 py-1 text-[11px] sm:text-[12px] font-semibold text-primary-foreground">
                   Best Value
                 </span>
 
@@ -97,7 +97,7 @@ export function Pricing() {
                     "7-Day WhatsApp Support",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 sm:gap-3">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#6D28D9]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <span className="text-[13px] sm:text-[14px] text-muted-foreground">{f}</span>
                     </li>
                   ))}
@@ -105,7 +105,7 @@ export function Pricing() {
 
                 <button
                   onClick={() => router.push("/dashboard/login")}
-                  className="mt-6 sm:mt-8 w-full rounded-lg py-3 text-[15px] sm:text-[16px] font-semibold transition-all press-scale bg-[#6D28D9] text-white hover:bg-[#5b21b6]"
+                  className="mt-6 sm:mt-8 w-full rounded-lg py-3 text-[15px] sm:text-[16px] font-semibold transition-all press-scale bg-primary text-primary-foreground hover:bg-primary/90 min-h-[48px] touch-manipulation"
                 >
                   <span className="flex items-center justify-center gap-2">
                     <Calendar className="h-4 w-4" /> Book My Strategy Call

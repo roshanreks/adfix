@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/lib/auth-context";
-import { getAuditById } from "@/lib/data";
+
 import { toast } from "sonner";
 import type { AuditReport } from "@/lib/types";
 import {
@@ -72,12 +72,11 @@ export default function AuditDetailPage() {
               setAudit(null);
             }
           } else {
-            // Fallback to localStorage
-            setAudit(getAuditById(params.id as string));
+            setAudit(null);
           }
         })
         .catch(() => {
-          setAudit(getAuditById(params.id as string));
+          setAudit(null);
         });
     }
   }, [params.id]);
@@ -247,8 +246,8 @@ export default function AuditDetailPage() {
         <div className="bg-background/80 backdrop-blur-md border-b shadow-sm px-4 py-2.5 -mx-4 sm:-mx-6">
           <div className="flex items-center justify-between gap-3 max-w-6xl mx-auto">
             <div className="flex items-center gap-3 min-w-0">
-              <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard/audits")} className="gap-1.5 h-8 px-2 shrink-0">
-                <ArrowLeft className="h-3.5 w-3.5" />
+              <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard/audits")} className="gap-1.5 h-10 px-3 shrink-0 min-h-[44px]">
+                <ArrowLeft className="h-4 w-4" />
                 <span className="hidden sm:inline text-xs">Audits</span>
               </Button>
               <div className="h-4 w-px bg-border shrink-0 hidden sm:block" />
@@ -259,8 +258,8 @@ export default function AuditDetailPage() {
                 {audit.account_summary.health_label} · {audit.account_summary.health_score}/100
               </Badge>
               {isDetailed && <PDFExportButton report={audit} />}
-              <Button variant="ghost" size="sm" onClick={scrollToTop} className="h-8 w-8 p-0" aria-label="Scroll to top">
-                <ArrowUp className="h-3.5 w-3.5" />
+              <Button variant="ghost" size="sm" onClick={scrollToTop} className="h-10 w-10 p-0 min-h-[44px] min-w-[44px]" aria-label="Scroll to top">
+                <ArrowUp className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -390,12 +389,12 @@ export default function AuditDetailPage() {
         <Card>
           <CardHeader><CardTitle className="text-base">Waste Breakdown</CardTitle></CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="p-3 rounded-lg bg-destructive/10 text-center"><div className="text-xs text-muted-foreground">Total Wasted</div><div className="text-lg font-semibold text-destructive">₹{audit.waste_breakdown.total_wasted_budget.toLocaleString("en-IN")}</div></div>
-              <div className="p-3 rounded-lg bg-red-500/10 text-center"><div className="text-xs text-muted-foreground">Hard Waste</div><div className="text-lg font-semibold text-red-500">₹{audit.waste_breakdown.hard_waste.toLocaleString("en-IN")}</div></div>
-              <div className="p-3 rounded-lg bg-amber-500/10 text-center"><div className="text-xs text-muted-foreground">CPA Waste</div><div className="text-lg font-semibold text-amber-500">₹{audit.waste_breakdown.cpa_waste.toLocaleString("en-IN")}</div></div>
-              <div className="p-3 rounded-lg bg-orange-500/10 text-center"><div className="text-xs text-muted-foreground">ROAS Waste</div><div className="text-lg font-semibold text-orange-500">₹{audit.waste_breakdown.roas_waste.toLocaleString("en-IN")}</div></div>
-              <div className="p-3 rounded-lg bg-emerald-500/10 text-center"><div className="text-xs text-muted-foreground">Efficient</div><div className="text-lg font-semibold text-emerald-500">₹{audit.account_summary.efficient_spend.toLocaleString("en-IN")}</div></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+              <div className="p-3 rounded-lg bg-destructive/10 text-center"><div className="text-xs text-muted-foreground">Total Wasted</div><div className="text-base sm:text-lg font-semibold text-destructive">₹{audit.waste_breakdown.total_wasted_budget.toLocaleString("en-IN")}</div></div>
+              <div className="p-3 rounded-lg bg-red-500/10 text-center"><div className="text-xs text-muted-foreground">Hard Waste</div><div className="text-base sm:text-lg font-semibold text-red-500">₹{audit.waste_breakdown.hard_waste.toLocaleString("en-IN")}</div></div>
+              <div className="p-3 rounded-lg bg-amber-500/10 text-center"><div className="text-xs text-muted-foreground">CPA Waste</div><div className="text-base sm:text-lg font-semibold text-amber-500">₹{audit.waste_breakdown.cpa_waste.toLocaleString("en-IN")}</div></div>
+              <div className="p-3 rounded-lg bg-orange-500/10 text-center"><div className="text-xs text-muted-foreground">ROAS Waste</div><div className="text-base sm:text-lg font-semibold text-orange-500">₹{audit.waste_breakdown.roas_waste.toLocaleString("en-IN")}</div></div>
+              <div className="p-3 rounded-lg bg-emerald-500/10 text-center"><div className="text-xs text-muted-foreground">Efficient</div><div className="text-base sm:text-lg font-semibold text-emerald-500">₹{audit.account_summary.efficient_spend.toLocaleString("en-IN")}</div></div>
             </div>
             {audit.waste_breakdown.top_waste_contributors.length > 0 && (
               <div>
@@ -426,12 +425,12 @@ export default function AuditDetailPage() {
         <Card>
           <CardHeader><CardTitle>Benchmarks</CardTitle></CardHeader>
           <CardContent className="flex flex-col gap-3">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg CPA</div><div className="text-lg font-semibold">₹{audit.benchmarks.avg_cpa.toFixed(0)}</div></div>
-              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg ROAS</div><div className="text-lg font-semibold">{audit.benchmarks.avg_roas.toFixed(2)}×</div></div>
-              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg CTR</div><div className="text-lg font-semibold">{audit.benchmarks.avg_ctr.toFixed(2)}%</div></div>
-              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg CPC</div><div className="text-lg font-semibold">₹{audit.benchmarks.avg_cpc.toFixed(2)}</div></div>
-              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg CPM</div><div className="text-lg font-semibold">₹{audit.benchmarks.avg_cpm.toFixed(0)}</div></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg CPA</div><div className="text-base sm:text-lg font-semibold">₹{audit.benchmarks.avg_cpa.toFixed(0)}</div></div>
+              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg ROAS</div><div className="text-base sm:text-lg font-semibold">{audit.benchmarks.avg_roas.toFixed(2)}×</div></div>
+              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg CTR</div><div className="text-base sm:text-lg font-semibold">{audit.benchmarks.avg_ctr.toFixed(2)}%</div></div>
+              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg CPC</div><div className="text-base sm:text-lg font-semibold">₹{audit.benchmarks.avg_cpc.toFixed(2)}</div></div>
+              <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Avg CPM</div><div className="text-base sm:text-lg font-semibold">₹{audit.benchmarks.avg_cpm.toFixed(0)}</div></div>
             </div>
             <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Best Performer</span><span className="font-medium text-emerald-600">{audit.benchmarks.best_performer}</span></div>
             <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Worst Performer</span><span className="font-medium text-destructive">{audit.benchmarks.worst_performer}</span></div>
@@ -448,9 +447,9 @@ export default function AuditDetailPage() {
               {audit.scale_opportunities.map((opp, i) => (
                 <Card key={i} className="bg-emerald-500/5 border-emerald-500/20">
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold">{opp.ad_name}</span>
-                      <Badge className="bg-emerald-500">{opp.purchases} purchases · {opp.scale_level}</Badge>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                      <span className="font-semibold truncate">{opp.ad_name}</span>
+                      <Badge className="bg-emerald-500 w-fit">{opp.purchases} purchases · {opp.scale_level}</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">{opp.why_scale}</p>
                   </CardContent>
@@ -470,9 +469,9 @@ export default function AuditDetailPage() {
               {audit.fix_opportunities.map((fix, i) => (
                 <Card key={i} className="bg-amber-500/5 border-amber-500/20">
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold">{fix.ad_name}</span>
-                      <Badge className="bg-amber-500 capitalize">{fix.issue_type.replace("_", " ")}</Badge>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                      <span className="font-semibold truncate">{fix.ad_name}</span>
+                      <Badge className="bg-amber-500 capitalize w-fit">{fix.issue_type.replace("_", " ")}</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">{fix.diagnosis}</p>
                   </CardContent>
@@ -492,9 +491,9 @@ export default function AuditDetailPage() {
               {audit.kill_recommendations.map((kill, i) => (
                 <Card key={i} className="bg-red-500/5 border-red-500/20">
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold">{kill.ad_name}</span>
-                      <Badge variant="destructive">Spend: ₹{kill.spend.toLocaleString("en-IN")}</Badge>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                      <span className="font-semibold truncate">{kill.ad_name}</span>
+                      <Badge variant="destructive" className="w-fit">Spend: ₹{kill.spend.toLocaleString("en-IN")}</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">{kill.reason}</p>
                   </CardContent>
@@ -511,12 +510,12 @@ export default function AuditDetailPage() {
           <Card>
             <CardHeader><CardTitle>Campaign Structure Audit</CardTitle></CardHeader>
             <CardContent className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Campaigns</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_campaigns}</div></div>
-                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ad Sets</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_adsets}</div></div>
-                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ads</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.number_of_ads}</div></div>
-                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ads/Ad Set</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.avg_ads_per_adset}</div></div>
-                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Fragmentation</div><div className="text-lg font-semibold">{audit.campaign_structure_audit.budget_fragmentation_score}%</div></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Campaigns</div><div className="text-base sm:text-lg font-semibold">{audit.campaign_structure_audit.number_of_campaigns}</div></div>
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ad Sets</div><div className="text-base sm:text-lg font-semibold">{audit.campaign_structure_audit.number_of_adsets}</div></div>
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ads</div><div className="text-base sm:text-lg font-semibold">{audit.campaign_structure_audit.number_of_ads}</div></div>
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Ads/Ad Set</div><div className="text-base sm:text-lg font-semibold">{audit.campaign_structure_audit.avg_ads_per_adset}</div></div>
+                <div className="p-3 rounded-lg bg-muted/50 text-center"><div className="text-xs text-muted-foreground">Fragmentation</div><div className="text-base sm:text-lg font-semibold">{audit.campaign_structure_audit.budget_fragmentation_score}%</div></div>
               </div>
               <p className="text-sm font-medium">{audit.campaign_structure_audit.diagnosis}</p>
             </CardContent>

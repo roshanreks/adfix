@@ -40,12 +40,12 @@ export function HowItWorks() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {steps.map((s) => (
             <FadeIn key={s.step} delay={parseInt(s.step) * 0.05}>
-              <div className="relative rounded-xl border border-border bg-card p-4 sm:p-8 transition-all duration-200 hover:border-[#C4B5FD] hover:shadow-ambient-hover hover:-translate-y-0.5">
-                <span className="absolute right-4 sm:right-6 top-4 sm:top-6 text-[32px] sm:text-[48px] font-bold leading-none text-muted/30">
+              <div className="relative rounded-xl border border-border bg-card p-4 sm:p-8 transition-all duration-200 hover:border-primary/40 hover:shadow-ambient-hover hover:-translate-y-0.5">
+                <span className="absolute right-4 sm:right-6 top-4 sm:top-6 text-[32px] sm:text-[48px] font-bold leading-none text-muted-foreground/20">
                   {s.step}
                 </span>
-                <div className="mb-4 sm:mb-5 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-[#F3E8FF]">
-                  <s.icon className="h-5 w-5 sm:h-6 sm:w-6 text-[#6D28D9]" />
+                <div className="mb-4 sm:mb-5 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-primary/10">
+                  <s.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                 </div>
                 <h3 className="text-[18px] sm:text-[20px] font-medium leading-[1.4] text-foreground">{s.title}</h3>
                 <p className="mt-2 text-[14px] sm:text-[16px] leading-[1.6] text-muted-foreground">{s.desc}</p>

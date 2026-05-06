@@ -99,7 +99,7 @@ export function Navbar() {
             <Menu className="h-6 w-6" />
           </SheetTrigger>
           <SheetContent side="right" className="w-full sm:w-[360px] p-0 flex flex-col" aria-label="Navigation menu">
-            <div className="flex items-center justify-between p-4 border-b bg-white">
+            <div className="flex items-center justify-between p-4 border-b bg-background">
               <span className="text-lg font-bold text-foreground">Menu</span>
               <button 
                 onClick={() => setOpen(false)} 
@@ -130,7 +130,7 @@ export function Navbar() {
               </nav>
             </div>
             
-            <div className="p-4 border-t bg-white">
+            <div className="p-4 border-t bg-background">
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}

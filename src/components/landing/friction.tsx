@@ -10,29 +10,29 @@ const SIGNALS = [
     icon: Flame,
     title: "Spend with zero purchases",
     desc: "Ads burning budget without a single conversion.",
-    color: "#DC2626",
-    bg: "#FEF2F2",
+    iconClass: "text-destructive",
+    bgClass: "bg-destructive/10",
   },
   {
     icon: MousePointer,
     title: "High CTR, weak conversion",
     desc: "Great creative engagement, but the funnel is broken.",
-    color: "#D97706",
-    bg: "#FFFBEB",
+    iconClass: "text-amber-500",
+    bgClass: "bg-amber-500/10",
   },
   {
     icon: TrendingUp,
     title: "Strong ads underfunded",
     desc: "Winning ads not getting enough budget to scale.",
-    color: "#059669",
-    bg: "#ECFDF5",
+    iconClass: "text-emerald-500",
+    bgClass: "bg-emerald-500/10",
   },
   {
     icon: Target,
     title: "Budget concentrated in inefficient sets",
     desc: "Most spend going to underperforming ad sets.",
-    color: "#64748B",
-    bg: "bg-muted",
+    iconClass: "text-muted-foreground",
+    bgClass: "bg-muted",
   },
 ];
 
@@ -67,11 +67,8 @@ export function Friction() {
             {SIGNALS.map((s) => (
               <SpotlightCard key={s.title}>
                 <div className="p-4 sm:p-8">
-                  <div
-                    className="mb-4 sm:mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-border"
-                    style={{ backgroundColor: s.bg }}
-                  >
-                    <s.icon className="h-5 w-5" style={{ color: s.color }} />
+                  <div className={`mb-4 sm:mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-border ${s.bgClass}`}>
+                    <s.icon className={`h-5 w-5 ${s.iconClass}`} />
                   </div>
                   <h3 className="text-[18px] sm:text-[20px] font-medium leading-[1.4] text-foreground">{s.title}</h3>
                   <p className="mt-2 text-[14px] sm:text-[16px] leading-[1.6] text-muted-foreground">{s.desc}</p>
@@ -86,8 +83,8 @@ export function Friction() {
             {RISKS.map((r) => (
               <SpotlightCard key={r.title} spotlightColor="rgba(220, 38, 38, 0.08)">
                 <div className="flex items-start gap-4 sm:gap-6 p-4 sm:p-8">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
-                    <AlertTriangle className="h-5 w-5 text-[#DC2626]" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-destructive/10">
+                    <AlertTriangle className="h-5 w-5 text-destructive" />
                   </div>
                   <div>
                     <p className="text-[15px] sm:text-[16px] font-medium text-foreground">{r.title}</p>

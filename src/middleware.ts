@@ -1,11 +1,17 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default auth((req) => {
+export async function middleware(req: NextRequest) {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
-  const isOnboardingComplete = !!req.auth?.user?.onboardingComplete;
-  // const isAdmin = false; // checked at route level for admin
+
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  });
+
+  const isLoggedIn = !!token;
+  const isOnboardingComplete = !!token?.onboardingComplete;
 
   const isPublicRoute =
     nextUrl.pathname === "/" ||
@@ -29,14 +35,13 @@ export default auth((req) => {
 
   // Require onboarding for dashboard (but not login/onboarding pages)
   if (isDashboardRoute && isLoggedIn && !isOnboardingComplete) {
-    // Don't redirect if already on a non-dashboard page
     if (nextUrl.pathname !== "/onboarding") {
       return NextResponse.redirect(new URL("/onboarding", nextUrl));
     }
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.png$).*)"],

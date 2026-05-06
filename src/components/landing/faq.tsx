@@ -11,7 +11,7 @@ import { FadeIn } from "@/components/animations";
 
 export function FAQ() {
   return (
-    <section id="faq" className="bg-white py-16 sm:py-[120px]">
+    <section id="faq" className="bg-background py-16 sm:py-[120px]">
       <div className="mx-auto max-w-[720px] px-4 sm:px-6 lg:px-12">
         <FadeIn className="mb-8 sm:mb-12 text-center">
           <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-medium leading-[1.15] tracking-[-0.02em] text-foreground">
@@ -27,7 +27,7 @@ export function FAQ() {
                 value={`item-${idx}`}
                 className="border-b border-border py-4 sm:py-5"
               >
-                <AccordionTrigger className="text-left text-[15px] sm:text-[16px] font-medium text-foreground hover:text-[#6D28D9] hover:no-underline [&>svg]:h-4 [&>svg]:w-4 [&>svg]:text-muted [&[data-state=open]>svg]:rotate-180">
+                <AccordionTrigger className="text-left text-[15px] sm:text-[16px] font-medium text-foreground hover:text-primary hover:no-underline [&>svg]:h-4 [&>svg]:w-4 [&>svg]:text-muted-foreground [&[data-state=open]>svg]:rotate-180">
                   {item.question}
                 </AccordionTrigger>
                 <AccordionContent className="pt-2 sm:pt-3 text-[13px] sm:text-[14px] leading-[1.6] text-muted-foreground">

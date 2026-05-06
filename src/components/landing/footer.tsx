@@ -27,7 +27,7 @@ export function Footer() {
                 { label: "FAQ", href: "#faq" },
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1.5 block touch-manipulation">
+                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2 block touch-manipulation min-h-[44px] flex items-center">
                     {link.label}
                   </Link>
                 </li>
@@ -41,7 +41,7 @@ export function Footer() {
             <ul className="mt-3 sm:mt-4 flex flex-col gap-2">
               {["Blogs", "Contact", "Privacy Policy", "Terms of Use", "Refund Policy"].map((label) => (
                 <li key={label}>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1.5 block touch-manipulation">
+                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2 block touch-manipulation min-h-[44px] flex items-center">
                     {label}
                   </Link>
                 </li>
@@ -55,7 +55,7 @@ export function Footer() {
             <ul className="mt-3 sm:mt-4 flex flex-col gap-2">
               {["Facebook", "Instagram", "LinkedIn"].map((label) => (
                 <li key={label}>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1.5 block touch-manipulation">
+                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2 block touch-manipulation min-h-[44px] flex items-center">
                     {label}
                   </Link>
                 </li>

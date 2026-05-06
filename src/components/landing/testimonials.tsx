@@ -62,7 +62,7 @@ export function Testimonials() {
                   <div key={i} className="w-full flex-shrink-0 px-4 sm:px-8">
                     <div className="mx-auto max-w-[800px]">
                       <div className="relative bg-card rounded-2xl border border-border p-8 sm:p-12 shadow-elevated">
-                        <Quote className="absolute top-6 left-6 h-10 w-10 text-[#6D28D9]/20" />
+                        <Quote className="absolute top-6 left-6 h-10 w-10 text-primary/20" />
                         <blockquote className="relative">
                           <p className="text-[18px] sm:text-[22px] lg:text-[24px] leading-[1.5] text-foreground font-medium">
                             &ldquo;{t.quote}&rdquo;
@@ -88,14 +88,14 @@ export function Testimonials() {
 
             <button
               onClick={prev}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 sm:translate-x-0 bg-card border border-border rounded-full p-3 shadow-lg hover:bg-muted transition-colors"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 sm:-translate-x-4 bg-card border border-border rounded-full p-3 shadow-lg hover:bg-muted transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
               aria-label="Previous testimonial"
             >
               <ChevronLeft className="h-5 w-5 text-foreground" />
             </button>
             <button
               onClick={next}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 sm:translate-x-0 bg-card border border-border rounded-full p-3 shadow-lg hover:bg-muted transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 sm:translate-x-4 bg-card border border-border rounded-full p-3 shadow-lg hover:bg-muted transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
               aria-label="Next testimonial"
             >
               <ChevronRight className="h-5 w-5 text-foreground" />
@@ -109,11 +109,15 @@ export function Testimonials() {
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  i === current ? "bg-[#6D28D9] w-6" : "bg-muted"
+                className={`rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation ${
+                  i === current ? "bg-primary/10" : "bg-transparent hover:bg-muted/50"
                 }`}
                 aria-label={`Go to testimonial ${i + 1}`}
-              />
+              >
+                <span className={`block rounded-full transition-all ${
+                  i === current ? "bg-primary w-6 h-2" : "bg-muted-foreground/30 w-2 h-2"
+                }`} />
+              </button>
             ))}
           </div>
         </ScrollReveal>

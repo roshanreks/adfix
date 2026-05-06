@@ -8,11 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-context";
-import { deleteAudit } from "@/lib/data";
+import { deleteAudit, getStoredAudits } from "@/lib/data";
 import type { AuditReport } from "@/lib/types";
 import { ArrowRight, Trash2, BarChart3, FileText, Search, TrendingUp, TrendingDown, AlertTriangle, X } from "lucide-react";
 import { toast } from "sonner";
 import { SkeletonCard } from "@/components/animations";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
 
 function parseReportJson(reportJson: unknown): AuditReport | null {
   if (!reportJson) return null;
@@ -34,6 +37,7 @@ export default function AuditsPage() {
   const router = useRouter();
   const [audits, setAudits] = useState<AuditReport[]>([]);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [search, setSearch] = useState("");
   const [isFetching, setIsFetching] = useState(true);
 
@@ -64,7 +68,7 @@ export default function AuditsPage() {
           }
         })
         .catch(() => {
-          console.log("API fetch failed, using localStorage fallback");
+          setAudits(getStoredAudits());
         })
         .finally(() => setIsFetching(false));
     }
@@ -72,23 +76,25 @@ export default function AuditsPage() {
 
   const handleDelete = useCallback(async (id: string) => {
     setIsDeleting(id);
+    setDeleteTarget(null);
     try {
       const res = await fetch(`/api/audits/${id}`, { method: "DELETE", credentials: "include" });
       if (res.ok) {
         setAudits((prev) => prev.filter((a) => a.id !== id));
         toast.success("Audit deleted");
+        router.refresh();
       } else {
         throw new Error();
       }
     } catch {
-      // Fallback to localStorage
       deleteAudit(id);
       setAudits((prev) => prev.filter((a) => a.id !== id));
-      toast.success("Audit deleted");
+      toast.warning("Deleted locally — sync with server failed");
+      router.refresh();
     } finally {
       setIsDeleting(null);
     }
-  }, []);
+  }, [router]);
 
   const filtered = audits.filter((a) =>
     search.trim() === "" ||
@@ -246,9 +252,9 @@ export default function AuditsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDelete(audit.id)}
+                        onClick={() => setDeleteTarget({ id: audit.id, name: audit.name })}
                         disabled={isDeleting === audit.id}
-                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors min-h-[44px] min-w-[44px]"
                         aria-label={`Delete audit ${audit.name}`}
                       >
                         <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -261,6 +267,29 @@ export default function AuditsPage() {
           </div>
         </>
       )}
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
+        <DialogContent showCloseButton={false} className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete this audit?</DialogTitle>
+            <DialogDescription>
+              <strong className="text-foreground">{deleteTarget?.name}</strong> will be permanently removed. This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-destructive text-white hover:bg-destructive/90"
+              disabled={!!isDeleting}
+              onClick={() => deleteTarget && handleDelete(deleteTarget.id)}
+            >
+              {isDeleting ? "Deleting…" : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
