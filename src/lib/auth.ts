@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
+import type { JWT } from "next-auth/jwt";
 
 async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -10,6 +11,38 @@ async function hashPassword(password: string): Promise<string> {
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function refreshTokenUser(token: JWT): Promise<JWT> {
+  const userId = token.userId as string | undefined;
+  const email = typeof token.email === "string" ? token.email : undefined;
+
+  if (!userId && !email) return token;
+
+  try {
+    const dbUser = await prisma.user.findFirst({
+      where: userId ? { id: userId } : { email },
+      select: {
+        id: true,
+        onboardingComplete: true,
+        name: true,
+        email: true,
+        image: true,
+      },
+    });
+
+    if (dbUser) {
+      token.userId = dbUser.id;
+      token.onboardingComplete = dbUser.onboardingComplete;
+      token.name = dbUser.name;
+      token.email = dbUser.email;
+      token.picture = dbUser.image;
+    }
+  } catch {
+    // Keep the existing token if the refresh fails.
+  }
+
+  return token;
 }
 
 export const {
@@ -71,31 +104,22 @@ export const {
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      if (trigger === "signIn" && user) {
+      if (user?.id) {
         token.userId = user.id as string;
         token.onboardingComplete = (user.onboardingComplete as boolean) ?? false;
+        token.name = user.name;
+        token.email = user.email;
+        token.picture = user.image;
       }
+
       if (trigger === "update" && token?.userId) {
         const updatedUser = session?.user as { onboardingComplete?: boolean } | undefined;
         if (updatedUser?.onboardingComplete !== undefined) {
           token.onboardingComplete = updatedUser.onboardingComplete;
         }
-        try {
-          const dbUser = await prisma.user.findUnique({
-            where: { id: token.userId as string },
-            select: { onboardingComplete: true, name: true, email: true, image: true },
-          });
-          if (dbUser) {
-            token.onboardingComplete = dbUser.onboardingComplete;
-            token.name = dbUser.name;
-            token.email = dbUser.email;
-            token.picture = dbUser.image;
-          }
-        } catch {
-          // Keep the existing token if the refresh fails.
-        }
       }
-      return token;
+
+      return refreshTokenUser(token);
     },
     async session({ session, token }) {
       if (token?.userId) {
