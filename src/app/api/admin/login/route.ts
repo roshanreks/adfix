@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminCredentials, createAdminSession, COOKIE_NAME } from "@/lib/admin-auth";
-import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,8 +16,9 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await createAdminSession();
-    const cookieStore = await cookies();
-    cookieStore.set(COOKIE_NAME, token, {
+
+    const response = NextResponse.json({ success: true });
+    response.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       path: "/admin",
     });
 
-    return NextResponse.json({ success: true });
+    return response;
   } catch {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }

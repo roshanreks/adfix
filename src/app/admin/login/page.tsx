@@ -28,6 +28,7 @@ export default function AdminLoginPage() {
         if (res.ok) {
           toast.success("Welcome back, admin");
           router.replace("/admin");
+          router.refresh();
         } else {
           toast.error("Invalid credentials");
         }
