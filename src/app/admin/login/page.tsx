@@ -27,8 +27,8 @@ export default function AdminLoginPage() {
 
         if (res.ok) {
           toast.success("Welcome back, admin");
-          router.replace("/admin");
-          router.refresh();
+          // Hard navigation ensures cookie is sent on next request
+          window.location.href = "/admin";
         } else {
           toast.error("Invalid credentials");
         }

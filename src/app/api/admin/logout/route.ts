@@ -3,6 +3,12 @@ import { COOKIE_NAME } from "@/lib/admin-auth";
 
 export async function POST() {
   const response = NextResponse.json({ success: true });
-  response.cookies.delete(COOKIE_NAME);
+  response.cookies.set(COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 0,
+    path: "/",
+  });
   return response;
 }

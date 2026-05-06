@@ -163,7 +163,7 @@ export default function AdminPage() {
 
   const handleLogout = useCallback(async () => {
     await fetch("/api/admin/logout", { method: "POST" });
-    router.replace("/admin/login");
+    window.location.href = "/admin/login";
   }, [router]);
 
   const handleExport = useCallback(() => {
