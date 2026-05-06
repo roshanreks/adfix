@@ -21,7 +21,7 @@ import {
   CircularScore,
 } from "@/components/report-charts";
 import { ClassificationTable } from "@/components/classification-table";
-import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, ExternalLink, Loader2, Calendar, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, Loader2, Calendar, CheckCircle2 } from "lucide-react";
 import { FadeIn } from "@/components/animations";
 import { PDFExportButton } from "@/components/pdf-report";
 
@@ -39,6 +39,40 @@ function parseReportJson(reportJson: unknown): AuditReport | null {
   }
   return null;
 }
+
+type RazorpayCheckoutResponse = {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+};
+
+type RazorpayCheckoutOptions = {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  prefill: {
+    name: string;
+    email: string;
+  };
+  theme: { color: string };
+  handler: (response: RazorpayCheckoutResponse) => Promise<void>;
+  modal: {
+    ondismiss: () => void;
+  };
+};
+
+type RazorpayInstance = {
+  open: () => void;
+};
+
+type RazorpayConstructor = new (options: RazorpayCheckoutOptions) => RazorpayInstance;
+
+type WindowWithRazorpay = Window & {
+  Razorpay?: RazorpayConstructor;
+};
 
 export default function AuditDetailPage() {
   const params = useParams();
@@ -106,7 +140,7 @@ export default function AuditDetailPage() {
 
   const loadRazorpayScript = useCallback((): Promise<boolean> => {
     return new Promise((resolve) => {
-      if ((window as any).Razorpay) {
+      if ((window as WindowWithRazorpay).Razorpay) {
         resolve(true);
         return;
       }
@@ -153,7 +187,13 @@ export default function AuditDetailPage() {
       }
 
       // Open Razorpay checkout
-      const rzp = new (window as any).Razorpay({
+      const Razorpay = (window as WindowWithRazorpay).Razorpay;
+      if (!Razorpay) {
+        toast.error("Payment gateway is unavailable");
+        return;
+      }
+
+      const rzp = new Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
         amount: orderData.amount,
         currency: orderData.currency,
@@ -165,7 +205,7 @@ export default function AuditDetailPage() {
           email: user.email || "",
         },
         theme: { color: "#6D28D9" },
-        handler: async function (response: any) {
+        handler: async function (response: RazorpayCheckoutResponse) {
           try {
             const verifyRes = await fetch("/api/payments/verify", {
               method: "POST",
@@ -632,7 +672,7 @@ export default function AuditDetailPage() {
                   className="w-full sm:w-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-6 font-semibold"
                   onClick={() => setShowSuccessDialog(true)}
                 >
-                  <CheckCircle2 className="h-5 w-5" /> Paid — We'll Contact You
+                  <CheckCircle2 className="h-5 w-5" /> Paid — We&apos;ll Contact You
                 </Button>
               ) : (
                 <Button

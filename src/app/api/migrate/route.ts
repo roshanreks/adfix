@@ -146,13 +146,15 @@ export async function GET() {
       try {
         await prisma.$executeRawUnsafe(sql);
         results.push({ ok: true, sql: sql.substring(0, 40) + "..." });
-      } catch (e: any) {
-        results.push({ ok: false, sql: sql.substring(0, 40) + "...", error: e.message });
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "Unknown migration error";
+        results.push({ ok: false, sql: sql.substring(0, 40) + "...", error: message });
       }
     }
     
     return NextResponse.json({ ok: true, message: "Migration complete", results });
-  } catch (error: any) {
-    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown migration error";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }

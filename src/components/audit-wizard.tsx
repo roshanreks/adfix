@@ -403,9 +403,9 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                 <CardContent className="p-4 flex items-start gap-3">
                   <Info className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300">Column names don't need to match exactly</h4>
+                    <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300">Column names don&apos;t need to match exactly</h4>
                     <p className="text-sm text-blue-700/80 dark:text-blue-400/80 mt-0.5">
-                      If your export says "Spent" instead of "Amount Spent" or "Conversions" instead of "Purchases" — AdFix will auto-detect them. No need to rename anything.
+                      If your export says &quot;Spent&quot; instead of &quot;Amount Spent&quot; or &quot;Conversions&quot; instead of &quot;Purchases&quot; — AdFix will auto-detect them. No need to rename anything.
                     </p>
                   </div>
                 </CardContent>

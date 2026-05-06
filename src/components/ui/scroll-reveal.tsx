@@ -12,9 +12,7 @@ interface ScrollRevealProps {
   delay?: number;
   duration?: number;
   once?: boolean;
-  triggerOnce?: boolean;
   start?: string;
-  end?: string;
   scrub?: boolean | number;
   markers?: boolean;
 }
@@ -25,9 +23,7 @@ export function ScrollReveal({
   delay = 0,
   duration = 0.8,
   once = true,
-  triggerOnce = false,
   start = "top 80%",
-  end = "bottom 20%",
   scrub = false,
   markers = false,
 }: ScrollRevealProps) {
@@ -52,18 +48,16 @@ export function ScrollReveal({
           scrollTrigger: {
             trigger: ref.current,
             start,
-            end,
             scrub,
             markers,
-            once: triggerOnce,
-            toggleActions: once ? "play none none reverse" : "play none none none",
+            once,
           },
         }
       );
     }, ref.current);
 
     return () => ctx.revert();
-  }, [delay, duration, once, triggerOnce, start, end, scrub, markers]);
+  }, [delay, duration, once, start, scrub, markers]);
 
   return <div ref={ref} className={className}>{children}</div>;
 }

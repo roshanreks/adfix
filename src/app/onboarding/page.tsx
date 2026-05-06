@@ -2,14 +2,29 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
-import { Loader2, Building2, Phone, Globe, User, Briefcase, MessageSquare, IndianRupee } from "lucide-react";
+import {
+  Loader2,
+  Building2,
+  Phone,
+  Globe,
+  User,
+  Briefcase,
+  MessageSquare,
+  IndianRupee,
+  Tag,
+  Target,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 const NICHES = [
@@ -43,10 +58,18 @@ const ROLES = [
   "Other",
 ];
 
+const SECTIONS = [
+  { label: "Profile", icon: User },
+  { label: "Business", icon: Building2 },
+  { label: "Strategy", icon: Target },
+];
+
 export default function OnboardingPage() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
+  const { update: updateSession } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -103,8 +126,9 @@ export default function OnboardingPage() {
           return;
         }
 
+        await updateSession({ user: { onboardingComplete: true } });
         toast.success("Welcome to AdFix by Urban Media!");
-        router.push("/dashboard");
+        router.replace("/dashboard");
         router.refresh();
       } catch {
         toast.error("Something went wrong. Please try again.");
@@ -112,7 +136,7 @@ export default function OnboardingPage() {
         setIsSubmitting(false);
       }
     },
-    [name, phone, whatsapp, sameAsPhone, companyName, website, niche, monthlySpend, role, challenge, router]
+    [name, phone, whatsapp, sameAsPhone, companyName, website, niche, monthlySpend, role, challenge, router, updateSession]
   );
 
   if (isLoading) {
@@ -143,201 +167,266 @@ export default function OnboardingPage() {
         transition={{ duration: 0.4 }}
         className="w-full max-w-2xl"
       >
-        <Card className="shadow-elevated border-border/60 overflow-hidden">
+        <Card className="shadow-depth border-border/60 overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60" />
-          <CardHeader className="space-y-1 pb-4">
+          <CardHeader className="space-y-3 pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl sm:text-2xl">Let&apos;s Get to Know You</CardTitle>
-              <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                Step 1 of 1
-              </span>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-[#a855f7] flex items-center justify-center shadow-glow-sm">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl sm:text-2xl">Let&apos;s Get to Know You</CardTitle>
+                  <CardDescription className="text-[13px] sm:text-sm mt-0.5">
+                    Help us tailor your audit and recommendations to your D2C brand.
+                  </CardDescription>
+                </div>
+              </div>
             </div>
-            <CardDescription>
-              Help us tailor your audit and recommendations to your D2C brand.
-            </CardDescription>
+
+            {/* Progress Bar */}
+            <div className="flex items-center gap-2 pt-2">
+              {SECTIONS.map((section, i) => {
+                const Icon = section.icon;
+                const isActive = i === activeSection;
+                const isCompleted = i < activeSection;
+                return (
+                  <button
+                    key={section.label}
+                    type="button"
+                    onClick={() => setActiveSection(i)}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11px] sm:text-[12px] font-medium transition-all ${
+                      isActive
+                        ? "bg-primary/10 text-primary ring-1 ring-primary/20"
+                        : isCompleted
+                        ? "bg-primary/5 text-primary/70"
+                        : "bg-muted text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">{section.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </CardHeader>
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Name */}
-              <div className="grid gap-2">
-                <Label htmlFor="name">
-                  <User className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                  Full Name
-                </Label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Rohan Sharma"
-                  required
-                />
-              </div>
-
-              {/* Phone & WhatsApp */}
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="phone">
-                    <Phone className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                    Mobile Number <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 98765 43210"
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="whatsapp">
-                    <MessageSquare className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                    WhatsApp Number
-                  </Label>
-                  <Input
-                    id="whatsapp"
-                    type="tel"
-                    value={whatsapp}
-                    onChange={(e) => setWhatsapp(e.target.value)}
-                    disabled={sameAsPhone}
-                    placeholder="+91 98765 43210"
-                  />
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="same-as-phone"
-                      checked={sameAsPhone}
-                      onChange={(e) => setSameAsPhone(e.target.checked)}
+              {/* Section 1: Profile */}
+              <div className={activeSection === 0 ? "block" : "hidden"}>
+                <div className="space-y-5">
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">
+                      <User className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
+                      Full Name
+                    </Label>
+                    <Input
+                      id="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Rohan Sharma"
+                      required
+                      className="h-11"
                     />
-                    <label htmlFor="same-as-phone" className="text-xs text-muted-foreground cursor-pointer">
-                      Same as mobile
-                    </label>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="phone">
+                        <Phone className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
+                        Mobile Number <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+91 98765 43210"
+                        required
+                        className="h-11"
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="whatsapp">
+                        <MessageSquare className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
+                        WhatsApp Number
+                      </Label>
+                      <Input
+                        id="whatsapp"
+                        type="tel"
+                        value={whatsapp}
+                        onChange={(e) => setWhatsapp(e.target.value)}
+                        disabled={sameAsPhone}
+                        placeholder="+91 98765 43210"
+                        className="h-11"
+                      />
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="same-as-phone"
+                          checked={sameAsPhone}
+                          onChange={(e) => setSameAsPhone(e.target.checked)}
+                        />
+                        <label htmlFor="same-as-phone" className="text-xs text-muted-foreground cursor-pointer">
+                          Same as mobile
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Company & Website */}
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="company">
-                    <Building2 className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                    Company / Brand Name <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="company"
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    placeholder="Urban Threads"
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="website">
-                    <Globe className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                    Website URL
-                  </Label>
-                  <Input
-                    id="website"
-                    type="text"
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
-                    onBlur={(e) => {
-                      const val = e.target.value.trim();
-                      if (val && !val.match(/^https?:\/\//i)) {
-                        setWebsite("https://" + val);
-                      }
-                    }}
-                    placeholder="urbanthreads.com"
-                  />
+              {/* Section 2: Business */}
+              <div className={activeSection === 1 ? "block" : "hidden"}>
+                <div className="space-y-5">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="company">
+                        <Building2 className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
+                        Company / Brand Name <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="company"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        placeholder="Urban Threads"
+                        required
+                        className="h-11"
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="website">
+                        <Globe className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
+                        Website URL
+                      </Label>
+                      <Input
+                        id="website"
+                        type="text"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                        onBlur={(e) => {
+                          const val = e.target.value.trim();
+                          if (val && !val.match(/^https?:\/\//i)) {
+                            setWebsite("https://" + val);
+                          }
+                        }}
+                        placeholder="urbanthreads.com"
+                        className="h-11"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="niche">
+                        <Tag className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
+                        Industry / Niche <span className="text-destructive">*</span>
+                      </Label>
+                      <select
+                        id="niche"
+                        value={niche}
+                        onChange={(e) => setNiche(e.target.value)}
+                        className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring"
+                      >
+                        <option value="">Select niche</option>
+                        {NICHES.map((n) => (
+                          <option key={n} value={n}>{n}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="spend">
+                        <IndianRupee className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
+                        Monthly Meta Ad Spend <span className="text-destructive">*</span>
+                      </Label>
+                      <select
+                        id="spend"
+                        value={monthlySpend}
+                        onChange={(e) => setMonthlySpend(e.target.value)}
+                        className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring"
+                      >
+                        <option value="">Select range</option>
+                        {SPEND_RANGES.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Niche & Spend */}
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="niche">
-                    Industry / Niche <span className="text-destructive">*</span>
-                  </Label>
-                  <select
-                    id="niche"
-                    value={niche}
-                    onChange={(e) => setNiche(e.target.value)}
-                    required
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              {/* Section 3: Strategy */}
+              <div className={activeSection === 2 ? "block" : "hidden"}>
+                <div className="space-y-5">
+                  <div className="grid gap-2">
+                    <Label htmlFor="role">
+                      <Briefcase className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
+                      Your Role <span className="text-destructive">*</span>
+                    </Label>
+                    <select
+                      id="role"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      <option value="">Select role</option>
+                      {ROLES.map((r) => (
+                        <option key={r} value={r}>{r}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="challenge">
+                      Biggest Challenge with Meta Ads
+                    </Label>
+                    <Textarea
+                      id="challenge"
+                      value={challenge}
+                      onChange={(e) => setChallenge(e.target.value)}
+                      placeholder="e.g., My CPA has doubled in the last 3 months and I don't know why..."
+                      className="min-h-[100px] resize-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex items-center gap-3 pt-2">
+                {activeSection > 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setActiveSection((s) => s - 1)}
+                    className="min-w-[100px]"
                   >
-                    <option value="">Select niche</option>
-                    {NICHES.map((n) => (
-                      <option key={n} value={n}>{n}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="spend">
-                    <IndianRupee className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                    Monthly Meta Ad Spend <span className="text-destructive">*</span>
-                  </Label>
-                  <select
-                    id="spend"
-                    value={monthlySpend}
-                    onChange={(e) => setMonthlySpend(e.target.value)}
-                    required
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  >
-                    <option value="">Select range</option>
-                    {SPEND_RANGES.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Role */}
-              <div className="grid gap-2">
-                <Label htmlFor="role">
-                  <Briefcase className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
-                  Your Role <span className="text-destructive">*</span>
-                </Label>
-                <select
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  required
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
-                  <option value="">Select role</option>
-                  {ROLES.map((r) => (
-                    <option key={r} value={r}>{r}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Challenge */}
-              <div className="grid gap-2">
-                <Label htmlFor="challenge">
-                  Biggest Challenge with Meta Ads
-                </Label>
-                <textarea
-                  id="challenge"
-                  value={challenge}
-                  onChange={(e) => setChallenge(e.target.value)}
-                  placeholder="e.g., My CPA has doubled in the last 3 months and I don't know why..."
-                  rows={3}
-                  className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full gap-2"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Saving...
-                  </>
-                ) : (
-                  "Continue to Dashboard →"
+                    Back
+                  </Button>
                 )}
-              </Button>
+                {activeSection < SECTIONS.length - 1 ? (
+                  <Button
+                    type="button"
+                    className="ml-auto gap-2"
+                    onClick={() => setActiveSection((s) => s + 1)}
+                  >
+                    Next <ArrowRight className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="ml-auto gap-2"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" /> Saving...
+                      </>
+                    ) : (
+                      "Continue to Dashboard →"
+                    )}
+                  </Button>
+                )}
+              </div>
 
               <p className="text-xs text-muted-foreground text-center">
                 By continuing, you agree to let Urban Media contact you about your audit and D2C marketing insights.

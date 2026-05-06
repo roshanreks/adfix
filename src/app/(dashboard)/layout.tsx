@@ -24,6 +24,10 @@ export default function DashboardLayout({
     setSheetOpen(false);
   }, [pathname]);
 
+  if (pathname === "/dashboard/login") {
+    return <>{children}</>;
+  }
+
   const navItems = [
     { href: "/dashboard", icon: Home, label: "Home" },
     { href: "/dashboard/audits", icon: ClipboardList, label: "Audits" },

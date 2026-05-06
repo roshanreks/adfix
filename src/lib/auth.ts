@@ -59,10 +59,30 @@ export const {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, session }) {
       if (trigger === "signIn" && user) {
         token.userId = user.id as string;
         token.onboardingComplete = (user.onboardingComplete as boolean) ?? false;
+      }
+      if (trigger === "update" && token?.userId) {
+        const updatedUser = session?.user as { onboardingComplete?: boolean } | undefined;
+        if (updatedUser?.onboardingComplete !== undefined) {
+          token.onboardingComplete = updatedUser.onboardingComplete;
+        }
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.userId as string },
+            select: { onboardingComplete: true, name: true, email: true, image: true },
+          });
+          if (dbUser) {
+            token.onboardingComplete = dbUser.onboardingComplete;
+            token.name = dbUser.name;
+            token.email = dbUser.email;
+            token.picture = dbUser.image;
+          }
+        } catch {
+          // Keep the existing token if the refresh fails.
+        }
       }
       return token;
     },
