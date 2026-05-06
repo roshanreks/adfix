@@ -250,7 +250,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
       setIsProcessing(false);
       toast.success("Audit complete!");
       handleClose(false);
-      router.push(`/dashboard/audits/${navigateId}`);
+      router.push(`/dashboard/audits/${navigateId}?new=true`);
       router.refresh();
     }
   };

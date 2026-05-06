@@ -14,6 +14,8 @@ import {
   MinusCircle, ClipboardList, Sparkles, FileText, IndianRupee, Zap,
   ArrowUpRight, ArrowDownRight, Activity,
 } from "lucide-react";
+import { ExpertAuditCard } from "@/components/expert-audit-card";
+import { ScaleTeaser } from "@/components/scale-teaser";
 import { FadeIn, AnimatedCounter, SkeletonCard, SkeletonStats } from "@/components/animations";
 import { motion } from "framer-motion";
 
@@ -444,6 +446,16 @@ export default function DashboardHome() {
               </FadeIn>
             </div>
           </div>
+
+          {/* Expert Audit Upsell */}
+          <FadeIn delay={0.35}>
+            <ExpertAuditCard />
+          </FadeIn>
+
+          {/* Scale Teaser */}
+          <FadeIn delay={0.4}>
+            <ScaleTeaser variant="banner" />
+          </FadeIn>
         </>
       )}
     </div>

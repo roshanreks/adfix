@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, Zap } from "lucide-react";
+import { Menu, X, Zap, ExternalLink, Flame, Camera } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { motion, useScroll, useSpring } from "framer-motion";
@@ -21,6 +21,12 @@ export function Navbar() {
     { label: "How It Works", href: "#how-it-works" },
     { label: "Pricing", href: "#pricing" },
     { label: "FAQ", href: "#faq" },
+  ];
+
+  const communityLinks = [
+    { label: "Urban Media", href: "https://www.instagram.com/theurbanmedia.in/", icon: Camera, external: true },
+    { label: "Founder: Roshan", href: "https://www.instagram.com/roshanreks/", icon: Camera, external: true },
+    { label: "Scale Your Brand", href: "https://scale.theurbanmedia.in/?utm_source=adfix&utm_medium=app&utm_campaign=nav", icon: ExternalLink, external: true },
   ];
 
   // Close sheet on any route change (including hash navigation)
@@ -74,7 +80,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-5">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
@@ -86,14 +92,44 @@ export function Navbar() {
                 <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary rounded-full group-hover:w-full transition-all duration-300" />
               </Link>
             ))}
+            {/* Community Dropdown */}
+            <div className="relative group">
+              <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors touch-manipulation flex items-center gap-1">
+                Community
+                <svg className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div className="absolute top-full left-0 mt-1 w-56 bg-card border border-border rounded-xl shadow-depth opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-1">
+                {communityLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
+                    className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                  >
+                    <link.icon className="h-4 w-4" />
+                    {link.label}
+                    {link.external && <ExternalLink className="h-3 w-3 ml-auto opacity-40" />}
+                  </a>
+                ))}
+              </div>
+            </div>
             <ThemeToggle />
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            <a
+              href="https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold px-3 py-2 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all press-scale touch-manipulation min-h-[36px] gap-1"
+            >
+              <Flame className="h-3 w-3" /> Expert Audit — ₹999
+            </a>
             <Link
               href="/dashboard"
-              className="inline-flex items-center justify-center bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-all press-scale touch-manipulation min-h-[44px] shadow-glow-sm"
+              className="inline-flex items-center justify-center bg-primary text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-all press-scale touch-manipulation min-h-[44px] shadow-glow-sm"
             >
               Run Audit
             </Link>
@@ -141,14 +177,39 @@ export function Navbar() {
                       {link.label}
                     </Link>
                   ))}
+                  <div className="px-3 py-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Community</p>
+                    {communityLinks.map((link) => (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        target={link.external ? "_blank" : undefined}
+                        rel={link.external ? "noopener noreferrer" : undefined}
+                        className="flex items-center gap-2 py-3 px-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-base"
+                        onClick={() => setOpen(false)}
+                      >
+                        <link.icon className="h-4 w-4" />
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
                 </nav>
               </div>
 
-              <div className="p-4 border-t bg-background">
+              <div className="p-4 border-t bg-background space-y-3">
+                <a
+                  href="https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-base font-semibold py-3.5 rounded-xl press-scale min-h-[52px] touch-manipulation"
+                >
+                  <Flame className="h-4 w-4" /> Expert Audit — ₹999
+                </a>
                 <Link
                   href="/dashboard"
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2 bg-primary text-white text-lg font-semibold py-4 rounded-xl press-scale min-h-[56px] touch-manipulation shadow-glow-sm"
+                  className="flex items-center justify-center gap-2 bg-primary text-white text-lg font-semibold py-3.5 rounded-xl press-scale min-h-[52px] touch-manipulation shadow-glow-sm"
                 >
                   Run Audit →
                 </Link>

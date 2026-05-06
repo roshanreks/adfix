@@ -7,7 +7,7 @@ import { Sidebar } from "@/components/dashboard/sidebar";
 import { AuditWizard } from "@/components/audit-wizard";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Home, ClipboardList, Settings, Plus, X } from "lucide-react";
+import { Menu, Home, ClipboardList, Settings, Plus, X, Camera, Flame, TrendingUp } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -109,6 +109,33 @@ export default function DashboardLayout({
           </Sheet>
         </header>
         
+        {/* Trust Bar */}
+        <div className="hidden md:flex items-center justify-between px-6 py-2 bg-muted/30 border-b border-border text-[11px] text-muted-foreground">
+          <div className="flex items-center gap-3">
+            <span>Powered by</span>
+            <a
+              href="https://www.instagram.com/theurbanmedia.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-foreground hover:text-primary transition-colors font-medium"
+            >
+              <Camera className="h-3 w-3" /> Urban Media
+            </a>
+            <span className="text-border">|</span>
+            <span>Follow our journey</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://www.instagram.com/roshanreks/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors"
+            >
+              Built by Roshan (@roshanreks)
+            </a>
+          </div>
+        </div>
+
         {/* Main Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto pb-28 md:pb-4">
           {children}
@@ -136,6 +163,18 @@ export default function DashboardLayout({
                 </button>
               );
             })}
+            <a
+              href="https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-1 min-w-[64px] min-h-[56px] rounded-xl text-amber-500 touch-manipulation"
+              aria-label="Expert audit"
+            >
+              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center -mt-4 shadow-lg border-4 border-white">
+                <Flame className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-[10px] font-medium mt-0.5">₹999</span>
+            </a>
             <button
               onClick={() => setWizardOpen(true)}
               className="flex flex-col items-center gap-1 min-w-[64px] min-h-[56px] rounded-xl text-primary touch-manipulation"

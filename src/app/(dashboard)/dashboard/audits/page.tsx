@@ -10,7 +10,9 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-context";
 import { deleteAudit, getStoredAudits } from "@/lib/data";
 import type { AuditReport } from "@/lib/types";
-import { ArrowRight, Trash2, BarChart3, FileText, Search, TrendingUp, TrendingDown, AlertTriangle, X } from "lucide-react";
+import { ArrowRight, Trash2, BarChart3, FileText, Search, TrendingUp, TrendingDown, AlertTriangle, X, Loader2, HelpCircle } from "lucide-react";
+import { ExpertAuditCard } from "@/components/expert-audit-card";
+import { ScaleTeaser } from "@/components/scale-teaser";
 import { toast } from "sonner";
 import { SkeletonCard } from "@/components/animations";
 import {
@@ -40,6 +42,7 @@ export default function AuditsPage() {
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [search, setSearch] = useState("");
   const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -50,6 +53,7 @@ export default function AuditsPage() {
   useEffect(() => {
     if (!isLoading && user) {
       setIsFetching(true);
+      setFetchError(false);
       fetch("/api/audits", { credentials: "include" })
         .then((res) => res.json())
         .then((data) => {
@@ -68,6 +72,7 @@ export default function AuditsPage() {
           }
         })
         .catch(() => {
+          setFetchError(true);
           setAudits(getStoredAudits());
         })
         .finally(() => setIsFetching(false));
@@ -107,14 +112,34 @@ export default function AuditsPage() {
   if (isLoading || isFetching) {
     return (
       <div className="flex flex-col gap-6 max-w-6xl mx-auto" aria-busy="true">
-        <div className="h-8 bg-muted rounded-md w-40 animate-pulse" />
-        <div className="h-4 bg-muted rounded-md w-56 animate-pulse" />
-        <SkeletonCard />
-        <SkeletonCard />
+        <div className="flex items-center justify-center py-12">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Fetching your audits...</p>
+          </div>
+        </div>
+        <div className="animate-pulse">
+          <div className="h-8 bg-muted rounded-md w-40 mb-2" />
+          <div className="h-4 bg-muted rounded-md w-56 mb-6" />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
       </div>
     );
   }
   if (!user) return null;
+  if (fetchError && audits.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-20 text-center max-w-6xl mx-auto">
+        <HelpCircle className="h-12 w-12 text-muted-foreground" />
+        <h2 className="text-xl font-semibold">Unable to load audits</h2>
+        <p className="text-muted-foreground max-w-sm">We couldn't fetch your audits. Please check your connection and try again.</p>
+        <Button onClick={() => window.location.reload()} variant="outline">
+          Tap to Retry
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6 max-w-6xl mx-auto">
@@ -138,26 +163,29 @@ export default function AuditsPage() {
       </div>
 
       {audits.length === 0 ? (
-        <Card className="border-dashed border-2 border-border/60 bg-muted/20">
-          <CardContent className="p-8 sm:p-12 flex flex-col items-center text-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
-              <BarChart3 className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
-            </div>
-            <h3 className="text-lg sm:text-xl font-bold">No Audits Yet</h3>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-md">
-              Run your first audit to see reports here. Upload a Meta Ads Manager CSV and get instant insights.
-            </p>
-            <Button
-              onClick={() => {
-                const event = new CustomEvent("open-audit-wizard");
-                window.dispatchEvent(event);
-              }}
-              className="bg-primary text-primary-foreground gap-2 h-12 px-6 font-semibold text-base touch-manipulation w-full sm:w-auto press-scale"
-            >
-              <FileText className="h-5 w-5" aria-hidden="true" /> Run First Audit
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col gap-5">
+          <Card className="border-dashed border-2 border-border/60 bg-muted/20">
+            <CardContent className="p-8 sm:p-12 flex flex-col items-center text-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
+                <BarChart3 className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold">No Audits Yet</h3>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-md">
+                Run your first audit to see reports here. Upload a Meta Ads Manager CSV and get instant insights.
+              </p>
+              <Button
+                onClick={() => {
+                  const event = new CustomEvent("open-audit-wizard");
+                  window.dispatchEvent(event);
+                }}
+                className="bg-primary text-primary-foreground gap-2 h-12 px-6 font-semibold text-base touch-manipulation w-full sm:w-auto press-scale"
+              >
+                <FileText className="h-5 w-5" aria-hidden="true" /> Run First Audit
+              </Button>
+            </CardContent>
+          </Card>
+          <ExpertAuditCard headline="Get an expert to audit your funnel" />
+        </div>
       ) : (
         <>
           {/* Search */}
@@ -187,7 +215,8 @@ export default function AuditsPage() {
             {filtered.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">No audits match your search.</p>
             ) : (
-              filtered.map((audit) => (
+              filtered.map((audit, index) => (
+                <>
                 <Card
                   key={audit.id}
                   className="hover:border-primary/40 hover:shadow-md transition-all duration-200 group"
@@ -262,11 +291,23 @@ export default function AuditsPage() {
                     </div>
                   </CardContent>
                 </Card>
+                {/* Insert upsell after every 3rd card */}
+                {(index + 1) % 3 === 0 && index !== filtered.length - 1 && (
+                  <ExpertAuditCard variant="inline" headline="Want a Deeper Audit?" />
+                )}
+                </>
               ))
+            )}
+            {/* Show upsell at bottom if fewer than 3 audits or as final card */}
+            {filtered.length > 0 && filtered.length < 3 && (
+              <ExpertAuditCard variant="inline" headline="Want a Deeper Audit?" />
             )}
           </div>
         </>
       )}
+      {/* Scale Teaser */}
+      <ScaleTeaser variant="banner" />
+
       {/* Delete confirmation dialog */}
       <Dialog open={!!deleteTarget} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
         <DialogContent showCloseButton={false} className="sm:max-w-sm">

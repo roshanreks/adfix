@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,8 @@ import {
   CircularScore,
 } from "@/components/report-charts";
 import { ClassificationTable } from "@/components/classification-table";
-import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, Loader2, Calendar, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, Loader2, Calendar, CheckCircle2, Flame } from "lucide-react";
+import { ExpertAuditCard } from "@/components/expert-audit-card";
 import { FadeIn } from "@/components/animations";
 import { PDFExportButton } from "@/components/pdf-report";
 
@@ -77,8 +78,13 @@ type WindowWithRazorpay = Window & {
 export default function AuditDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isNewAudit = searchParams.get("new") === "true";
+  const [showPostAuditBanner, setShowPostAuditBanner] = useState(isNewAudit);
   const { user, isLoading } = useAuth();
   const [audit, setAudit] = useState<AuditReport | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [showSticky, setShowSticky] = useState(false);
   const [whatsappModalOpen, setWhatsappModalOpen] = useState(false);
   const [whatsappNumber, setWhatsappNumber] = useState("");
@@ -93,6 +99,8 @@ export default function AuditDetailPage() {
 
   useEffect(() => {
     if (params.id) {
+      setIsFetching(true);
+      setFetchError(false);
       fetch(`/api/audits/${params.id}`, { credentials: "include" })
         .then((res) => res.json())
         .then((data) => {
@@ -111,7 +119,9 @@ export default function AuditDetailPage() {
         })
         .catch(() => {
           setAudit(null);
-        });
+          setFetchError(true);
+        })
+        .finally(() => setIsFetching(false));
     }
   }, [params.id]);
 
@@ -249,15 +259,50 @@ export default function AuditDetailPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  if (isLoading) return <div className="flex flex-col gap-6 max-w-6xl mx-auto animate-pulse"><div className="h-10 bg-muted rounded-lg w-32" /><div className="grid md:grid-cols-3 gap-6"><div className="md:col-span-2 h-48 bg-muted rounded-xl" /><div className="h-48 bg-muted rounded-xl" /></div></div>;
+  if (isLoading || isFetching) {
+    return (
+      <div className="flex flex-col gap-6 max-w-6xl mx-auto">
+        <div className="flex items-center justify-center py-20">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Fetching your audit...</p>
+          </div>
+        </div>
+        <div className="animate-pulse">
+          <div className="h-10 bg-muted rounded-lg w-32 mb-6" />
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="md:col-span-2 h-48 bg-muted rounded-xl" />
+            <div className="h-48 bg-muted rounded-xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (!user) return null;
-  if (!audit) return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-      <HelpCircle className="h-12 w-12 text-muted-foreground" /><h2 className="text-xl font-semibold">Audit not found</h2>
-      <p className="text-muted-foreground">The audit you are looking for does not exist or has been removed.</p>
-      <Button onClick={() => router.push("/dashboard/audits")} variant="outline"><ArrowLeft className="h-4 w-4 mr-2" /> Back to Audits</Button>
-    </div>
-  );
+  if (fetchError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+        <HelpCircle className="h-12 w-12 text-muted-foreground" />
+        <h2 className="text-xl font-semibold">Unable to load audit</h2>
+        <p className="text-muted-foreground max-w-sm">We couldn't fetch your audit. Please check your connection and try again.</p>
+        <Button onClick={() => window.location.reload()} variant="outline">
+          <ArrowLeft className="h-4 w-4 mr-2" /> Tap to Retry
+        </Button>
+      </div>
+    );
+  }
+  if (!audit) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+        <HelpCircle className="h-12 w-12 text-muted-foreground" />
+        <h2 className="text-xl font-semibold">Audit not found</h2>
+        <p className="text-muted-foreground">The audit you are looking for does not exist or has been removed.</p>
+        <Button onClick={() => router.push("/dashboard/audits")} variant="outline">
+          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Audits
+        </Button>
+      </div>
+    );
+  }
 
   const allAds = audit.ad_level_audit || [];
   const scaleAds = allAds.filter(a => a.verdict === "SCALE");
@@ -726,6 +771,48 @@ export default function AuditDetailPage() {
           </Card>
         </FadeIn>
       )}
+
+      {/* Post-audit creation banner */}
+      {showPostAuditBanner && (
+        <FadeIn>
+          <div className="rounded-xl border-2 border-amber-500/30 bg-gradient-to-r from-amber-50/80 to-orange-50/60 dark:from-amber-950/30 dark:to-orange-950/20 p-4 sm:p-5 relative overflow-hidden">
+            <button
+              onClick={() => setShowPostAuditBanner(false)}
+              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="font-semibold text-foreground flex items-center gap-2">
+                  <Flame className="h-5 w-5 text-amber-500" />
+                  AI found issues. Now let humans fix them.
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Our AI + Human experts will audit your entire funnel for ₹999.
+                </p>
+              </div>
+              <a
+                href="https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:from-amber-600 hover:to-orange-600 transition-all shrink-0 min-h-[44px]"
+              >
+                Book Expert Audit <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        </FadeIn>
+      )}
+
+      {/* Expert Audit Upsell */}
+      <FadeIn delay={0.55}>
+        <div className="pt-4">
+          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-6" />
+          <ExpertAuditCard headline="Want us to go deeper than AI?" />
+        </div>
+      </FadeIn>
 
       {/* WhatsApp Modal */}
       <Dialog open={whatsappModalOpen} onOpenChange={setWhatsappModalOpen}>
