@@ -9,6 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import {
@@ -130,7 +137,8 @@ export default function OnboardingPage() {
         toast.success("Welcome to AdFix by Urban Media!");
         router.replace("/dashboard");
         router.refresh();
-      } catch {
+      } catch (err) {
+        console.error("Onboarding submit error:", err);
         toast.error("Something went wrong. Please try again.");
       } finally {
         setIsSubmitting(false);
@@ -322,34 +330,32 @@ export default function OnboardingPage() {
                         <Tag className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
                         Industry / Niche <span className="text-destructive">*</span>
                       </Label>
-                      <select
-                        id="niche"
-                        value={niche}
-                        onChange={(e) => setNiche(e.target.value)}
-                        className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring"
-                      >
-                        <option value="">Select niche</option>
-                        {NICHES.map((n) => (
-                          <option key={n} value={n}>{n}</option>
-                        ))}
-                      </select>
+                      <Select value={niche} onValueChange={(v) => setNiche(v ?? "")}>
+                        <SelectTrigger id="niche" className="h-11">
+                          <SelectValue placeholder="Select niche" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {NICHES.map((n) => (
+                            <SelectItem key={n} value={n}>{n}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="spend">
                         <IndianRupee className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
                         Monthly Meta Ad Spend <span className="text-destructive">*</span>
                       </Label>
-                      <select
-                        id="spend"
-                        value={monthlySpend}
-                        onChange={(e) => setMonthlySpend(e.target.value)}
-                        className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring"
-                      >
-                        <option value="">Select range</option>
-                        {SPEND_RANGES.map((s) => (
-                          <option key={s} value={s}>{s}</option>
-                        ))}
-                      </select>
+                      <Select value={monthlySpend} onValueChange={(v) => setMonthlySpend(v ?? "")}>
+                        <SelectTrigger id="spend" className="h-11">
+                          <SelectValue placeholder="Select range" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SPEND_RANGES.map((s) => (
+                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
@@ -363,17 +369,16 @@ export default function OnboardingPage() {
                       <Briefcase className="h-3.5 w-3.5 inline mr-1.5 text-muted-foreground" />
                       Your Role <span className="text-destructive">*</span>
                     </Label>
-                    <select
-                      id="role"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring"
-                    >
-                      <option value="">Select role</option>
-                      {ROLES.map((r) => (
-                        <option key={r} value={r}>{r}</option>
-                      ))}
-                    </select>
+                    <Select value={role} onValueChange={(v) => setRole(v ?? "")}>
+                      <SelectTrigger id="role" className="h-11">
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ROLES.map((r) => (
+                          <SelectItem key={r} value={r}>{r}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div className="grid gap-2">
@@ -413,9 +418,10 @@ export default function OnboardingPage() {
                   </Button>
                 ) : (
                   <Button
-                    type="submit"
+                    type="button"
                     className="ml-auto gap-2"
                     disabled={isSubmitting}
+                    onClick={handleSubmit}
                   >
                     {isSubmitting ? (
                       <>
