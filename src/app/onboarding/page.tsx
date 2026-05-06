@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/lib/auth-context";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Loader2, Building2, Phone, Globe, User, Briefcase, MessageSquare, IndianRupee } from "lucide-react";
 import { motion } from "framer-motion";
@@ -46,6 +47,7 @@ const ROLES = [
 export default function OnboardingPage() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
+  const { update: updateSession } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [name, setName] = useState("");
@@ -104,8 +106,10 @@ export default function OnboardingPage() {
         }
 
         toast.success("Welcome to AdFix by Urban Media!");
+        // Force NextAuth to reissue the JWT cookie with onboardingComplete: true
+        // before navigating, so the middleware sees the updated value.
+        await updateSession();
         router.push("/dashboard");
-        router.refresh();
       } catch {
         toast.error("Something went wrong. Please try again.");
       } finally {

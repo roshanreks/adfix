@@ -64,6 +64,22 @@ export const {
         token.userId = user.id as string;
         token.onboardingComplete = (user.onboardingComplete as boolean) ?? false;
       }
+      // The middleware reads onboardingComplete directly from the JWT, so we must
+      // keep it fresh. Once the onboarding API sets it to true in the DB, the next
+      // JWT rotation (triggered by router.refresh() on the client) will pick it up.
+      if (token.userId && !token.onboardingComplete) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.userId as string },
+            select: { onboardingComplete: true },
+          });
+          if (dbUser) {
+            token.onboardingComplete = dbUser.onboardingComplete;
+          }
+        } catch {
+          // keep existing token value
+        }
+      }
       return token;
     },
     async session({ session, token }) {
