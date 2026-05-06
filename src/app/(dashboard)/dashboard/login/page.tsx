@@ -42,13 +42,15 @@ export default function LoginPage() {
           const ok = await register(name, email, password);
           if (ok) {
             toast.success("Account created successfully");
-            router.push("/onboarding");
+            // Hard navigation ensures the auth cookie is picked up
+            window.location.href = "/onboarding";
           }
         } else {
           const ok = await login(email, password);
           if (ok) {
             toast.success("Welcome back!");
-            router.push("/dashboard");
+            // Hard navigation ensures the auth cookie is sent on the next request
+            window.location.href = "/dashboard";
           }
         }
       } finally {
@@ -61,7 +63,7 @@ export default function LoginPage() {
   const handleGoogleSignIn = useCallback(async () => {
     setIsSubmitting(true);
     try {
-      await signIn("google", { callbackUrl: "/dashboard" });
+      await signIn("google", { callbackUrl: "/dashboard", redirect: true });
     } catch {
       toast.error("Google sign-in failed");
       setIsSubmitting(false);
