@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/admin-auth";
 
 export async function GET(req: NextRequest) {
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
   const adminCookie = req.cookies.get("admin-session")?.value;
   const isValid = adminCookie ? await verifyAdminSession(adminCookie) : false;
 
