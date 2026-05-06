@@ -470,7 +470,7 @@ export default function AuditDetailPage() {
                 </div>
               ))}
             </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-white dark:bg-background border">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-card border">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-bold">₹999</span>
@@ -521,7 +521,7 @@ export default function AuditDetailPage() {
             { label: "Avg CPC", value: audit.account_summary.avg_cpc > 0 ? `₹${audit.account_summary.avg_cpc.toFixed(2)}` : "—" },
             { label: "Avg CPM", value: `₹${audit.account_summary.avg_cpm.toFixed(0)}` },
           ].map((kpi) => (
-            <Card key={kpi.label} className="shadow-ambient border-[#E2E8F0]">
+            <Card key={kpi.label} className="shadow-ambient border-border">
               <CardContent className="p-3 text-center">
                 <div className="text-xs text-muted-foreground">{kpi.label}</div>
                 <div className="text-lg font-bold mt-1">{kpi.value}</div>

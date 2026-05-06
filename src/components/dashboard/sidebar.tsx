@@ -30,8 +30,8 @@ export function Sidebar({ onRunAudit }: SidebarProps) {
             UM
           </div>
           <div className="flex flex-col">
-            <span className="text-[16px] font-bold text-[#0F172A] tracking-[-0.01em] leading-none">UM AdFix</span>
-            <span className="text-[9px] text-[#94A3B8] -mt-0.5">Urban Media</span>
+            <span className="text-[16px] font-bold text-sidebar-foreground tracking-[-0.01em] leading-none">UM AdFix</span>
+            <span className="text-[9px] text-sidebar-foreground/50 -mt-0.5">Urban Media</span>
           </div>
         </Link>
       </div>
@@ -39,7 +39,7 @@ export function Sidebar({ onRunAudit }: SidebarProps) {
       <div className="px-4 pb-6">
         <Button
           onClick={onRunAudit}
-          className="w-full bg-[#6D28D9] text-white hover:bg-[#5b21b6] gap-2 press-scale font-semibold h-11 rounded-lg"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2 press-scale font-semibold h-11 rounded-lg"
         >
           <Plus className="h-4 w-4" aria-hidden="true" /> Start Free Audit
         </Button>
@@ -55,7 +55,7 @@ export function Sidebar({ onRunAudit }: SidebarProps) {
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
                 active
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-[#475569] hover:bg-sidebar-accent/50 hover:text-[#0F172A]"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
               }`}
               aria-current={active ? "page" : undefined}
             >
@@ -75,15 +75,15 @@ export function Sidebar({ onRunAudit }: SidebarProps) {
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[#0F172A] truncate">{user?.name || "User"}</p>
-            <p className="text-xs text-[#475569] truncate">{user?.email || ""}</p>
+            <p className="text-sm font-medium text-sidebar-foreground truncate">{user?.name || "User"}</p>
+            <p className="text-xs text-sidebar-foreground/70 truncate">{user?.email || ""}</p>
           </div>
         </div>
         <Button
           variant="ghost"
           size="sm"
           onClick={logout}
-          className="w-full justify-start gap-2 text-[#475569] hover:text-[#0F172A] hover:bg-muted/50 rounded-lg h-9"
+          className="w-full justify-start gap-2 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-lg h-9"
         >
           <LogOut className="h-4 w-4" aria-hidden="true" /> Logout
         </Button>

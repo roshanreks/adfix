@@ -40,11 +40,11 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar onRunAudit={() => setWizardOpen(true)} />
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Mobile Header */}
-        <header className="md:hidden flex items-center justify-between h-16 px-4 border-b border-border bg-white shadow-sm z-10">
+        <header className="md:hidden flex items-center justify-between h-16 px-4 border-b border-border bg-card shadow-sm z-10">
           <button 
             onClick={() => handleNav("/dashboard")} 
             className="flex items-center gap-2 min-h-[44px] touch-manipulation"
@@ -52,7 +52,7 @@ export default function DashboardLayout({
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-sm">
               UM
             </div>
-            <span className="text-lg font-bold text-[#0F172A]">UM AdFix</span>
+            <span className="text-lg font-bold text-foreground">UM AdFix</span>
           </button>
           
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
@@ -63,8 +63,8 @@ export default function DashboardLayout({
               <Menu className="h-6 w-6" />
             </SheetTrigger>
             <SheetContent side="right" className="w-full sm:w-[360px] p-0 flex flex-col" aria-label="Menu">
-              <div className="flex items-center justify-between p-4 border-b bg-white">
-                <span className="text-lg font-bold text-[#0F172A]">Menu</span>
+              <div className="flex items-center justify-between p-4 border-b bg-card">
+                <span className="text-lg font-bold text-foreground">Menu</span>
                 <button 
                   onClick={() => setSheetOpen(false)} 
                   className="p-2.5 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-lg hover:bg-muted touch-manipulation"
@@ -78,26 +78,26 @@ export default function DashboardLayout({
                 <nav className="flex flex-col gap-1 px-3" aria-label="Mobile navigation">
                   <button
                     onClick={() => handleNav("/dashboard")}
-                    className="flex items-center gap-3 text-base font-medium text-[#475569] py-4 px-3 rounded-lg hover:bg-muted min-h-[52px] touch-manipulation"
+                    className="flex items-center gap-3 text-base font-medium text-foreground/70 py-4 px-3 rounded-lg hover:bg-muted hover:text-foreground min-h-[52px] touch-manipulation"
                   >
                     <Home className="h-5 w-5" /> Home
                   </button>
                   <button
                     onClick={() => handleNav("/dashboard/audits")}
-                    className="flex items-center gap-3 text-base font-medium text-[#475569] py-4 px-3 rounded-lg hover:bg-muted min-h-[52px] touch-manipulation"
+                    className="flex items-center gap-3 text-base font-medium text-foreground/70 py-4 px-3 rounded-lg hover:bg-muted hover:text-foreground min-h-[52px] touch-manipulation"
                   >
                     <ClipboardList className="h-5 w-5" /> Audits
                   </button>
                   <button
                     onClick={() => handleNav("/dashboard/settings")}
-                    className="flex items-center gap-3 text-base font-medium text-[#475569] py-4 px-3 rounded-lg hover:bg-muted min-h-[52px] touch-manipulation"
+                    className="flex items-center gap-3 text-base font-medium text-foreground/70 py-4 px-3 rounded-lg hover:bg-muted hover:text-foreground min-h-[52px] touch-manipulation"
                   >
                     <Settings className="h-5 w-5" /> Settings
                   </button>
                 </nav>
               </div>
               
-              <div className="p-4 border-t bg-white">
+              <div className="p-4 border-t bg-card">
                 <Button
                   onClick={() => { setSheetOpen(false); setWizardOpen(true); }}
                   className="w-full bg-primary text-primary-foreground text-base font-semibold py-4 min-h-[56px] touch-manipulation"
@@ -142,7 +142,7 @@ export default function DashboardLayout({
         </main>
         
         {/* Mobile Bottom Navigation */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E2E8F0] px-2 py-3 pb-safe z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]" aria-label="Bottom navigation">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border px-2 py-3 pb-safe z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]" aria-label="Bottom navigation">
           <div className="flex items-center justify-around">
             {navItems.map((item) => {
               const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href));
@@ -153,7 +153,7 @@ export default function DashboardLayout({
                   className={`flex flex-col items-center gap-1.5 min-w-[64px] min-h-[56px] rounded-xl transition-all touch-manipulation ${
                     isActive 
                       ? "text-primary bg-primary/5" 
-                      : "text-[#94A3B8] hover:text-[#475569] hover:bg-muted/50"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   }`}
                   aria-label={`Go to ${item.label}`}
                   aria-current={isActive ? "page" : undefined}
@@ -170,7 +170,7 @@ export default function DashboardLayout({
               className="flex flex-col items-center gap-1 min-w-[64px] min-h-[56px] rounded-xl text-amber-500 touch-manipulation"
               aria-label="Expert audit"
             >
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center -mt-4 shadow-lg border-4 border-white">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center -mt-4 shadow-lg border-4 border-card">
                 <Flame className="h-5 w-5 text-white" />
               </div>
               <span className="text-[10px] font-medium mt-0.5">₹999</span>
@@ -180,7 +180,7 @@ export default function DashboardLayout({
               className="flex flex-col items-center gap-1 min-w-[64px] min-h-[56px] rounded-xl text-primary touch-manipulation"
               aria-label="Run new audit"
             >
-              <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center -mt-5 shadow-lg border-4 border-white">
+              <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center -mt-5 shadow-lg border-4 border-card">
                 <Plus className="h-6 w-6 text-white" />
               </div>
               <span className="text-xs font-medium mt-1">Run</span>

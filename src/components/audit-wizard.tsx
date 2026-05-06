@@ -311,7 +311,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
                     <PlayCircle className="h-5 w-5 text-primary" />
                     <h4 className="font-medium">Step 1: Open Meta Ads Manager Reports</h4>
                   </div>
-                  <div className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                  <div className="flex items-center gap-2 rounded-lg border bg-card px-3 py-2.5">
                     <span className="text-sm text-muted-foreground truncate flex-1 font-mono">https://adsmanager.facebook.com/adsmanager/reporting</span>
                     <Button
                       variant="ghost"
@@ -823,7 +823,7 @@ export function AuditWizard({ open, onOpenChange }: AuditWizardProps) {
             <div className="rounded-lg border bg-muted/30 p-3">
               <p className="text-sm font-medium text-muted-foreground mb-1">Direct Link</p>
               <div className="flex items-center gap-2">
-                <code className="text-xs bg-white border rounded px-2 py-1.5 flex-1 truncate">https://adsmanager.facebook.com/adsmanager/reporting</code>
+                <code className="text-xs bg-card text-foreground border rounded px-2 py-1.5 flex-1 truncate">https://adsmanager.facebook.com/adsmanager/reporting</code>
                 <Button
                   variant="outline"
                   size="sm"
