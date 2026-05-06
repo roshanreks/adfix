@@ -21,10 +21,10 @@ import {
   CircularScore,
 } from "@/components/report-charts";
 import { ClassificationTable } from "@/components/classification-table";
-import { ArrowLeft, ArrowRight, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, Loader2, Calendar, CheckCircle2, Flame } from "lucide-react";
-import { ExpertAuditCard } from "@/components/expert-audit-card";
+import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, Loader2, Calendar, CheckCircle2, Flame } from "lucide-react";
 import { FadeIn } from "@/components/animations";
 import { PDFExportButton } from "@/components/pdf-report";
+
 
 function parseReportJson(reportJson: unknown): AuditReport | null {
   if (!reportJson) return null;
@@ -86,6 +86,7 @@ export default function AuditDetailPage() {
   const [isFetching, setIsFetching] = useState(true);
   const [fetchError, setFetchError] = useState(false);
   const [showSticky, setShowSticky] = useState(false);
+  const [showCtaSticky, setShowCtaSticky] = useState(false);
   const [whatsappModalOpen, setWhatsappModalOpen] = useState(false);
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -128,6 +129,8 @@ export default function AuditDetailPage() {
   useEffect(() => {
     const handleScroll = () => {
       setShowSticky(window.scrollY > 300);
+      // Show compact CTA sticky when scrolled past the main CTA section (~1200px)
+      setShowCtaSticky(window.scrollY > 1200 && window.scrollY < document.body.scrollHeight - window.innerHeight - 400);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -429,6 +432,75 @@ export default function AuditDetailPage() {
         </Card>
       </FadeIn>
 
+      {/* ₹999 Full Funnel Audit CTA — Primary Placement (after Key Insights) */}
+      <FadeIn delay={0.2}>
+        <Card className="border-primary/20 bg-primary/5 overflow-hidden" id="expert-audit-cta">
+          <CardContent className="p-6 sm:p-8 flex flex-col gap-5">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <Star className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">Want a Deeper Audit?</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Our team of AI + Human experts will audit your entire funnel — Shopify store, Facebook Ads, Google Ads, landing pages, creatives, and offer.
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                "Full Meta Ads account deep-dive",
+                "Google Ads performance review",
+                "Shopify store CRO & UX audit",
+                "Landing page & funnel analysis",
+                "Creative strategy & fatigue review",
+                "30-min strategy call with our team",
+                "Custom action plan delivered in 48 hours",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Check className="h-4 w-4 text-primary shrink-0" />
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-white dark:bg-background border">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">₹999</span>
+                  <span className="text-sm text-muted-foreground">One-time</span>
+                </div>
+                <Badge variant="secondary" className="mt-1 gap-1">
+                  <Star className="h-3 w-3" /> 100% Refund Guarantee — Not satisfied? Full refund, no questions asked.
+                </Badge>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Our team will contact you within 24 hours on your registered WhatsApp number after payment.
+                </p>
+              </div>
+              {hasPaid ? (
+                <Button
+                  className="w-full sm:w-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-6 font-semibold"
+                  onClick={() => setShowSuccessDialog(true)}
+                >
+                  <CheckCircle2 className="h-5 w-5" /> Paid — We&apos;ll Contact You
+                </Button>
+              ) : (
+                <Button
+                  className="w-full sm:w-auto gap-2 bg-primary text-primary-foreground h-12 px-6 font-semibold"
+                  onClick={handlePay}
+                  disabled={paymentLoading}
+                >
+                  {paymentLoading ? (
+                    <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
+                  ) : (
+                    <><Calendar className="h-5 w-5" /> Pay ₹999 & Get Full Audit</>
+                  )}
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </FadeIn>
+
       {/* KPI Cards */}
       <FadeIn delay={0.21}>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
@@ -668,75 +740,6 @@ export default function AuditDetailPage() {
         </Tabs>
       </FadeIn>
 
-      {/* ₹999 Full Funnel Audit CTA */}
-      <FadeIn delay={0.52}>
-        <Card className="border-primary/20 bg-primary/5 overflow-hidden">
-          <CardContent className="p-6 sm:p-8 flex flex-col gap-5">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <Star className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold">Want a Deeper Audit?</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Our team of AI + Human experts will audit your entire funnel — Shopify store, Facebook Ads, Google Ads, landing pages, creatives, and offer.
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[
-                "Full Meta Ads account deep-dive",
-                "Google Ads performance review",
-                "Shopify store CRO & UX audit",
-                "Landing page & funnel analysis",
-                "Creative strategy & fatigue review",
-                "30-min strategy call with our team",
-                "Custom action plan delivered in 48 hours",
-              ].map((item) => (
-                <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Check className="h-4 w-4 text-primary shrink-0" />
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-white dark:bg-background border">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold">₹999</span>
-                  <span className="text-sm text-muted-foreground">One-time</span>
-                </div>
-                <Badge variant="secondary" className="mt-1 gap-1">
-                  <Star className="h-3 w-3" /> 100% Refund Guarantee — Not satisfied? Full refund, no questions asked.
-                </Badge>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Our team will contact you within 24 hours on your registered WhatsApp number after payment.
-                </p>
-              </div>
-              {hasPaid ? (
-                <Button
-                  className="w-full sm:w-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-6 font-semibold"
-                  onClick={() => setShowSuccessDialog(true)}
-                >
-                  <CheckCircle2 className="h-5 w-5" /> Paid — We&apos;ll Contact You
-                </Button>
-              ) : (
-                <Button
-                  className="w-full sm:w-auto gap-2 bg-primary text-primary-foreground h-12 px-6 font-semibold"
-                  onClick={handlePay}
-                  disabled={paymentLoading}
-                >
-                  {paymentLoading ? (
-                    <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
-                  ) : (
-                    <><Calendar className="h-5 w-5" /> Pay ₹999 & Get Full Audit</>
-                  )}
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </FadeIn>
-
       {/* Data Quality Tips */}
       {audit.missing_data && (audit.missing_data.critical_missing_fields.length > 0 || audit.missing_data.important_missing_fields.length > 0) && (
         <FadeIn delay={0.5}>
@@ -772,47 +775,51 @@ export default function AuditDetailPage() {
         </FadeIn>
       )}
 
-      {/* Post-audit creation banner */}
-      {showPostAuditBanner && (
-        <FadeIn>
-          <div className="rounded-xl border-2 border-amber-500/30 bg-gradient-to-r from-amber-50/80 to-orange-50/60 dark:from-amber-950/30 dark:to-orange-950/20 p-4 sm:p-5 relative overflow-hidden">
-            <button
-              onClick={() => setShowPostAuditBanner(false)}
-              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Dismiss"
-            >
-              ✕
-            </button>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h3 className="font-semibold text-foreground flex items-center gap-2">
-                  <Flame className="h-5 w-5 text-amber-500" />
-                  AI found issues. Now let humans fix them.
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Our AI + Human experts will audit your entire funnel for ₹999.
-                </p>
+      {/* Scroll-triggered compact CTA sticky */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-300 ${
+          showCtaSticky ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full pointer-events-none"
+        }`}
+      >
+        <div className="bg-background/95 backdrop-blur-md border-t shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3">
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shrink-0">
+                <Flame className="h-4 w-4 text-white" />
               </div>
-              <a
-                href="https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:from-amber-600 hover:to-orange-600 transition-all shrink-0 min-h-[44px]"
-              >
-                Book Expert Audit <ArrowRight className="h-4 w-4" />
-              </a>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold truncate">Want a Deeper Audit?</p>
+                <p className="text-xs text-muted-foreground truncate hidden sm:block">AI + Human experts audit your entire funnel</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-lg font-bold text-amber-600 hidden sm:block">₹999</span>
+              {hasPaid ? (
+                <Button
+                  size="sm"
+                  className="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  onClick={() => setShowSuccessDialog(true)}
+                >
+                  <CheckCircle2 className="h-4 w-4" /> Paid
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  className="gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
+                  onClick={handlePay}
+                  disabled={paymentLoading}
+                >
+                  {paymentLoading ? (
+                    <><Loader2 className="h-4 w-4 animate-spin" /></>
+                  ) : (
+                    <><Calendar className="h-4 w-4" /> Pay ₹999</>
+                  )}
+                </Button>
+              )}
             </div>
           </div>
-        </FadeIn>
-      )}
-
-      {/* Expert Audit Upsell */}
-      <FadeIn delay={0.55}>
-        <div className="pt-4">
-          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-6" />
-          <ExpertAuditCard headline="Want us to go deeper than AI?" />
         </div>
-      </FadeIn>
+      </div>
 
       {/* WhatsApp Modal */}
       <Dialog open={whatsappModalOpen} onOpenChange={setWhatsappModalOpen}>

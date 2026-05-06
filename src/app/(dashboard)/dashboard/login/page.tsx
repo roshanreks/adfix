@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
-import { Eye, EyeOff, LogIn, UserPlus, CheckCircle2, TrendingUp, Shield, Zap } from "lucide-react";
+import { Eye, EyeOff, LogIn, UserPlus, CheckCircle2, TrendingUp, Shield, Zap, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const VALUE_PROPS = [
@@ -268,7 +268,10 @@ export default function LoginPage() {
                   aria-busy={isSubmitting}
                 >
                   {isSubmitting ? (
-                    <span className="animate-pulse">Processing...</span>
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span className="animate-pulse">Processing...</span>
+                    </>
                   ) : isRegistering ? (
                     <>
                       <UserPlus className="h-4 w-4" /> Create Account

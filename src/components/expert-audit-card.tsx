@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, Flame, ArrowRight, MessageSquare } from "lucide-react";
-import { motion } from "framer-motion";
+import { ShieldCheck, Flame, MessageSquare } from "lucide-react";
+import { RazorpayPaymentButton } from "@/components/razorpay-payment-button";
 
 interface ExpertAuditCardProps {
   variant?: "default" | "compact" | "inline" | "dark";
@@ -47,13 +47,9 @@ export function ExpertAuditCard({
               <p className="text-[10px] text-muted-foreground">One-time</p>
             </div>
           </div>
-          <Button
-            size="sm"
-            className="mt-3 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 gap-1.5 text-xs h-9"
-            onClick={() => window.open("https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand", "_blank")}
-          >
-            Book My Expert Audit <ArrowRight className="h-3 w-3" />
-          </Button>
+          <RazorpayPaymentButton variant="compact" size="sm" className="mt-3 w-full">
+            Book My Expert Audit
+          </RazorpayPaymentButton>
         </CardContent>
       </Card>
     );
@@ -72,13 +68,9 @@ export function ExpertAuditCard({
               Our team audits your Shopify, Meta Ads, Google Ads, landing pages, creatives & offer
             </p>
           </div>
-          <Button
-            size="sm"
-            className="shrink-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 gap-1.5 text-xs h-9"
-            onClick={() => window.open("https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand", "_blank")}
-          >
-            Book Now — ₹999 <ArrowRight className="h-3 w-3" />
-          </Button>
+          <RazorpayPaymentButton variant="compact" size="sm">
+            Book Now — ₹999
+          </RazorpayPaymentButton>
         </div>
       </div>
     );
@@ -127,12 +119,9 @@ export function ExpertAuditCard({
             </button>
           )}
 
-          <Button
-            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 gap-2 h-11 font-semibold"
-            onClick={() => window.open("https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand", "_blank")}
-          >
-            Book My Expert Audit <ArrowRight className="h-4 w-4" />
-          </Button>
+          <RazorpayPaymentButton size="default" className="w-full">
+            Book My Expert Audit
+          </RazorpayPaymentButton>
 
           <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-emerald-400/80">
             <ShieldCheck className="h-3 w-3" />
@@ -194,12 +183,9 @@ export function ExpertAuditCard({
           <p className="text-2xl font-bold text-amber-600">₹999 <span className="text-sm font-normal text-muted-foreground">One-time</span></p>
         </div>
 
-        <Button
-          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 gap-2 h-11 font-semibold"
-          onClick={() => window.open("https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand", "_blank")}
-        >
-          Book My Expert Audit <ArrowRight className="h-4 w-4" />
-        </Button>
+        <RazorpayPaymentButton size="default" className="w-full">
+          Book My Expert Audit
+        </RazorpayPaymentButton>
 
         <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-emerald-600">
           <ShieldCheck className="h-3 w-3" />

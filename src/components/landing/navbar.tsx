@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X, Zap, ExternalLink, Flame, Camera } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { RazorpayPaymentButton } from "@/components/razorpay-payment-button";
 import { motion, useScroll, useSpring } from "framer-motion";
 
 export function Navbar() {
@@ -119,14 +120,13 @@ export function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-2">
-            <a
-              href="https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold px-3 py-2 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all press-scale touch-manipulation min-h-[36px] gap-1"
+            <RazorpayPaymentButton
+              variant="compact"
+              size="sm"
+              className="press-scale touch-manipulation min-h-[36px]"
             >
               <Flame className="h-3 w-3" /> Expert Audit — ₹999
-            </a>
+            </RazorpayPaymentButton>
             <Link
               href="/dashboard"
               className="inline-flex items-center justify-center bg-primary text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-all press-scale touch-manipulation min-h-[44px] shadow-glow-sm"
@@ -197,15 +197,13 @@ export function Navbar() {
               </div>
 
               <div className="p-4 border-t bg-background space-y-3">
-                <a
-                  href="https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <RazorpayPaymentButton
+                  size="default"
+                  className="w-full press-scale min-h-[52px] touch-manipulation"
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-base font-semibold py-3.5 rounded-xl press-scale min-h-[52px] touch-manipulation"
                 >
                   <Flame className="h-4 w-4" /> Expert Audit — ₹999
-                </a>
+                </RazorpayPaymentButton>
                 <Link
                   href="/dashboard"
                   onClick={() => setOpen(false)}

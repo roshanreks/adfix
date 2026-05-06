@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Zap, Flame, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { RazorpayPaymentButton } from "@/components/razorpay-payment-button";
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -68,14 +69,12 @@ export function Footer() {
                 <a href="https://www.instagram.com/roshanreks/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Roshan (@roshanreks)</a>
               </p>
             </div>
-            <a
-              href="https://wa.me/918088293455?text=Hi%20Urban%20Media%2C%20I%20want%20to%20book%20the%20₹999%20Expert%20Audit%20for%20my%20D2C%20brand"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:from-amber-600 hover:to-orange-600 transition-all press-scale shrink-0 min-h-[44px] shadow-glow-sm"
+            <RazorpayPaymentButton
+              size="default"
+              className="shrink-0 shadow-glow-sm"
             >
-              Book My Expert Audit <ArrowRight className="h-4 w-4" />
-            </a>
+              <Flame className="h-4 w-4" /> Book My Expert Audit
+            </RazorpayPaymentButton>
           </div>
         </div>
       </div>
