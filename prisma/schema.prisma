@@ -33,6 +33,7 @@ model User {
   audits        Audit[]
   bookings      ConsultationBooking[]
   whatsappLogs  WhatsAppLog[]
+  lead          Lead?
 }
 
 model Account {
@@ -115,4 +116,60 @@ model WhatsAppLog {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model Lead {
+  id                    String   @id @default(uuid())
+  userId                String?  @unique
+  email                 String?
+  name                  String?
+  phone                 String?
+  whatsapp              String?
+  companyName           String?
+  website               String?
+  niche                 String?
+  monthlySpend          String?
+  role                  String?
+  challenge             String?
+  source                String   @default("organic")
+  utmSource             String?
+  utmMedium             String?
+  utmCampaign           String?
+  onboardingStep        Int      @default(0)
+  onboardingComplete    Boolean  @default(false)
+  hasAudit              Boolean  @default(false)
+  auditCount            Int      @default(0)
+  hasClickedExpertAudit Boolean  @default(false)
+  leadScore             Int      @default(0)
+  priority              String   @default("normal")
+  status                String   @default("new")
+  adminNotes            String?
+  documents             Json?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user       User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  activities LeadActivity[]
+
+  @@index([leadScore])
+  @@index([priority])
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model LeadActivity {
+  id            String   @id @default(cuid())
+  leadId        String
+  action        String
+  field         String?
+  oldValue      String?
+  newValue      String?
+  performedBy   String?  @default("admin")
+  createdAt     DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([createdAt])
 }

@@ -10,10 +10,12 @@ import { FAQ } from "@/components/landing/faq";
 import { CTA } from "@/components/landing/cta";
 import { Footer } from "@/components/landing/footer";
 import { SmoothScroll } from "@/components/ui/smooth-scroll";
+import { UtmTracker } from "@/components/utm-tracker";
 
 export default function LandingPage() {
   return (
     <SmoothScroll>
+      <UtmTracker />
       <Navbar />
       <main className="flex-1">
         <Hero />

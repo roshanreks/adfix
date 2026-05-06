@@ -1,6 +1,22 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { jwtVerify } from "jose";
+
+const ADMIN_SECRET = new TextEncoder().encode(
+  process.env.ADMIN_SECRET || `admin-secret-roshan-adfix`
+);
+
+async function verifyAdminCookie(req: NextRequest): Promise<boolean> {
+  const adminCookie = req.cookies.get("admin-session")?.value;
+  if (!adminCookie) return false;
+  try {
+    const { payload } = await jwtVerify(adminCookie, ADMIN_SECRET, { clockTolerance: 60 });
+    return payload.role === "admin";
+  } catch {
+    return false;
+  }
+}
 
 export async function middleware(req: NextRequest) {
   const { nextUrl } = req;
@@ -22,14 +38,27 @@ export async function middleware(req: NextRequest) {
 
   const isDashboardRoute = nextUrl.pathname.startsWith("/dashboard");
   const isAdminRoute = nextUrl.pathname.startsWith("/admin");
+  const isAdminLogin = nextUrl.pathname === "/admin/login";
 
   // Allow public routes
   if (isPublicRoute) {
     return NextResponse.next();
   }
 
-  // Require auth for dashboard and admin
-  if ((isDashboardRoute || isAdminRoute) && !isLoggedIn) {
+  // Admin routes: check admin session cookie (separate from NextAuth)
+  if (isAdminRoute) {
+    if (isAdminLogin) {
+      return NextResponse.next();
+    }
+    const isAdmin = await verifyAdminCookie(req);
+    if (!isAdmin) {
+      return NextResponse.redirect(new URL("/admin/login", nextUrl));
+    }
+    return NextResponse.next();
+  }
+
+  // Require auth for dashboard
+  if (isDashboardRoute && !isLoggedIn) {
     return NextResponse.redirect(new URL("/dashboard/login", nextUrl));
   }
 
@@ -44,5 +73,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.png$).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.png$).*)",
+  ],
 };

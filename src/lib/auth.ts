@@ -133,6 +133,20 @@ export const {
             data: { isAdmin: true },
           });
         }
+        // Create lead for Google OAuth users
+        try {
+          await prisma.lead.create({
+            data: {
+              userId: user.id,
+              email: user.email || null,
+              name: user.name || null,
+              source: "google_oauth",
+              onboardingStep: 0,
+            },
+          });
+        } catch {
+          // Lead may already exist, ignore
+        }
       }
     },
   },

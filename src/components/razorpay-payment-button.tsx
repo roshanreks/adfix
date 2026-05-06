@@ -69,6 +69,12 @@ export function RazorpayPaymentButton({
       toast.error("Please sign in to book");
       return;
     }
+    // Track expert audit click for lead scoring
+    fetch("/api/leads/track-expert-click", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    }).catch(() => {});
     setIsPaying(true);
     try {
       const loaded = await loadRazorpayScript();

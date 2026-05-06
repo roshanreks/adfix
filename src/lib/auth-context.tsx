@@ -83,10 +83,19 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
       }
 
       try {
+        // Read UTM data from localStorage
+        let utmData = {};
+        try {
+          const raw = localStorage.getItem("adfix_utm");
+          if (raw) utmData = JSON.parse(raw);
+        } catch {
+          // ignore
+        }
+
         const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
+          body: JSON.stringify({ name, email, password, ...utmData }),
         });
 
         if (!res.ok) {

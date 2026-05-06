@@ -78,6 +78,20 @@ export default function OnboardingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
 
+  // Track onboarding steps for lead drop-off analysis
+  const trackStep = useCallback(async (step: number) => {
+    try {
+      await fetch("/api/onboarding/track-step", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ step }),
+      });
+    } catch {
+      // Silently fail — tracking is non-critical
+    }
+  }, []);
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -412,7 +426,10 @@ export default function OnboardingPage() {
                   <Button
                     type="button"
                     className="ml-auto gap-2"
-                    onClick={() => setActiveSection((s) => s + 1)}
+                    onClick={() => {
+                      trackStep(activeSection + 1);
+                      setActiveSection((s) => s + 1);
+                    }}
                   >
                     Next <ArrowRight className="h-4 w-4" />
                   </Button>

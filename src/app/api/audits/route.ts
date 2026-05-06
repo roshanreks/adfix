@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
+import { calculateLeadScore } from "@/lib/lead-score";
 
 export async function GET(req: NextRequest) {
   try {
@@ -41,6 +42,34 @@ export async function POST(req: NextRequest) {
         wastePercentage: wastePercentage || 0,
       },
     });
+
+    // Update lead record
+    const lead = await prisma.lead.findUnique({ where: { userId: user.id } });
+    if (lead) {
+      const auditCount = lead.auditCount + 1;
+      const { score, priority } = calculateLeadScore({
+        onboardingStep: lead.onboardingStep,
+        phone: lead.phone,
+        whatsapp: lead.whatsapp,
+        companyName: lead.companyName,
+        website: lead.website,
+        challenge: lead.challenge,
+        hasAudit: true,
+        auditCount,
+        hasClickedExpertAudit: lead.hasClickedExpertAudit,
+        source: lead.source,
+      });
+
+      await prisma.lead.update({
+        where: { id: lead.id },
+        data: {
+          hasAudit: true,
+          auditCount,
+          leadScore: score,
+          priority,
+        },
+      });
+    }
 
     return NextResponse.json({ audit }, { status: 201 });
   } catch (error) {
