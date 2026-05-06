@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
+import { sendCapiPurchase } from "@/lib/meta-capi";
 import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
@@ -37,6 +38,24 @@ export async function POST(req: NextRequest) {
         status: "booked",
       },
     });
+
+    // Fetch user details for CAPI
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { email: true, name: true, phone: true },
+    });
+
+    // Send CAPI Purchase + Lead events
+    sendCapiPurchase({
+      email: dbUser?.email || undefined,
+      phone: dbUser?.phone || undefined,
+      name: dbUser?.name || undefined,
+      value: 999,
+      currency: "INR",
+      orderId: razorpay_order_id,
+      eventSourceUrl: "https://audit.theurbanmedia.in/dashboard/audits",
+      requestHeaders: req.headers,
+    }).catch(() => {});
 
     return NextResponse.json({
       success: true,

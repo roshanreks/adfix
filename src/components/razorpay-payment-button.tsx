@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { Loader2, Calendar } from "lucide-react";
+import { trackPixelEvent } from "@/lib/meta-pixel";
 
 type RazorpayCheckoutResponse = {
   razorpay_order_id: string;
@@ -107,6 +108,14 @@ export function RazorpayPaymentButton({
         return;
       }
 
+      // Track Meta Pixel InitiateCheckout
+      trackPixelEvent("InitiateCheckout", {
+        content_name: "Expert Audit — ₹999",
+        content_type: "product",
+        value: 999,
+        currency: "INR",
+      });
+
       const rzp = new Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
         amount: orderData.amount,
@@ -135,6 +144,20 @@ export function RazorpayPaymentButton({
             const verifyData = await verifyRes.json();
             if (verifyRes.ok && verifyData.success) {
               toast.success("Payment successful! Our team will contact you within 24 hours.");
+              // Track Meta Pixel Purchase + Lead
+              trackPixelEvent("Purchase", {
+                content_name: "Expert Audit — ₹999",
+                content_type: "product",
+                value: 999,
+                currency: "INR",
+                order_id: response.razorpay_order_id,
+              });
+              trackPixelEvent("Lead", {
+                content_name: "Paid Expert Audit Lead",
+                value: 999,
+                currency: "INR",
+                lead_type: "paid_expert_audit",
+              });
               onSuccess?.();
             } else {
               toast.error(verifyData.error || "Payment verification failed");

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
 import { calculateLeadScore } from "@/lib/lead-score";
+import { sendCapiCompleteRegistration } from "@/lib/meta-capi";
 
 export async function POST(req: NextRequest) {
   try {
@@ -94,6 +95,19 @@ export async function POST(req: NextRequest) {
         priority,
       },
     });
+
+    // Send CAPI CompleteRegistration event
+    sendCapiCompleteRegistration({
+      email: updated.email,
+      phone: leadData.phone,
+      name: leadData.name,
+      eventSourceUrl: "https://audit.theurbanmedia.in/onboarding",
+      customData: {
+        niche: leadData.niche,
+        monthly_spend: leadData.monthlySpend,
+        role: leadData.role,
+      },
+    }).catch(() => {});
 
     return NextResponse.json({
       success: true,

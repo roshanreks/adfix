@@ -33,6 +33,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { trackPixelEvent } from "@/lib/meta-pixel";
 
 const NICHES = [
   "Fashion & Apparel",
@@ -149,6 +150,14 @@ export default function OnboardingPage() {
 
         await updateSession({ user: { onboardingComplete: true } });
         toast.success("Welcome to AdFix by Urban Media!");
+        // Track Meta Pixel CompleteRegistration
+        trackPixelEvent("CompleteRegistration", {
+          content_name: "Onboarding Complete",
+          status: true,
+          niche,
+          monthly_spend: monthlySpend,
+          role,
+        });
         router.replace("/dashboard");
         router.refresh();
       } catch (err) {

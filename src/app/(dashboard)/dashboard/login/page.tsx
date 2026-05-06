@@ -10,6 +10,7 @@ import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn, UserPlus, CheckCircle2, TrendingUp, Shield, Zap, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackPixelEvent } from "@/lib/meta-pixel";
 
 const VALUE_PROPS = [
   { icon: CheckCircle2, text: "CSV-based, deterministic analysis" },
@@ -42,6 +43,11 @@ export default function LoginPage() {
           const ok = await register(name, email, password);
           if (ok) {
             toast.success("Account created successfully");
+            // Track Meta Pixel Lead event
+            trackPixelEvent("Lead", {
+              content_name: "User Registration",
+              content_category: "signup",
+            });
             // Hard navigation ensures the auth cookie is picked up
             window.location.href = "/onboarding";
           }

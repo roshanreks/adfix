@@ -24,6 +24,7 @@ import { ClassificationTable } from "@/components/classification-table";
 import { ArrowLeft, TrendingDown, AlertTriangle, TrendingUp, HelpCircle, Eye, ArrowUp, Check, MessageSquare, Send, Star, Loader2, Calendar, CheckCircle2, Flame } from "lucide-react";
 import { FadeIn } from "@/components/animations";
 import { PDFExportButton } from "@/components/pdf-report";
+import { trackPixelEvent } from "@/lib/meta-pixel";
 
 
 function parseReportJson(reportJson: unknown): AuditReport | null {
@@ -111,6 +112,12 @@ export default function AuditDetailPage() {
               parsed.id = data.audit.id;
               parsed.createdAt = data.audit.createdAt;
               setAudit(parsed);
+              // Track Meta Pixel ViewContent
+              trackPixelEvent("ViewContent", {
+                content_name: parsed.name || "Audit Report",
+                content_type: "audit_report",
+                content_ids: [params.id as string],
+              });
             } else {
               setAudit(null);
             }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
+import { sendCapiLead } from "@/lib/meta-capi";
 
 async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -74,6 +75,13 @@ export async function POST(req: Request) {
         onboardingStep: 0,
       },
     });
+
+    // Send CAPI Lead event
+    sendCapiLead({
+      email: user.email,
+      name: user.name || undefined,
+      eventSourceUrl: "https://audit.theurbanmedia.in/dashboard/login",
+    }).catch(() => {});
 
     return NextResponse.json(
       {
